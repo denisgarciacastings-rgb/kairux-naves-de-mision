@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-01: El Forjador de Misión | Kairux</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strategic-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --strategic-primary: #667eea;
+            --strategic-secondary: #764ba2;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --text-muted: rgba(255, 255, 255, 0.55);
+            --accent-gold: #FFAB00;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.7);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--strategic-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .forjador-container { display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .logo-section { display: flex; align-items: center; gap: 1rem; }
+        .logo {
+            width: 50px; height: 50px; background: var(--strategic-gradient);
+            border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .brand-info h1 {
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.5rem;
+            color: var(--text-primary); margin-bottom: 0.25rem;
+        }
+        .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+        .help-button {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center;
+            justify-content: center; color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease;
+        }
+        .help-button:hover { background: rgba(255, 255, 255, 0.2); color: var(--text-primary); transform: scale(1.05); }
+        .main-content { flex: 1; padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .mural-container {
+            background: var(--glass-bg); backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); border-radius: 25px;
+            padding: 2.5rem; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .mural-header { text-align: center; margin-bottom: 3rem; }
+        .mural-title {
+            font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800;
+            margin-bottom: 1rem; background: var(--strategic-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .mural-subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        .mural-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 3rem; }
+        .mural-section {
+            background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; padding: 2rem; transition: all 0.3s ease;
+            min-height: 300px; display: flex; flex-direction: column;
+        }
+        .mural-section:focus-within {
+            background: rgba(0, 0, 0, 0.2); transform: translateY(-5px);
+            box-shadow: 0 0 0 3px var(--strategic-primary), var(--shadow-lg);
+            border-color: var(--strategic-primary);
+        }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .section-icon {
+            width: 50px; height: 50px; background: var(--strategic-gradient);
+            border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+        }
+        .section-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.3rem; }
+        .section-content { flex: 1; display: flex; flex-direction: column; }
+        .content-textarea {
+            width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 1.5rem; color: var(--text-primary); font-size: 1.1rem;
+            font-family: inherit; line-height: 1.8; resize: none; min-height: 150px; flex: 1;
+            transition: all 0.3s ease;
+        }
+        .content-textarea:focus { outline: none; background: rgba(0, 0, 0, 0.25); border-color: var(--strategic-primary); }
+        .content-textarea::placeholder { color: var(--text-muted); font-style: italic; }
+        .char-counter { text-align: right; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted); transition: color 0.3s; }
+        .section-helper { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .action-buttons { display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; }
+        .action-btn {
+            background: var(--strategic-gradient); border: none; border-radius: 15px;
+            padding: 1rem 2.5rem; color: white; font-family: 'Montserrat', sans-serif;
+            font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4); }
+        .action-btn.secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .action-btn.secondary:hover { background: rgba(255, 255, 255, 0.2); }
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 5, 30, 0.8); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; padding: 1rem; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal { display: none; }
+        .modal-overlay.active .modal.active { display: block; }
+        .preview-modal .preview-content {
+            background: #f8f9ff; border-radius: 25px; padding: 3rem;
+            max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
+            position: relative; box-shadow: var(--shadow-xl); color: #333;
+        }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+            font-size: 2rem; color: #aaa; cursor: pointer; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .modal-close:hover { background: #e9ecef; color: #333; }
+        .preview-header { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #e9ecef; }
+        .preview-header h2 { color: var(--strategic-secondary); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2rem; margin-bottom: 0.5rem; }
+        .preview-header p { color: #666; font-size: 1.1rem; }
+        .preview-section { margin-bottom: 1.5rem; }
+        .preview-section h3 {
+            color: var(--strategic-secondary); font-family: 'Montserrat', sans-serif;
+            font-weight: 600; font-size: 1.3rem; margin-bottom: 1rem; display: flex;
+            align-items: center; gap: 0.75rem; padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--strategic-primary);
+        }
+        .preview-section p { line-height: 1.8; font-size: 1rem; white-space: pre-wrap; }
+        .preview-actions { text-align: center; margin-top: 2rem; }
+        .confirm-modal .confirm-content {
+            background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 2.5rem; max-width: 450px; text-align: center;
+        }
+        .confirm-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; }
+        .confirm-text { color: var(--text-secondary); margin-bottom: 2rem; }
+        .confirm-actions { display: flex; justify-content: center; gap: 1rem; }
+        /* System Messages */
+        .auto-save-indicator {
+            position: fixed; bottom: 2rem; right: 2rem; background: var(--glass-bg);
+            backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            border-radius: 25px; padding: 0.75rem 1.5rem; color: var(--text-secondary);
+            font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+            transform: translateY(150%); transition: transform 0.4s ease-in-out;
+            z-index: 1000; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .auto-save-indicator.show { transform: translateY(0); }
+        .save-status { width: 8px; height: 8px; border-radius: 50%; transition: background-color 0.5s; }
+        .save-status.saving { background: var(--accent-gold); animation: pulse 2s infinite; }
+        .save-status.saved { background: #4CAF50; animation: none; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content { padding: 1rem; }
+            .mural-container { padding: 1.5rem; }
+            .mural-grid { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; align-items: center; }
+            .action-btn { width: 100%; max-width: 300px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="forjador-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">🎯</div>
+                    <div class="brand-info">
+                        <h1>KAIRUX</h1>
+                        <div class="tool-subtitle">H-01: El Forjador de Misión</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="help-button" data-action="toggleHelp" title="Ayuda">?</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="mural-container">
+                <div class="mural-header">
+                    <h2 class="mural-title">Mural de Cultura Interactivo</h2>
+                    <p class="mural-subtitle">Define el "alma" de su empresa. Estos cuatro pilares guiarán cada decisión futura y se convertirán en su brújula estratégica.</p>
+                </div>
+
+                <div class="mural-grid">
+                    <!-- Propósito -->
+                    <div class="mural-section">
+                        <div class="section-header">
+                            <div class="section-icon">🌟</div>
+                            <h3 class="section-title">Propósito</h3>
+                        </div>
+                        <div class="section-content">
+                            <textarea class="content-textarea" data-id="proposito" placeholder="¿Por qué existe su empresa? ¿Cuál es la causa que le impulsa cada día?..." maxlength="500"></textarea>
+                            <div class="char-counter"><span data-counter-for="proposito">0</span>/500</div>
+                            <div class="section-helper">El propósito es su "por qué". Debe inspirar y conectar emocionalmente.</div>
+                        </div>
+                    </div>
+
+                    <!-- Valores -->
+                    <div class="mural-section">
+                        <div class="section-header">
+                            <div class="section-icon">⚖️</div>
+                            <h3 class="section-title">Valores</h3>
+                        </div>
+                        <div class="section-content">
+                            <textarea class="content-textarea" data-id="valores" placeholder="¿Cuáles son los principios inquebrantables que guían sus acciones?..." maxlength="400"></textarea>
+                            <div class="char-counter"><span data-counter-for="valores">0</span>/400</div>
+                            <div class="section-helper">Los valores son sus líneas rojas. Defina 3-5 principios que nunca comprometería.</div>
+                        </div>
+                    </div>
+
+                    <!-- Misión -->
+                    <div class="mural-section">
+                        <div class="section-header">
+                            <div class="section-icon">🚀</div>
+                            <h3 class="section-title">Misión</h3>
+                        </div>
+                        <div class="section-content">
+                            <textarea class="content-textarea" data-id="mision" placeholder="¿Qué hace concretamente para cumplir su propósito?..." maxlength="600"></textarea>
+                            <div class="char-counter"><span data-counter-for="mision">0</span>/600</div>
+                            <div class="section-helper">La misión es su "qué". Debe ser específica y describir el impacto actual.</div>
+                        </div>
+                    </div>
+
+                    <!-- Visión -->
+                    <div class="mural-section">
+                        <div class="section-header">
+                            <div class="section-icon">🔭</div>
+                            <h3 class="section-title">Visión</h3>
+                        </div>
+                        <div class="section-content">
+                            <textarea class="content-textarea" data-id="vision" placeholder="¿Cómo se ve el futuro que quiere crear?..." maxlength="500"></textarea>
+                            <div class="char-counter"><span data-counter-for="vision">0</span>/500</div>
+                            <div class="section-helper">La visión es su "hacia dónde". Debe ser inspiradora y a largo plazo.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn secondary" data-action="clearAll">🔄 Empezar de Nuevo</button>
+                    <button class="action-btn" data-action="preview">👁️ Vista Previa</button>
+                    <button class="action-btn" data-action="share">📤 Compartir con Equipo</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modals and Overlays -->
+        <div class="modal-overlay" data-id="modalOverlay">
+            <!-- Preview Modal -->
+            <div class="modal preview-modal" data-modal="preview">
+                <div class="preview-content" data-id="previewContent">
+                    <button class="modal-close" data-action="closeModal">×</button>
+                    <div class="preview-header">
+                        <h2 data-id="previewCompanyName">Mi Empresa</h2>
+                        <p>Filosofía Empresarial</p>
+                    </div>
+                    <div data-id="previewSections"></div>
+                    <div class="preview-actions">
+                        <button class="action-btn" data-action="exportPDF">📄 Descargar PDF</button>
+                        <button class="action-btn secondary" data-action="exportImage">🖼️ Descargar Imagen</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirm Modal -->
+            <div class="modal confirm-modal" data-modal="confirm">
+                 <div class="confirm-content">
+                    <h3 class="confirm-title" data-id="confirmTitle">¿Está seguro?</h3>
+                    <p class="confirm-text" data-id="confirmText">Esta acción no se puede deshacer.</p>
+                    <div class="confirm-actions">
+                        <button class="action-btn secondary" data-action="confirmCancel">Cancelar</button>
+                        <button class="action-btn" data-action="confirmAccept">Aceptar</button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+
+        <!-- System Messages -->
+        <div class="auto-save-indicator" data-id="autoSaveIndicator">
+            <div class="save-status" data-id="saveStatus"></div>
+            <span data-id="saveText">Guardando...</span>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // KAIRUX H-01: EL FORJADOR DE MISIÓN
+        // Arquitectura: Patrón Modular Revelador
+        // ==========================================
+        const KairuxH01 = {
+            // --- CONFIGURACIÓN Y ESTADO ---
+            config: {
+                autoSaveDelay: 2500, // ms
+                plan: 'CRECIMIENTO', // Esto será actualizado por Bubble
+                planRestrictions: {
+                    ESENCIAL: { canShare: false },
+                    CRECIMIENTO: { canShare: true }
+                }
+            },
+            state: {
+                companyData: { proposito: '', valores: '', mision: '', vision: '' },
+                hasChanges: false,
+                autoSaveTimer: null,
+                confirmPromise: null
+            },
+            nodes: {}, // Cache de elementos del DOM
+
+            // --- INICIALIZACIÓN ---
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._loadData();
+                console.log('🎯 H-01: El Forjador de Misión - Kairux Activado');
+            },
+
+            // --- GESTIÓN DEL DOM ---
+            _cacheDOM() {
+                const query = (selector) => document.querySelector(selector);
+                const queryAll = (selector) => document.querySelectorAll(selector);
+                this.nodes = {
+                    textareas: queryAll('.content-textarea'),
+                    counters: queryAll('[data-counter-for]'),
+                    actionButtons: queryAll('[data-action]'),
+                    modalOverlay: query('[data-id="modalOverlay"]'),
+                    modals: queryAll('.modal'),
+                    preview: {
+                        content: query('[data-id="previewContent"]'),
+                        companyName: query('[data-id="previewCompanyName"]'),
+                        sections: query('[data-id="previewSections"]')
+                    },
+                    confirm: {
+                        title: query('[data-id="confirmTitle"]'),
+                        text: query('[data-id="confirmText"]')
+                    },
+                    autoSave: {
+                        indicator: query('[data-id="autoSaveIndicator"]'),
+                        status: query('[data-id="saveStatus"]'),
+                        text: query('[data-id="saveText"]')
+                    }
+                };
+            },
+
+            // --- MANEJO DE EVENTOS ---
+            _bindEvents() {
+                // Event delegation para acciones
+                document.body.addEventListener('click', e => {
+                    const action = e.target.closest('[data-action]')?.dataset.action;
+                    if (action && typeof this[`_action_${action}`] === 'function') {
+                        this[`_action_${action}`]();
+                    }
+                });
+
+                // Input en textareas para auto-guardado y contadores
+                this.nodes.textareas.forEach(area => {
+                    area.addEventListener('input', e => {
+                        const id = e.target.dataset.id;
+                        this.state.companyData[id] = e.target.value;
+                        this.state.hasChanges = true;
+                        this._renderCharCount(id);
+                        this._triggerAutoSave();
+                    });
+                });
+            },
+
+            // --- LÓGICA DE NEGOCIO (CURAS) ---
+            _triggerAutoSave() {
+                clearTimeout(this.state.autoSaveTimer);
+                this._showSaveIndicator('saving');
+                this.state.autoSaveTimer = setTimeout(() => this._saveData(), this.config.autoSaveDelay);
+            },
+
+            _saveData() {
+                if (!this.state.hasChanges) return;
+                
+                console.log('💾 Guardando en base de datos:', this.state.companyData);
+                localStorage.setItem('kairux_h01_data', JSON.stringify(this.state.companyData));
+                
+                // Simular éxito y llamar a Bubble si existe
+                setTimeout(() => {
+                    this.state.hasChanges = false;
+                    this._showSaveIndicator('saved');
+                    if (typeof bubble_fn_saveMissionData === 'function') {
+                        bubble_fn_saveMissionData(this.exportData());
+                    }
+                }, 500);
+            },
+
+            _loadData() {
+                const savedData = localStorage.getItem('kairux_h01_data');
+                if (savedData) {
+                    this.state.companyData = JSON.parse(savedData);
+                    this._render();
+                }
+            },
+
+            // --- ACCIONES DEL USUARIO ---
+            _action_clearAll() {
+                this._showConfirmModal('Reiniciar Mural', '¿Está seguro? Todo el contenido se borrará permanentemente.')
+                    .then(confirmed => {
+                        if (confirmed) {
+                            this.state.companyData = { proposito: '', valores: '', mision: '', vision: '' };
+                            this.state.hasChanges = true;
+                            this._saveData();
+                            this._render();
+                        }
+                    });
+            },
+
+            _action_preview() { this._showModal('preview'); },
+            _action_closeModal() { this._hideModals(); },
+
+            _action_share() {
+                if (!this.config.planRestrictions[this.config.plan]?.canShare) {
+                    this._showConfirmModal('Mejorar Plan', `Para compartir con su equipo, necesita un plan superior. ¿Desea ver las opciones?`)
+                        .then(confirmed => {
+                            if (confirmed && typeof bubble_fn_showUpgrade === 'function') {
+                                bubble_fn_showUpgrade(this.config.plan, 'share');
+                            }
+                        });
+                    return;
+                }
+                // Lógica de compartir...
+                console.log("Compartiendo...");
+            },
+            
+            _action_exportPDF() {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+                const content = this.nodes.preview.content;
+                
+                // Temporalmente cambiar color de texto para el PDF
+                content.style.color = '#000000';
+
+                pdf.html(content, {
+                    callback: (doc) => { 
+                        doc.save('filosofia-empresarial.pdf'); 
+                        // Restaurar color de texto
+                        content.style.color = '#333';
+                    },
+                    margin: [40, 40, 40, 40],
+                    autoPaging: 'text',
+                    width: 515,
+                    windowWidth: content.scrollWidth
+                });
+            },
+
+            _action_exportImage() {
+                html2canvas(this.nodes.preview.content, { scale: 2, backgroundColor: '#f8f9ff' })
+                    .then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'filosofia-empresarial.png';
+                        link.href = canvas.toDataURL();
+                        link.click();
+                    });
+            },
+            
+            _action_confirmAccept() {
+                if (this.state.confirmPromise) this.state.confirmPromise.resolve(true);
+                this._hideModals();
+            },
+            
+            _action_confirmCancel() {
+                if (this.state.confirmPromise) this.state.confirmPromise.resolve(false);
+                this._hideModals();
+            },
+
+            // --- RENDERIZADO Y UI ---
+            _render() {
+                this.nodes.textareas.forEach(area => {
+                    const id = area.dataset.id;
+                    area.value = this.state.companyData[id] || '';
+                    this._renderCharCount(id);
+                });
+                this._renderPreview();
+            },
+
+            _renderCharCount(id) {
+                const counter = document.querySelector(`[data-counter-for="${id}"]`);
+                if (counter) {
+                    const length = this.state.companyData[id]?.length || 0;
+                    const max = document.querySelector(`[data-id="${id}"]`).maxLength;
+                    counter.textContent = length;
+                    const percentage = (length / max) * 100;
+                    counter.style.color = percentage > 90 ? '#ff5252' : percentage > 75 ? '#ff9800' : 'var(--text-muted)';
+                }
+            },
+            
+            _renderPreview() {
+                const { proposito, valores, mision, vision } = this.state.companyData;
+                const sections = [
+                    { title: 'Propósito', content: proposito, icon: '🌟' },
+                    { title: 'Valores', content: valores, icon: '⚖️' },
+                    { title: 'Misión', content: mision, icon: '🚀' },
+                    { title: 'Visión', content: vision, icon: '🔭' }
+                ];
+                this.nodes.preview.sections.innerHTML = sections.map(s => `
+                    <div class="preview-section">
+                        <h3>${s.icon} ${s.title}</h3>
+                        <p>${s.content || 'Sin contenido definido aún.'}</p>
+                    </div>
+                `).join('');
+            },
+
+            _showSaveIndicator(status) {
+                this.nodes.autoSave.indicator.classList.add('show');
+                this.nodes.autoSave.status.className = `save-status ${status}`;
+                this.nodes.autoSave.text.textContent = status === 'saving' ? 'Guardando...' : 'Guardado';
+                if (status === 'saved') {
+                    setTimeout(() => this.nodes.autoSave.indicator.classList.remove('show'), 2000);
+                }
+            },
+            
+            _showModal(modalName) {
+                this._renderPreview(); // Siempre actualiza el preview antes de mostrarlo
+                this.nodes.modalOverlay.classList.add('active');
+                this.nodes.modals.forEach(m => m.classList.remove('active'));
+                document.querySelector(`[data-modal="${modalName}"]`).classList.add('active');
+            },
+
+            _hideModals() {
+                this.nodes.modalOverlay.classList.remove('active');
+            },
+            
+            _showConfirmModal(title, text) {
+                this.nodes.confirm.title.textContent = title;
+                this.nodes.confirm.text.textContent = text;
+                this._showModal('confirm');
+                
+                return new Promise((resolve, reject) => {
+                    this.state.confirmPromise = { resolve, reject };
+                });
+            },
+
+            // --- API PÚBLICA PARA BUBBLE ---
+            exportData() {
+                // ... Lógica de exportación completa para el ecosistema Kairux ...
+                return {
+                    pilar: 'Gestión Estratégica',
+                    herramienta: 'H-01: El Forjador de Misión',
+                    data: this.state.companyData,
+                    timestamp: new Date().toISOString()
+                };
+            },
+            
+            updatePlan(newPlan) {
+                this.config.plan = newPlan;
+                console.log(`Plan actualizado a: ${newPlan}`);
+            },
+            
+            setData(data) {
+                this.state.companyData = { ...this.state.companyData, ...data };
+                this._render();
+            }
+        };
+
+        // --- INICIALIZACIÓN DE LA NAVE ---
+        document.addEventListener('DOMContentLoaded', () => KairuxH01.init());
+
+        // --- EXPOSICIÓN GLOBAL PARA BUBBLE ---
+        window.kairuxH01 = {
+            exportData: () => KairuxH01.exportData(),
+            updatePlan: (plan) => KairuxH01.updatePlan(plan),
+            setData: (data) => KairuxH01.setData(data)
+        };
+    </script>
+</body>
+</html>
