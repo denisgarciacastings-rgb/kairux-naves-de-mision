@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-11: El Gestor de Tareas & Proyectos - Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #00d4aa;
+            --warning: #ffb74d;
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --kanban-todo: #374151;
+            --kanban-progress: #1e40af;
+            --kanban-review: #c2410c;
+            --kanban-done: #059669;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 212, 170, 0.2) 0%, transparent 50%);
+            animation: projectShift 25s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes projectShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Header con branding Kairux */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--success), var(--info), transparent);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .kairux-brand {
+            background: var(--primary-gradient);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .brand-separator {
+            width: 2px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .view-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .productivity-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: calc(100vh - 100px);
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Sidebar - Proyecto y Filtros */
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tooltips UX mejorados */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip-trigger::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            max-width: 250px;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .tooltip-trigger:hover::after {
+            opacity: 1;
+        }
+
+        .help-indicator {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 10px;
+            line-height: 14px;
+            text-align: center;
+            margin-left: 0.5rem;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .help-indicator:hover {
+            background: var(--info);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Formulario de nueva tarea */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success), #00a693);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+        }
+
+        /* Kanban Board */
+        .kanban-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            height: 100%;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .kanban-column {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1rem;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid;
+        }
+
+        .column-todo { border-color: var(--kanban-todo); }
+        .column-progress { border-color: var(--kanban-progress); }
+        .column-review { border-color: var(--kanban-review); }
+        .column-done { border-color: var(--kanban-done); }
+
+        .column-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .column-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .task-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Task Cards */
+        .task-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .task-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .task-card.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+            cursor: grabbing;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .priority-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-alta {
+            background: rgba(255, 82, 82, 0.2);
+            color: var(--danger);
+        }
+
+        .priority-media {
+            background: rgba(255, 183, 77, 0.2);
+            color: var(--warning);
+        }
+
+        .priority-baja {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--success);
+        }
+
+        .task-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .task-assignee {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .task-due-date {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .task-due-date.overdue {
+            background: rgba(255, 82, 82, 0.2);
+            color: var(--danger);
+        }
+
+        .task-due-date.today {
+            background: rgba(255, 183, 77, 0.2);
+            color: var(--warning);
+        }
+
+        .task-progress {
+            margin-top: 0.75rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        .subtasks-counter {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Drop zones */
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            opacity: 1;
+            border-color: var(--success);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        /* Filtros y estadísticas */
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filters {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .filter-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-option {
+            padding: 0.25rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-option.active {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Lista y Calendario (vistas alternativas) */
+        .list-view, .calendar-view {
+            display: none;
+            padding: 1rem;
+        }
+
+        .list-view.active, .calendar-view.active {
+            display: block;
+        }
+
+        .task-list-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .task-list-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--success);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 250px 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .sidebar {
+                max-height: 200px;
+            }
+            
+            .kanban-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Onboarding hints */
+        .first-time-hint {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--warning);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header con branding Kairux -->
+    <div class="header">
+        <div class="header-content">
+            <div class="brand-section">
+                <div class="kairux-brand">KAIRUX</div>
+                <div class="brand-separator"></div>
+                <div class="header-title">
+                    <h1>📋 El Gestor de Tareas & Proyectos</h1>
+                    <p>Convierte planes de acción en resultados ejecutables</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="productivity-stats">
+                    <div class="stat-item tooltip-trigger" data-tooltip="Tareas completadas esta semana">
+                        <span>✅</span>
+                        <span id="weeklyCompleted">12</span>
+                    </div>
+                    <div class="stat-item tooltip-trigger" data-tooltip="Eficiencia del equipo esta semana">
+                        <span>⚡</span>
+                        <span id="teamEfficiency">89%</span>
+                    </div>
+                    <div class="stat-item tooltip-trigger" data-tooltip="Proyectos activos en curso">
+                        <span>🎯</span>
+                        <span id="activeProjects">3</span>
+                    </div>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('kanban')">📋 Kanban</button>
+                    <button class="view-btn" onclick="switchView('list')">📝 Lista</button>
+                    <button class="view-btn" onclick="switchView('calendar')">📅 Calendario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Principal -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Crear Nueva Tarea -->
+            <div class="glass-panel">
+                <div class="panel-title tooltip-trigger" data-tooltip="Crea nuevas tareas o convierte planes de acción del Gestor de Desperdicios en proyectos ejecutables">
+                    ➕ Nueva Tarea
+                    <span class="help-indicator">?</span>
+                </div>
+                
+                <form id="newTaskForm">
+                    <div class="form-group">
+                        <label class="form-label">Título de la Tarea</label>
+                        <input type="text" class="form-input" id="taskTitle" placeholder="Implementar sistema Kanban..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-textarea" id="taskDescription" rows="3" placeholder="Detalles específicos de la tarea..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Responsable</label>
+                        <select class="form-select" id="taskAssignee">
+                            <option value="">Seleccionar responsable...</option>
+                            <option value="admin">Administrador</option>
+                            <option value="manager">Gerente</option>
+                            <option value="team_lead">Líder de Equipo</option>
+                            <option value="specialist">Especialista</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Prioridad</label>
+                        <select class="form-select" id="taskPriority">
+                            <option value="baja">🟢 Baja</option>
+                            <option value="media">🟡 Media</option>
+                            <option value="alta">🔴 Alta</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Fecha Límite</label>
+                        <input type="date" class="form-input" id="taskDueDate">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        📋 Crear Tarea
+                    </button>
+                </form>
+            </div>
+
+            <!-- Estadísticas del Proyecto -->
+            <div class="glass-panel">
+                <div class="panel-title tooltip-trigger" data-tooltip="Resumen del progreso general de todos tus proyectos y tareas">
+                    📊 Estadísticas
+                    <span class="help-indicator">?</span>
+                </div>
+                
+                <div class="project-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalTasks">0</div>
+                        <div class="stat-label">Total Tareas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completedTasks">0</div>
+                        <div class="stat-label">Completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="overdueTasks">0</div>
+                        <div class="stat-label">Vencidas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="progressPercent">0%</div>
+                        <div class="stat-label">Progreso</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="glass-panel">
+                <div class="panel-title tooltip-trigger" data-tooltip="Filtra las tareas por diferentes criterios para enfocarte en lo más importante">
+                    🔍 Filtros
+                    <span class="help-indicator">?</span>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <div class="filter-title">Por Prioridad</div>
+                        <div class="filter-options">
+                            <div class="filter-option active" data-filter="priority" data-value="all">Todas</div>
+                            <div class="filter-option" data-filter="priority" data-value="alta">Alta</div>
+                            <div class="filter-option" data-filter="priority" data-value="media">Media</div>
+                            <div class="filter-option" data-filter="priority" data-value="baja">Baja</div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-title">Por Responsable</div>
+                        <div class="filter-options">
+                            <div class="filter-option active" data-filter="assignee" data-value="all">Todos</div>
+                            <div class="filter-option" data-filter="assignee" data-value="admin">Admin</div>
+                            <div class="filter-option" data-filter="assignee" data-value="manager">Manager</div>
+                            <div class="filter-option" data-filter="assignee" data-value="team_lead">Líder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integración con H-09 -->
+            <div class="glass-panel">
+                <div class="panel-title tooltip-trigger" data-tooltip="Los planes de acción del Gestor de Desperdicios aparecen aquí automáticamente como proyectos">
+                    🔗 Desde H-09
+                    <span class="help-indicator">?</span>
+                </div>
+                
+                <div id="wasteActionPlans" style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 1rem;">
+                    📡 Conectado al Gestor de Desperdicios
+                    <br><small>Los planes de acción aparecerán aquí automáticamente</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área Principal -->
+        <div class="kanban-container">
+            <!-- Vista Kanban -->
+            <div id="kanbanView" class="kanban-view active">
+                <div class="kanban-board">
+                    <!-- Columna Pendiente -->
+                    <div class="kanban-column column-todo">
+                        <div class="column-header">
+                            <div class="column-title">
+                                📋 Pendiente
+                                <span class="column-count" id="todoCount">0</span>
+                            </div>
+                        </div>
+                        <div class="task-list" id="todoTasks">
+                            <div class="drop-zone" id="todoDrop">
+                                Arrastra tareas aquí o crea una nueva
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna En Progreso -->
+                    <div class="kanban-column column-progress">
+                        <div class="column-header">
+                            <div class="column-title">
+                                ⚡ En Progreso
+                                <span class="column-count" id="progressCount">0</span>
+                            </div>
+                        </div>
+                        <div class="task-list" id="progressTasks">
+                            <div class="drop-zone" id="progressDrop">
+                                Tareas en desarrollo
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna En Revisión -->
+                    <div class="kanban-column column-review">
+                        <div class="column-header">
+                            <div class="column-title">
+                                🔍 En Revisión
+                                <span class="column-count" id="reviewCount">0</span>
+                            </div>
+                        </div>
+                        <div class="task-list" id="reviewTasks">
+                            <div class="drop-zone" id="reviewDrop">
+                                Tareas esperando aprobación
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Completado -->
+                    <div class="kanban-column column-done">
+                        <div class="column-header">
+                            <div class="column-title">
+                                ✅ Completado
+                                <span class="column-count" id="doneCount">0</span>
+                            </div>
+                        </div>
+                        <div class="task-list" id="doneTasks">
+                            <div class="drop-zone" id="doneDrop">
+                                Tareas finalizadas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista Lista -->
+            <div id="listView" class="list-view">
+                <h3 style="margin-bottom: 1rem;">📝 Vista de Lista</h3>
+                <div id="taskListContainer">
+                    <!-- Se generará dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Vista Calendario -->
+            <div id="calendarView" class="calendar-view">
+                <h3 style="margin-bottom: 1rem;">📅 Vista de Calendario</h3>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 2rem; text-align: center; color: var(--text-muted);">
+                    📅 Vista de calendario se integrará próximamente
+                    <br><small>Por ahora usa la vista Kanban o Lista</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let tasks = [];
+        let currentView = 'kanban';
+        let filters = {
+            priority: 'all',
+            assignee: 'all'
+        };
+
+        // Datos de ejemplo de H-09
+        const wasteActionPlans = [
+            {
+                title: 'Reducir Desperdicio de Espera',
+                description: 'Implementar sistema de colas digitales',
+                steps: [
+                    'Analizar flujos de espera actuales',
+                    'Seleccionar software de gestión de colas',
+                    'Implementar sistema piloto',
+                    'Capacitar al equipo',
+                    'Evaluar resultados y ajustar'
+                ],
+                estimatedROI: '25%',
+                priority: 'alta',
+                source: 'h09-waste-waiting'
+            },
+            {
+                title: 'Eliminar Defectos en Producción',
+                description: 'Sistema automático de control de calidad',
+                steps: [
+                    'Mapear puntos de control críticos',
+                    'Implementar poka-yoke',
+                    'Establecer métricas de calidad',
+                    'Entrenar equipo en nuevos procedimientos'
+                ],
+                estimatedROI: '40%',
+                priority: 'alta',
+                source: 'h09-waste-defects'
+            }
+        ];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTaskManager();
+            loadWasteActionPlans();
+            showFirstTimeGuidance();
+            
+            // Event listeners
+            document.getElementById('newTaskForm').addEventListener('submit', createNewTask);
+            setupDragAndDrop();
+            setupFilters();
+        });
+
+        function initializeTaskManager() {
+            console.log('📋 Gestor de Tareas & Proyectos iniciado');
+            console.log('🔗 Conectado al Gestor de Desperdicios (H-09)');
+            
+            // Cargar tareas guardadas
+            const savedTasks = localStorage.getItem('kairux_tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+                renderKanbanBoard();
+                updateStatistics();
+            }
+            
+            showNotification('📋 Gestor de tareas cargado exitosamente', 'success');
+        }
+
+        function loadWasteActionPlans() {
+            const container = document.getElementById('wasteActionPlans');
+            
+            if (wasteActionPlans.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 1rem;">
+                        📡 Sin planes de acción pendientes
+                        <br><small>Los planes del H-09 aparecerán aquí</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = wasteActionPlans.map(plan => `
+                <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem; margin: 0.5rem 0; cursor: pointer;" onclick="convertWastePlanToProject('${plan.source}')">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">${plan.title}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 0.5rem;">${plan.description}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.7rem; color: var(--success);">ROI: ${plan.estimatedROI}</span>
+                        <button style="background: var(--success); color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; cursor: pointer;">
+                            📋 Convertir a Proyecto
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function convertWastePlanToProject(planSource) {
+            const plan = wasteActionPlans.find(p => p.source === planSource);
+            if (!plan) return;
+            
+            // Crear tareas para cada paso del plan
+            plan.steps.forEach((step, index) => {
+                const task = {
+                    id: Date.now() + index,
+                    title: `${plan.title} - ${step}`,
+                    description: `Paso ${index + 1}: ${step}`,
+                    priority: plan.priority,
+                    assignee: 'admin',
+                    status: 'todo',
+                    dueDate: getDatePlusDays(7 * (index + 1)), // Escalonado por semanas
+                    source: 'h09-conversion',
+                    progress: 0,
+                    subtasks: []
+                };
+                
+                tasks.push(task);
+            });
+            
+            renderKanbanBoard();
+            updateStatistics();
+            saveTasks();
+            
+            showNotification(`📋 Plan "${plan.title}" convertido a ${plan.steps.length} tareas`, 'success');
+            
+            // Remover plan de la lista
+            const planIndex = wasteActionPlans.findIndex(p => p.source === planSource);
+            wasteActionPlans.splice(planIndex, 1);
+            loadWasteActionPlans();
+        }
+
+        function createNewTask(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const assignee = document.getElementById('taskAssignee').value;
+            const priority = document.getElementById('taskPriority').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+            
+            if (!title || !assignee) {
+                alert('Por favor completa al menos el título y responsable');
+                return;
+            }
+            
+            const task = {
+                id: Date.now(),
+                title,
+                description,
+                assignee,
+                priority,
+                status: 'todo',
+                dueDate,
+                progress: 0,
+                subtasks: [],
+                createdAt: new Date().toISOString(),
+                source: 'manual'
+            };
+            
+            tasks.push(task);
+            renderKanbanBoard();
+            updateStatistics();
+            saveTasks();
+            
+            // Limpiar formulario
+            document.getElementById('newTaskForm').reset();
+            
+            showNotification('📋 Nueva tarea creada exitosamente', 'success');
+        }
+
+        function renderKanbanBoard() {
+            const columns = {
+                todo: document.getElementById('todoTasks'),
+                progress: document.getElementById('progressTasks'),
+                review: document.getElementById('reviewTasks'),
+                done: document.getElementById('doneTasks')
+            };
+            
+            // Limpiar columnas
+            Object.values(columns).forEach(column => {
+                column.innerHTML = '';
+            });
+            
+            // Filtrar tareas según filtros activos
+            const filteredTasks = tasks.filter(task => {
+                const priorityMatch = filters.priority === 'all' || task.priority === filters.priority;
+                const assigneeMatch = filters.assignee === 'all' || task.assignee === filters.assignee;
+                return priorityMatch && assigneeMatch;
+            });
+            
+            // Agrupar por estado y renderizar
+            filteredTasks.forEach(task => {
+                const taskCard = createTaskCard(task);
+                columns[task.status].appendChild(taskCard);
+            });
+            
+            // Actualizar contadores
+            updateColumnCounts();
+            
+            // Mostrar drop zones si las columnas están vacías
+            Object.entries(columns).forEach(([status, column]) => {
+                if (column.children.length === 0) {
+                    const dropZone = document.createElement('div');
+                    dropZone.className = 'drop-zone';
+                    dropZone.id = status + 'Drop';
+                    dropZone.textContent = getDropZoneText(status);
+                    column.appendChild(dropZone);
+                }
+            });
+        }
+
+        function createTaskCard(task) {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.draggable = true;
+            card.id = `task-${task.id}`;
+            
+            // Determinar si está vencida
+            let dueDateClass = '';
+            let dueDateText = '';
+            if (task.dueDate) {
+                const today = new Date();
+                const dueDate = new Date(task.dueDate);
+                const diffTime = dueDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays < 0) {
+                    dueDateClass = 'overdue';
+                    dueDateText = `Vencida (${Math.abs(diffDays)}d)`;
+                } else if (diffDays === 0) {
+                    dueDateClass = 'today';
+                    dueDateText = 'Hoy';
+                } else if (diffDays <= 3) {
+                    dueDateClass = 'today';
+                    dueDateText = `${diffDays}d`;
+                } else {
+                    dueDateText = dueDate.toLocaleDateString();
+                }
+            }
+            
+            card.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">${task.title}</div>
+                    <div class="priority-badge priority-${task.priority}">${task.priority}</div>
+                </div>
+                ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                <div class="task-meta">
+                    <div class="task-assignee">
+                        👤 <span>${getAssigneeName(task.assignee)}</span>
+                    </div>
+                    ${task.dueDate ? `<div class="task-due-date ${dueDateClass}">${dueDateText}</div>` : ''}
+                </div>
+                ${task.progress > 0 ? `
+                    <div class="task-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${task.progress}%"></div>
+                        </div>
+                        <div class="subtasks-counter">${task.progress}% completado</div>
+                    </div>
+                ` : ''}
+            `;
+            
+            // Event listeners para drag & drop
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+            card.addEventListener('click', () => openTaskDetail(task));
+            
+            return card;
+        }
+
+        function setupDragAndDrop() {
+            const columns = ['todo', 'progress', 'review', 'done'];
+            
+            columns.forEach(columnId => {
+                const column = document.getElementById(columnId + 'Tasks');
+                
+                column.addEventListener('dragover', handleDragOver);
+                column.addEventListener('drop', (e) => handleDrop(e, columnId));
+                column.addEventListener('dragenter', handleDragEnter);
+                column.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', this.id);
+            this.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            this.classList.add('active');
+        }
+
+        function handleDragLeave(e) {
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('active');
+            }
+        }
+
+        function handleDrop(e, newStatus) {
+            e.preventDefault();
+            this.classList.remove('active');
+            
+            const taskId = e.dataTransfer.getData('text/plain').replace('task-', '');
+            const task = tasks.find(t => t.id == taskId);
+            
+            if (task && task.status !== newStatus) {
+                task.status = newStatus;
+                
+                // Actualizar progreso basado en estado
+                if (newStatus === 'done') task.progress = 100;
+                else if (newStatus === 'review') task.progress = 90;
+                else if (newStatus === 'progress') task.progress = task.progress || 25;
+                else task.progress = 0;
+                
+                renderKanbanBoard();
+                updateStatistics();
+                saveTasks();
+                
+                showNotification(`📋 Tarea movida a ${getStatusName(newStatus)}`, 'info');
+            }
+        }
+
+        function setupFilters() {
+            const filterOptions = document.querySelectorAll('.filter-option');
+            
+            filterOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const filterType = this.getAttribute('data-filter');
+                    const filterValue = this.getAttribute('data-value');
+                    
+                    // Actualizar filtros activos
+                    document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    filters[filterType] = filterValue;
+                    
+                    // Re-renderizar tablero con filtros
+                    renderKanbanBoard();
+                    updateStatistics();
+                });
+            });
+        }
+
+        function switchView(viewName) {
+            currentView = viewName;
+            
+            // Actualizar botones
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Mostrar vista correspondiente
+            document.querySelectorAll('.kanban-view, .list-view, .calendar-view').forEach(view => {
+                view.classList.remove('active');
+                view.style.display = 'none';
+            });
+            
+            const targetView = document.getElementById(viewName + 'View');
+            targetView.classList.add('active');
+            targetView.style.display = 'block';
+            
+            if (viewName === 'list') {
+                renderListView();
+            }
+        }
+
+        function renderListView() {
+            const container = document.getElementById('taskListContainer');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                        <h3>No hay tareas creadas</h3>
+                        <p>Crea tu primera tarea o convierte un plan de acción del Gestor de Desperdicios</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedTasks = [...tasks].sort((a, b) => {
+                // Ordenar por prioridad y fecha
+                const priorityOrder = { alta: 3, media: 2, baja: 1 };
+                return priorityOrder[b.priority] - priorityOrder[a.priority];
+            });
+            
+            container.innerHTML = sortedTasks.map(task => `
+                <div class="task-list-item">
+                    <div class="task-checkbox" onclick="toggleTaskComplete(${task.id})"></div>
+                    <div class="task-info">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-description">${task.description || 'Sin descripción'}</div>
+                        <div class="task-meta">
+                            <span>👤 ${getAssigneeName(task.assignee)}</span>
+                            <span>⚡ ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>
+                            <span>📊 ${getStatusName(task.status)}</span>
+                            ${task.dueDate ? `<span>📅 ${new Date(task.dueDate).toLocaleDateString()}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-btn" onclick="editTask(${task.id})">✏️ Editar</button>
+                        <button class="action-btn" onclick="deleteTask(${task.id})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateColumnCounts() {
+            const counts = {
+                todo: tasks.filter(t => t.status === 'todo').length,
+                progress: tasks.filter(t => t.status === 'progress').length,
+                review: tasks.filter(t => t.status === 'review').length,
+                done: tasks.filter(t => t.status === 'done').length
+            };
+            
+            Object.entries(counts).forEach(([status, count]) => {
+                const element = document.getElementById(status + 'Count');
+                if (element) {
+                    element.textContent = count;
+                }
+            });
+        }
+
+        function updateStatistics() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.status === 'done').length;
+            const overdue = tasks.filter(t => {
+                if (!t.dueDate || t.status === 'done') return false;
+                return new Date(t.dueDate) < new Date();
+            }).length;
+            const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('overdueTasks').textContent = overdue;
+            document.getElementById('progressPercent').textContent = progress + '%';
+            
+            // Actualizar stats del header
+            document.getElementById('weeklyCompleted').textContent = completed;
+            document.getElementById('teamEfficiency').textContent = Math.max(60, 100 - (overdue * 10)) + '%';
+            document.getElementById('activeProjects').textContent = Math.max(1, Math.ceil(tasks.filter(t => t.status !== 'done').length / 5));
+        }
+
+        // Funciones auxiliares
+        function getAssigneeName(assignee) {
+            const names = {
+                admin: 'Admin',
+                manager: 'Gerente',
+                team_lead: 'Líder',
+                specialist: 'Especialista'
+            };
+            return names[assignee] || assignee;
+        }
+
+        function getStatusName(status) {
+            const names = {
+                todo: 'Pendiente',
+                progress: 'En Progreso', 
+                review: 'En Revisión',
+                done: 'Completado'
+            };
+            return names[status] || status;
+        }
+
+        function getDropZoneText(status) {
+            const texts = {
+                todo: 'Arrastra tareas aquí o crea una nueva',
+                progress: 'Tareas en desarrollo',
+                review: 'Tareas esperando aprobación',
+                done: 'Tareas finalizadas'
+            };
+            return texts[status];
+        }
+
+        function getDatePlusDays(days) {
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString().split('T')[0];
+        }
+
+        function openTaskDetail(task) {
+            // Funcionalidad básica - se puede expandir
+            alert(`Tarea: ${task.title}\nDescripción: ${task.description || 'Sin descripción'}\nResponsable: ${getAssigneeName(task.assignee)}\nEstado: ${getStatusName(task.status)}`);
+        }
+
+        function toggleTaskComplete(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = task.status === 'done' ? 'todo' : 'done';
+                task.progress = task.status === 'done' ? 100 : 0;
+                renderKanbanBoard();
+                updateStatistics();
+                saveTasks();
+            }
+        }
+
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                const newTitle = prompt('Nuevo título:', task.title);
+                if (newTitle && newTitle.trim()) {
+                    task.title = newTitle.trim();
+                    renderKanbanBoard();
+                    saveTasks();
+                    showNotification('📝 Tarea actualizada', 'success');
+                }
+            }
+        }
+
+        function deleteTask(taskId) {
+            if (confirm('¿Estás seguro de eliminar esta tarea?')) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                renderKanbanBoard();
+                updateStatistics();
+                saveTasks();
+                showNotification('🗑️ Tarea eliminada', 'info');
+            }
+        }
+
+        function saveTasks() {
+            localStorage.setItem('kairux_tasks', JSON.stringify(tasks));
+        }
+
+        function showFirstTimeGuidance() {
+            const isFirstTime = !localStorage.getItem('kairux_tasks_visited');
+            
+            if (isFirstTime) {
+                setTimeout(() => {
+                    const welcomeModal = document.createElement('div');
+                    welcomeModal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.8);
+                        backdrop-filter: blur(5px);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2000;
+                    `;
+                    
+                    welcomeModal.innerHTML = `
+                        <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; max-width: 500px; text-align: center; color: var(--text-primary);">
+                            <div style="background: var(--primary-gradient); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">KAIRUX</div>
+                            <h2 style="margin-bottom: 1rem;">📋 Gestor de Tareas & Proyectos</h2>
+                            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.5;">
+                                Convierte los planes de acción del Gestor de Desperdicios en tareas ejecutables. Organiza tu equipo con metodología Kanban.
+                            </p>
+                            <div style="text-align: left; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin: 1rem 0; font-size: 0.9rem;">
+                                <strong>💡 Cómo usar:</strong><br>
+                                • Los planes de H-09 aparecen en la sidebar izquierda<br>
+                                • Arrastra tareas entre columnas: Pendiente → En Progreso → Revisión → Completado<br>
+                                • Usa los filtros para enfocarte en prioridades específicas
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove(); localStorage.setItem('kairux_tasks_visited', 'true');" style="background: var(--primary-gradient); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                Perfecto, ¡a organizar tareas!
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(welcomeModal);
+                }, 1000);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--info)'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                font-weight: 600;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-save cada 30 segundos
+        setInterval(() => {
+            if (tasks.length > 0) {
+                saveTasks();
+                console.log('💾 Auto-guardado de tareas realizado');
+            }
+        }, 30000);
+
+        // CSS para animaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

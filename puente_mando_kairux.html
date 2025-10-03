@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairux Executive Command Center</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #00d4aa;
+            --warning: #ffb74d;
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: backgroundShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Main Container */
+        .command-center {
+            display: grid;
+            grid-template-rows: 80px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.6), transparent);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .realtime-clock {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-areas: 
+                "kpi-main kpi-main chart-primary chart-primary"
+                "kpi-secondary chart-flow chart-flow chart-roi"
+                "radar-chart radar-chart radar-chart investments";
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 180px 320px 280px;
+            gap: 1.5rem;
+            padding: 2rem;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Panel Headers */
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .panel-icon {
+            font-size: 1.3rem;
+        }
+
+        .panel-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .panel-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* KPI Main Panel */
+        .kpi-main {
+            grid-area: kpi-main;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            height: calc(100% - 60px);
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            transform: scale(1.02);
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .kpi-change {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .positive {
+            color: var(--success);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .negative {
+            color: var(--danger);
+            background: rgba(255, 82, 82, 0.1);
+        }
+
+        .warning {
+            color: var(--warning);
+            background: rgba(255, 183, 77, 0.1);
+        }
+
+        /* Chart Panels */
+        .chart-panel {
+            position: relative;
+        }
+
+        .chart-container {
+            height: calc(100% - 60px);
+            position: relative;
+        }
+
+        .chart-primary { grid-area: chart-primary; }
+        .chart-flow { grid-area: chart-flow; }
+        .chart-roi { grid-area: chart-roi; }
+        .radar-chart { grid-area: radar-chart; }
+        .investments { grid-area: investments; }
+        .kpi-secondary { grid-area: kpi-secondary; }
+
+        /* Investment Panel */
+        .investment-list {
+            height: calc(100% - 60px);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .investment-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .investment-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .investment-item:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            transform: translateX(4px);
+        }
+
+        .investment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .investment-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .investment-roi {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .investment-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Secondary KPI Panel */
+        .kpi-secondary .kpi-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .kpi-secondary .kpi-card {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding: 0.75rem;
+        }
+
+        .kpi-secondary .kpi-content {
+            flex: 1;
+        }
+
+        .kpi-secondary .kpi-value {
+            font-size: 1.4rem;
+            margin-bottom: 0;
+        }
+
+        /* Alert System */
+        .alert-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            animation: alertPulse 2s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-areas: 
+                    "kpi-main kpi-main chart-primary"
+                    "kpi-secondary chart-flow chart-roi"
+                    "radar-chart radar-chart investments";
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-areas: 
+                    "kpi-main kpi-main"
+                    "chart-primary kpi-secondary"
+                    "chart-flow chart-roi"
+                    "radar-chart investments";
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-areas: 
+                    "kpi-main"
+                    "chart-primary"
+                    "kpi-secondary"
+                    "chart-flow"
+                    "chart-roi"
+                    "radar-chart"
+                    "investments";
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="command-center">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">⚡</div>
+                <div>
+                    <div class="brand-text">KAIRUX</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Executive Command Center</div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Real-time Sync</span>
+                </div>
+                <div class="status-item">
+                    📊 <span>3 Tools Connected</span>
+                </div>
+                <div class="status-item">
+                    🔗 <span>Bubble Active</span>
+                </div>
+                <div class="realtime-clock" id="liveClock">00:00:00</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Main KPIs -->
+            <div class="glass-panel kpi-main">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📊</span>
+                        <span>Financial Performance Overview</span>
+                    </div>
+                    <div class="panel-action">Live Update</div>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-value positive" id="globalROI">32.4%</div>
+                        <div class="kpi-label">Global ROI</div>
+                        <div class="kpi-change positive">+4.2%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="cashFlow">₡156K</div>
+                        <div class="kpi-label">Cash Flow</div>
+                        <div class="kpi-change warning">-₡12K</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value positive" id="grossMargin">34.8%</div>
+                        <div class="kpi-label">Gross Margin</div>
+                        <div class="kpi-change positive">+2.1%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="financialScore">8.2/10</div>
+                        <div class="kpi-label">Health Score</div>
+                        <div class="kpi-change positive">+0.3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Primary Chart - Cash Flow Trend -->
+            <div class="glass-panel chart-panel chart-primary">
+                <div class="alert-badge">!</div>
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">💰</span>
+                        <span>Cash Flow Analysis</span>
+                    </div>
+                    <div class="panel-action">6M View</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="primaryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Secondary KPIs -->
+            <div class="glass-panel kpi-secondary">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">⚡</span>
+                        <span>Key Metrics</span>
+                    </div>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-content">
+                            <div class="kpi-value">1.84</div>
+                            <div class="kpi-label">Current Ratio</div>
+                        </div>
+                        <div class="kpi-change positive">Healthy</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-content">
+                            <div class="kpi-value">28.5</div>
+                            <div class="kpi-label">Days Receivable</div>
+                        </div>
+                        <div class="kpi-change positive">Optimal</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-content">
+                            <div class="kpi-value">8.2x</div>
+                            <div class="kpi-label">Inventory Turnover</div>
+                        </div>
+                        <div class="kpi-change positive">Excellent</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow Chart -->
+            <div class="glass-panel chart-panel chart-flow">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📈</span>
+                        <span>Revenue vs Expenses</span>
+                    </div>
+                    <div class="panel-action">Monthly</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="flowChart"></canvas>
+                </div>
+            </div>
+
+            <!-- ROI Chart -->
+            <div class="glass-panel chart-panel chart-roi">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🎯</span>
+                        <span>Investment Portfolio</span>
+                    </div>
+                    <div class="panel-action">8 Active</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="roiChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="glass-panel chart-panel radar-chart">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🎯</span>
+                        <span>360° Performance Radar</span>
+                    </div>
+                    <div class="panel-action">vs Benchmark</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Investment Details -->
+            <div class="glass-panel investments">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">💎</span>
+                        <span>Top Investments</span>
+                    </div>
+                    <div class="panel-action">ROI Ranked</div>
+                </div>
+                <div class="investment-list" id="investmentList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="control-btn" onclick="syncWithBubble()">
+                <span>📡</span> Sync Bubble
+            </div>
+            <div class="control-btn" onclick="exportReport()">
+                <span>📄</span> Export
+            </div>
+            <div class="control-btn" onclick="refreshDashboard()">
+                <span>🔄</span> Refresh
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Financial data from the tools
+        const financialData = {
+            cashFlow: {
+                months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                income: [520000, 580000, 450000, 680000, 720000, 780000],
+                expenses: [380000, 420000, 410000, 490000, 455000, 525000],
+                netFlow: [140000, 160000, 40000, 190000, 265000, 255000],
+                target: [150000, 150000, 150000, 180000, 200000, 200000]
+            },
+            investments: [
+                { name: 'Digital Marketing', roi: 48.5, amount: 180000, period: 8 },
+                { name: 'New Equipment', roi: 35.2, amount: 320000, period: 12 },
+                { name: 'Staff Training', roi: 28.7, amount: 95000, period: 6 },
+                { name: 'CRM System', roi: 42.1, amount: 150000, period: 10 },
+                { name: 'Inventory Expansion', roi: 22.8, amount: 280000, period: 14 },
+                { name: 'Office Renovation', roi: 18.9, amount: 220000, period: 18 }
+            ],
+            kpis: {
+                actual: [8.5, 7.8, 8.9, 7.2, 8.1, 7.6],
+                benchmark: [8.0, 8.0, 8.0, 8.0, 8.0, 8.0],
+                labels: ['Profitability', 'Liquidity', 'Efficiency', 'Growth', 'Leverage', 'Market Position']
+            }
+        };
+
+        // Initialize charts
+        function initializeCharts() {
+            createPrimaryChart();
+            createFlowChart();
+            createROIChart();
+            createRadarChart();
+            populateInvestments();
+        }
+
+        function createPrimaryChart() {
+            const ctx = document.getElementById('primaryChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: financialData.cashFlow.months,
+                    datasets: [{
+                        label: 'Net Cash Flow',
+                        data: financialData.cashFlow.netFlow,
+                        borderColor: '#00d4aa',
+                        backgroundColor: 'rgba(0, 212, 170, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#00d4aa',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }, {
+                        label: 'Target',
+                        data: financialData.cashFlow.target,
+                        borderColor: '#ffb74d',
+                        borderWidth: 2,
+                        borderDash: [8, 4],
+                        fill: false,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + (value / 1000) + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createFlowChart() {
+            const ctx = document.getElementById('flowChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: financialData.cashFlow.months,
+                    datasets: [{
+                        label: 'Income',
+                        data: financialData.cashFlow.income,
+                        backgroundColor: 'rgba(0, 212, 170, 0.8)',
+                        borderRadius: 8
+                    }, {
+                        label: 'Expenses',
+                        data: financialData.cashFlow.expenses,
+                        backgroundColor: 'rgba(255, 82, 82, 0.8)',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + (value / 1000) + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createROIChart() {
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: financialData.investments.map(inv => inv.name),
+                    datasets: [{
+                        data: financialData.investments.map(inv => inv.roi),
+                        backgroundColor: [
+                            'rgba(0, 212, 170, 0.8)',
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(255, 183, 77, 0.8)',
+                            'rgba(66, 165, 245, 0.8)',
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(255, 82, 82, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        r: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                backdropColor: 'transparent'
+                            },
+                            pointLabels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: financialData.kpis.labels,
+                    datasets: [{
+                        label: 'Current Performance',
+                        data: financialData.kpis.actual,
+                        borderColor: '#00d4aa',
+                        backgroundColor: 'rgba(0, 212, 170, 0.2)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#00d4aa',
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 6
+                    }, {
+                        label: 'Industry Benchmark',
+                        data: financialData.kpis.benchmark,
+                        borderColor: '#ffb74d',
+                        backgroundColor: 'rgba(255, 183, 77, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointBackgroundColor: '#ffb74d',
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                usePointStyle: true,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                backdropColor: 'transparent',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            pointLabels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: {
+                                    size: 11,
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateInvestments() {
+            const container = document.getElementById('investmentList');
+            const sortedInvestments = [...financialData.investments]
+                .sort((a, b) => b.roi - a.roi);
+            
+            container.innerHTML = sortedInvestments.map((inv, index) => {
+                let roiClass = 'positive';
+                if (inv.roi < 20) roiClass = 'negative';
+                else if (inv.roi < 30) roiClass = 'warning';
+                
+                return `
+                    <div class="investment-item">
+                        <div class="investment-header">
+                            <div class="investment-name">${inv.name}</div>
+                            <div class="investment-roi ${roiClass}">${inv.roi}%</div>
+                        </div>
+                        <div class="investment-details">
+                            <span>₡${(inv.amount / 1000).toFixed(0)}K</span>
+                            <span>${inv.period}mo</span>
+                            <span>#${index + 1}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('liveClock').textContent = timeString;
+        }
+
+        // Control functions
+        function syncWithBubble() {
+            const btn = event.target.closest('.control-btn');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<span>⏳</span> Syncing...';
+            btn.style.opacity = '0.7';
+            
+            // Simulate sync process
+            setTimeout(() => {
+                btn.innerHTML = '<span>✅</span> Synced';
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.style.opacity = '1';
+                }, 1500);
+            }, 2000);
+
+            // Data that would be sent to Bubble via Toolbox
+            const bubbleData = {
+                timestamp: new Date().toISOString(),
+                dashboard_metrics: {
+                    global_roi: 32.4,
+                    cash_flow: 156000,
+                    gross_margin: 34.8,
+                    financial_score: 8.2,
+                    current_ratio: 1.84,
+                    days_receivable: 28.5,
+                    inventory_turnover: 8.2
+                },
+                charts_data: financialData,
+                alerts: [
+                    { type: 'warning', message: 'Cash flow below target in March' },
+                    { type: 'success', message: 'ROI above 30% benchmark' }
+                ]
+            };
+
+            console.log('📡 Sending to Bubble via Toolbox:', bubbleData);
+            // Real call would be: bubble_fn_sendKairuxData(bubbleData);
+        }
+
+        function exportReport() {
+            console.log('📄 Generating executive report...');
+            alert('📄 Executive dashboard report generated successfully!\n\n• Financial KPIs Summary\n• Cash Flow Analysis\n• Investment Portfolio Review\n• Performance Radar Chart\n\nReport ready for download.');
+        }
+
+        function refreshDashboard() {
+            const btn = event.target.closest('.control-btn');
+            btn.style.transform = 'rotate(360deg)';
+            btn.style.transition = 'transform 1s ease';
+            
+            setTimeout(() => {
+                btn.style.transform = 'rotate(0deg)';
+                // Simulate data refresh
+                updateKPIValues();
+            }, 1000);
+        }
+
+        function updateKPIValues() {
+            // Simulate real-time KPI updates
+            const kpis = [
+                { id: 'globalROI', value: (32.4 + (Math.random() - 0.5) * 2).toFixed(1) + '%' },
+                { id: 'cashFlow', value: '₡' + (156 + Math.floor((Math.random() - 0.5) * 20)) + 'K' },
+                { id: 'grossMargin', value: (34.8 + (Math.random() - 0.5) * 1).toFixed(1) + '%' },
+                { id: 'financialScore', value: (8.2 + (Math.random() - 0.5) * 0.4).toFixed(1) + '/10' }
+            ];
+
+            kpis.forEach(kpi => {
+                const element = document.getElementById(kpi.id);
+                if (element) {
+                    element.style.transform = 'scale(1.1)';
+                    element.style.transition = 'transform 0.2s ease';
+                    setTimeout(() => {
+                        element.textContent = kpi.value;
+                        element.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Simulate real-time updates every 30 seconds
+            setInterval(() => {
+                updateKPIValues();
+                console.log('📊 Dashboard metrics updated');
+            }, 30000);
+
+            console.log('⚡ KAIRUX Executive Command Center activated');
+            console.log('🔗 Ready for Bubble integration via Toolbox plugin');
+        });
+
+        // Animate elements on load
+        window.addEventListener('load', function() {
+            const panels = document.querySelectorAll('.glass-panel');
+            panels.forEach((panel, index) => {
+                panel.style.opacity = '0';
+                panel.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    panel.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    panel.style.opacity = '1';
+                    panel.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

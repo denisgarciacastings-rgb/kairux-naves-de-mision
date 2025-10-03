@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor KPIs Financieros - PYME Motor 360</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e17055 0%, #fd79a8 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-left: 5px solid #e17055;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .kpi-title {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .kpi-icon {
+            font-size: 1.5rem;
+        }
+        
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .kpi-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .kpi-target {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        .neutral { color: #3498db; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e17055 0%, #fd79a8 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .main-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 3px solid #e17055;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #e17055;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #e17055 0%, #fd79a8 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(225, 112, 85, 0.4);
+        }
+        
+        .alert-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 0 30px 30px 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert.warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert.danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .chart-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 0 30px 30px 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .mini-chart {
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .benchmark-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .benchmark-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .benchmark-item:last-child {
+            border-bottom: none;
+        }
+        
+        .benchmark-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .benchmark-values {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .value-current {
+            font-weight: bold;
+        }
+        
+        .value-industry {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .performance-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .performance-excellent { background-color: #27ae60; }
+        .performance-good { background-color: #2ecc71; }
+        .performance-average { background-color: #f39c12; }
+        .performance-poor { background-color: #e74c3c; }
+        
+        .time-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .time-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .time-btn.active {
+            background: #e17055;
+            color: white;
+            border-color: #e17055;
+        }
+        
+        .time-btn:hover {
+            border-color: #e17055;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Monitor de KPIs Financieros</h1>
+            <p>Panel de control inteligente para métricas clave de tu PYME</p>
+        </div>
+        
+        <div class="time-selector" style="padding: 20px 30px 0 30px;">
+            <div class="time-btn active" onclick="cambiarPeriodo('mes')">Este Mes</div>
+            <div class="time-btn" onclick="cambiarPeriodo('trimestre')">Trimestre</div>
+            <div class="time-btn" onclick="cambiarPeriodo('año')">Año</div>
+            <div class="time-btn" onclick="cambiarPeriodo('historico')">Histórico</div>
+        </div>
+        
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">Margen Bruto</div>
+                    <div class="kpi-icon">💰</div>
+                </div>
+                <div class="kpi-value positive" id="margenBruto">0%</div>
+                <div class="kpi-change positive" id="margenBrutoChange">+0%</div>
+                <div class="kpi-target">Meta: >30%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="margenBrutoProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">Liquidez Corriente</div>
+                    <div class="kpi-icon">💧</div>
+                </div>
+                <div class="kpi-value warning" id="liquidezCorriente">0.0</div>
+                <div class="kpi-change warning" id="liquidezChange">+0.0</div>
+                <div class="kpi-target">Ideal: >2.0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="liquidezProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">Rotación Inventario</div>
+                    <div class="kpi-icon">📦</div>
+                </div>
+                <div class="kpi-value neutral" id="rotacionInventario">0</div>
+                <div class="kpi-change neutral" id="rotacionChange">+0</div>
+                <div class="kpi-target">Meta: >6 veces/año</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="rotacionProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">Días de Cobro</div>
+                    <div class="kpi-icon">📅</div>
+                </div>
+                <div class="kpi-value warning" id="diasCobro">0</div>
+                <div class="kpi-change negative" id="diasCobroChange">+0</div>
+                <div class="kpi-target">Óptimo: <30 días</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="diasCobroProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">EBITDA Margin</div>
+                    <div class="kpi-icon">📈</div>
+                </div>
+                <div class="kpi-value positive" id="ebitdaMargin">0%</div>
+                <div class="kpi-change positive" id="ebitdaChange">+0%</div>
+                <div class="kpi-target">Excelente: >15%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="ebitdaProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">Crecimiento Ventas</div>
+                    <div class="kpi-icon">🚀</div>
+                </div>
+                <div class="kpi-value positive" id="crecimientoVentas">0%</div>
+                <div class="kpi-change positive" id="crecimientoChange">+0%</div>
+                <div class="kpi-target">Meta: >10% anual</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="crecimientoProgress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-sections">
+            <div class="section">
+                <h3>📝 Actualizar Datos Financieros</h3>
+                <form id="kpiForm">
+                    <div class="form-group">
+                        <label for="ventasTotales">Ventas Totales (₡)</label>
+                        <input type="number" id="ventasTotales" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="costoVentas">Costo de Ventas (₡)</label>
+                        <input type="number" id="costoVentas" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activoCorriente">Activo Corriente (₡)</label>
+                        <input type="number" id="activoCorriente" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pasivoCorriente">Pasivo Corriente (₡)</label>
+                        <input type="number" id="pasivoCorriente" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="inventario">Inventario Promedio (₡)</label>
+                        <input type="number" id="inventario" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cuentasCobrar">Cuentas por Cobrar (₡)</label>
+                        <input type="number" id="cuentasCobrar" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gastosOperativos">Gastos Operativos (₡)</label>
+                        <input type="number" id="gastosOperativos" min="0" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">🔄 Actualizar KPIs</button>
+                </form>
+            </div>
+            
+            <div class="section">
+                <h3>🎯 Benchmark Industrial</h3>
+                <div class="benchmark-section">
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">Margen Bruto</div>
+                        <div class="benchmark-values">
+                            <span class="value-current" id="benchmarkMargen">Tu: 0%</span>
+                            <span class="value-industry">Sector: 25-35%</span>
+                            <span class="performance-indicator" id="performanceMargen"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">Liquidez</div>
+                        <div class="benchmark-values">
+                            <span class="value-current" id="benchmarkLiquidez">Tu: 0.0</span>
+                            <span class="value-industry">Sector: 1.5-2.5</span>
+                            <span class="performance-indicator" id="performanceLiquidez"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">Rotación Inventario</div>
+                        <div class="benchmark-values">
+                            <span class="value-current" id="benchmarkRotacion">Tu: 0</span>
+                            <span class="value-industry">Sector: 6-12</span>
+                            <span class="performance-indicator" id="performanceRotacion"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">Días de Cobro</div>
+                        <div class="benchmark-values">
+                            <span class="value-current" id="benchmarkCobro">Tu: 0</span>
+                            <span class="value-industry">Sector: 20-40 días</span>
+                            <span class="performance-indicator" id="performanceCobro"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px;">
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">💡 Recomendaciones</h4>
+                    <div id="recomendaciones">
+                        <p style="color: #666;">Actualiza los datos para recibir recomendaciones personalizadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert-section">
+            <h3>🚨 Alertas de Rendimiento</h3>
+            <div id="alertasKPI">
+                <!-- Las alertas aparecerán aquí -->
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h3>📊 Evolución de KPIs</h3>
+            <div class="chart-grid">
+                <div class="mini-chart">
+                    📈 Margen Bruto<br>
+                    <small>Tendencia mensual</small>
+                </div>
+                <div class="mini-chart">
+                    💧 Liquidez<br>
+                    <small>Capacidad de pago</small>
+                </div>
+                <div class="mini-chart">
+                    📦 Rotación Inventario<br>
+                    <small>Eficiencia operativa</small>
+                </div>
+                <div class="mini-chart">
+                    🚀 Crecimiento<br>
+                    <small>Evolución ventas</small>
+                </div>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 20px;">
+                Los gráficos detallados se conectarán con Looker Studio para análisis avanzado
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let datosKPI = JSON.parse(localStorage.getItem('datosKPI')) || [];
+        let periodoActual = 'mes';
+        
+        // Cambiar período de análisis
+        function cambiarPeriodo(periodo) {
+            periodoActual = periodo;
+            
+            // Actualizar botones
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Recalcular KPIs
+            actualizarKPIs();
+        }
+        
+        // Manejar envío del formulario
+        document.getElementById('kpiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const datos = {
+                fecha: new Date().toISOString(),
+                ventasTotales: parseFloat(document.getElementById('ventasTotales').value),
+                costoVentas: parseFloat(document.getElementById('costoVentas').value),
+                activoCorriente: parseFloat(document.getElementById('activoCorriente').value),
+                pasivoCorriente: parseFloat(document.getElementById('pasivoCorriente').value),
+                inventario: parseFloat(document.getElementById('inventario').value),
+                cuentasCobrar: parseFloat(document.getElementById('cuentasCobrar').value),
+                gastosOperativos: parseFloat(document.getElementById('gastosOperativos').value)
+            };
+            
+            datosKPI.push(datos);
+            localStorage.setItem('datosKPI', JSON.stringify(datosKPI));
+            
+            // Limpiar formulario
+            this.reset();
+            
+            // Actualizar KPIs
+            actualizarKPIs();
+            generarAlertas();
+            actualizarBenchmark();
+            generarRecomendaciones();
+        });
+        
+        function actualizarKPIs() {
+            if (datosKPI.length === 0) return;
+            
+            // Obtener datos según período
+            const datosFiltered = filtrarDatosPorPeriodo();
+            if (datosFiltered.length === 0) return;
+            
+            const datosActuales = datosFiltered[datosFiltered.length - 1];
+            const datosAnteriores = datosFiltered.length > 1 ? datosFiltered[datosFiltered.length - 2] : null;
+            
+            // Calcular KPIs
+            const margenBruto = ((datosActuales.ventasTotales - datosActuales.costoVentas) / datosActuales.ventasTotales) * 100;
+            const liquidezCorriente = datosActuales.activoCorriente / datosActuales.pasivoCorriente;
+            const rotacionInventario = datosActuales.costoVentas / datosActuales.inventario;
+            const diasCobro = (datosActuales.cuentasCobrar / datosActuales.ventasTotales) * 365;
+            const ebitdaMargin = ((datosActuales.ventasTotales - datosActuales.costoVentas - datosActuales.gastosOperativos) / datosActuales.ventasTotales) * 100;
+            
+            // Calcular crecimiento
+            let crecimientoVentas = 0;
+            if (datosAnteriores) {
+                crecimientoVentas = ((datosActuales.ventasTotales - datosAnteriores.ventasTotales) / datosAnteriores.ventasTotales) * 100;
+            }
+            
+            // Actualizar interfaz
+            actualizarKPI('margenBruto', margenBruto, '%', 30, datosAnteriores ? ((margenBruto - ((datosAnteriores.ventasTotales - datosAnteriores.costoVentas) / datosAnteriores.ventasTotales) * 100)) : 0);
+            actualizarKPI('liquidezCorriente', liquidezCorriente, '', 2, datosAnteriores ? (liquidezCorriente - (datosAnteriores.activoCorriente / datosAnteriores.pasivoCorriente)) : 0);
+            actualizarKPI('rotacionInventario', rotacionInventario, '', 6, datosAnteriores ? (rotacionInventario - (datosAnteriores.costoVentas / datosAnteriores.inventario)) : 0);
+            actualizarKPI('diasCobro', diasCobro, '', 30, datosAnteriores ? (diasCobro - ((datosAnteriores.cuentasCobrar / datosAnteriores.ventasTotales) * 365)) : 0, true);
+            actualizarKPI('ebitdaMargin', ebitdaMargin, '%', 15, datosAnteriores ? (ebitdaMargin - (((datosAnteriores.ventasTotales - datosAnteriores.costoVentas - datosAnteriores.gastosOperativos) / datosAnteriores.ventasTotales) * 100)) : 0);
+            actualizarKPI('crecimientoVentas', crecimientoVentas, '%', 10, 0);
+        }
+        
+        function actualizarKPI(id, valor, sufijo, meta, cambio, invertido = false) {
+            const elemento = document.getElementById(id);
+            const elementoCambio = document.getElementById(id + 'Change');
+            const elementoProgress = document.getElementById(id + 'Progress');
+            
+            // Actualizar valor
+            elemento.textContent = valor.toFixed(sufijo === '%' ? 1 : sufijo === '' ? 2 : 0) + sufijo;
+            
+            // Determinar color basado en meta
+            let color = 'neutral';
+            if (invertido) {
+                // Para métricas donde menor es mejor (como días de cobro)
+                if (valor <= meta) color = 'positive';
+                else if (valor <= meta * 1.5) color = 'warning';
+                else color = 'negative';
+            } else {
+                // Para métricas donde mayor es mejor
+                if (valor >= meta) color = 'positive';
+                else if (valor >= meta * 0.7) color = 'warning';
+                else color = 'negative';
+            }
+            
+            elemento.className = `kpi-value ${color}`;
+            
+            // Actualizar cambio
+            if (elementoCambio) {
+                const simbolo = cambio >= 0 ? '+' : '';
+                elementoCambio.textContent = simbolo + cambio.toFixed(1) + sufijo;
+                elementoCambio.className = `kpi-change ${cambio >= 0 ? 'positive' : 'negative'}`;
+                
+                // Para métricas invertidas, el signo del color es opuesto
+                if (invertido) {
+                    elementoCambio.className = `kpi-change ${cambio <= 0 ? 'positive' : 'negative'}`;
+                }
+            }
+            
+            // Actualizar barra de progreso
+            if (elementoProgress) {
+                let progreso = 0;
+                if (invertido) {
+                    progreso = Math.max(0, Math.min(100, (1 - (valor / (meta * 2))) * 100));
+                } else {
+                    progreso = Math.max(0, Math.min(100, (valor / meta) * 100));
+                }
+                elementoProgress.style.width = progreso + '%';
+            }
+        }
+        
+        function filtrarDatosPorPeriodo() {
+            const ahora = new Date();
+            let fechaLimite;
+            
+            switch (periodoActual) {
+                case 'mes':
+                    fechaLimite = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+                    break;
+                case 'trimestre':
+                    fechaLimite = new Date(ahora.getFullYear(), ahora.getMonth() - 3, 1);
+                    break;
+                case 'año':
+                    fechaLimite = new Date(ahora.getFullYear(), 0, 1);
+                    break;
+                default:
+                    return datosKPI;
+            }
+            
+            return datosKPI.filter(dato => new Date(dato.fecha) >= fechaLimite);
+        }
+        
+        function generarAlertas() {
+            const container = document.getElementById('alertasKPI');
+            const alertas = [];
+            
+            if (datosKPI.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No hay datos para generar alertas</p>';
+                return;
+            }
+            
+            const datosActuales = datosKPI[datosKPI.length - 1];
+            
+            // Calcular métricas
+            const margenBruto = ((datosActuales.ventasTotales - datosActuales.costoVentas) / datosActuales.ventasTotales) * 100;
+            const liquidezCorriente = datosActuales.activoCorriente / datosActuales.pasivoCorriente;
+            const diasCobro = (datosActuales.cuentasCobrar / datosActuales.ventasTotales) * 365;
+            
+            // Generar alertas basadas en umbrales
+            if (margenBruto < 15) {
+                alertas.push({
+                    type: 'danger',
+                    message: '⚠️ CRÍTICO: Margen bruto muy bajo. Revise costos urgentemente.'
+                });
+            } else if (margenBruto < 25) {
+                alertas.push({
+                    type: 'warning',
+                    message: '📊 Margen bruto por debajo del promedio industrial.'
+                });
+            }
+            
+            if (liquidezCorriente < 1) {
+                alertas.push({
+                    type: 'danger',
+                    message: '💧 CRÍTICO: Liquidez insuficiente para cubrir obligaciones.'
+                });
+            } else if (liquidezCorriente < 1.5) {
+                alertas.push({
+                    type: 'warning',
+                    message: '💧 Liquidez baja. Monitoree flujo de caja de cerca.'
+                });
+            }
+            
+            if (diasCobro > 60) {
+                alertas.push({
+                    type: 'danger',
+                    message: '📅 CRÍTICO: Días de cobro excesivos. Revise políticas de crédito.'
+                });
+            } else if (diasCobro > 30) {
+                alertas.push({
+                    type: 'warning',
+                    message: '📅 Días de cobro altos. Considere mejores políticas de cobranza.'
+                });
+            }
+            
+            if (alertas.length === 0) {
+                alertas.push({
+                    type: 'success',
+                    message: '✅ Todos los KPIs están dentro de rangos aceptables.'
+                });
+            }
+            
+            container.innerHTML = alertas.map(alerta => `
+                <div class="alert ${alerta.type}">
+                    ${alerta.message}
+                </div>
+            `).join('');
+        }
+        
+        function actualizarBenchmark() {
+            if (datosKPI.length === 0) return;
+            
+            const datosActuales = datosKPI[datosKPI.length - 1];
+            
+            // Calcular métricas
+            const margenBruto = ((datosActuales.ventasTotales - datosActuales.costoVentas) / datosActuales.ventasTotales) * 100;
+            const liquidezCorriente = datosActuales.activoCorriente / datosActuales.pasivoCorriente;
+            const rotacionInventario = datosActuales.costoVentas / datosActuales.inventario;
+            const diasCobro = (datosActuales.cuentasCobrar / datosActuales.ventasTotales) * 365;
+            
+            // Actualizar valores
+            document.getElementById('benchmarkMargen').textContent = `Tu: ${margenBruto.toFixed(1)}%`;
+            document.getElementById('benchmarkLiquidez').textContent = `Tu: ${liquidezCorriente.toFixed(2)}`;
+            document.getElementById('benchmarkRotacion').textContent = `Tu: ${rotacionInventario.toFixed(1)}`;
+            document.getElementById('benchmarkCobro').textContent = `Tu: ${diasCobro.toFixed(0)} días`;
+            
+            // Actualizar indicadores de performance
+            actualizarIndicadorPerformance('performanceMargen', margenBruto, 25, 35);
+            actualizarIndicadorPerformance('performanceLiquidez', liquidezCorriente, 1.5, 2.5);
+            actualizarIndicadorPerformance('performanceRotacion', rotacionInventario, 6, 12);
+            actualizarIndicadorPerformance('performanceCobro', diasCobro, 20, 40, true);
+        }
+        
+        function actualizarIndicadorPerformance(id, valor, minimo, maximo, invertido = false) {
+            const elemento = document.getElementById(id);
+            let clase = 'performance-poor';
+            
+            if (invertido) {
+                // Para métricas donde menor es mejor
+                if (valor <= minimo) clase = 'performance-excellent';
+                else if (valor <= maximo) clase = 'performance-good';
+                else if (valor <= maximo * 1.5) clase = 'performance-average';
+            } else {
+                // Para métricas donde mayor es mejor
+                if (valor >= maximo) clase = 'performance-excellent';
+                else if (valor >= minimo) clase = 'performance-good';
+                else if (valor >= minimo * 0.7) clase = 'performance-average';
+            }
+            
+            elemento.className = `performance-indicator ${clase}`;
+        }
+        
+        function generarRecomendaciones() {
+            const container = document.getElementById('recomendaciones');
+            
+            if (datosKPI.length === 0) return;
+            
+            const datosActuales = datosKPI[datosKPI.length - 1];
+            const recomendaciones = [];
+            
+            // Calcular métricas
+            const margenBruto = ((datosActuales.ventasTotales - datosActuales.costoVentas) / datosActuales.ventasTotales) * 100;
+            const liquidezCorriente = datosActuales.activoCorriente / datosActuales.pasivoCorriente;
+            const diasCobro = (datosActuales.cuentasCobrar / datosActuales.ventasTotales) * 365;
+            
+            // Generar recomendaciones específicas
+            if (margenBruto < 25) {
+                recomendaciones.push('• Revisar estructura de costos y considerar negociar mejores precios con proveedores');
+            }
+            
+            if (liquidezCorriente < 1.5) {
+                recomendaciones.push('• Mejorar gestión de cobranza y considerar línea de crédito de respaldo');
+            }
+            
+            if (diasCobro > 30) {
+                recomendaciones.push('• Implementar políticas de cobranza más agresivas y descuentos por pronto pago');
+            }
+            
+            if (recomendaciones.length === 0) {
+                recomendaciones.push('• Mantener el buen desempeño actual y buscar oportunidades de crecimiento');
+            }
+            
+            container.innerHTML = recomendaciones.join('<br>');
+        }
+        
+        // Inicializar
+        actualizarKPIs();
+        generarAlertas();
+        actualizarBenchmark();
+        generarRecomendaciones();
+    </script>
+</body>
+</html>

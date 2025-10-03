@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-12: El Auditor Digital | Kairux</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Paleta Brand Brief Kairux */
+            --kai-blue: #0D47A1;
+            --kai-emerald: #00C853;
+            --kai-gold: #FFAB00;
+            
+            /* Gradiente Pilar Digital */
+            --digital-gradient: linear-gradient(135deg, #42A5F5 0%, #5C6BC0 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            
+            /* Glass morphism */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover: rgba(255, 255, 255, 0.12);
+            
+            /* Colores funcionales */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: var(--kai-emerald);
+            --warning: var(--kai-gold);
+            --danger: #ff5252;
+            --info: #42a5f5;
+            
+            /* Sombras premium */
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(66, 165, 245, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(92, 107, 192, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 200, 83, 0.15) 0%, transparent 50%);
+            animation: digitalPulse 25s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes digitalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Main Container */
+        .audit-center {
+            display: grid;
+            grid-template-rows: 80px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header Kairux */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(66, 165, 245, 0.6), transparent);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--digital-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.4);
+        }
+
+        .brand-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: var(--digital-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tool-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .plan-badge {
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .glass-panel:hover {
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .welcome-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            background: var(--digital-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .start-audit-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 16px;
+            padding: 1.5rem 3rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 25px rgba(66, 165, 245, 0.4);
+        }
+
+        .start-audit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px rgba(66, 165, 245, 0.6);
+        }
+
+        /* Audit Form */
+        .audit-form {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .form-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--info);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.1);
+        }
+
+        .add-tool-btn {
+            background: var(--success);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .add-tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4);
+        }
+
+        /* Tools List */
+        .tools-list {
+            margin-top: 2rem;
+        }
+
+        .tools-list.empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem;
+            font-style: italic;
+        }
+
+        .tool-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tool-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .tool-cost {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--kai-gold);
+        }
+
+        .tool-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tool-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-item:hover .tool-actions {
+            opacity: 1;
+        }
+
+        .tool-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .tool-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        .tool-action-btn.delete {
+            color: var(--danger);
+            border-color: rgba(255, 82, 82, 0.3);
+        }
+
+        /* Summary Sidebar */
+        .summary-sidebar {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(66, 165, 245, 0.1), rgba(92, 107, 192, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--kai-gold);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            background: var(--kai-gold);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: #1a1a2e;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 171, 0, 0.4);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .insight-card.alert-warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .insight-card.alert-danger {
+            border-left: 4px solid var(--danger);
+        }
+
+        .insight-card.alert-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .insight-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .insight-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .insight-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .insight-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .chart-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Plan Restrictions */
+        .plan-restricted {
+            position: relative;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .plan-restricted::after {
+            content: 'Upgrade para desbloquear';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid, .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .tool-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="audit-center">
+        <!-- Header Kairux -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">🔍</div>
+                <div>
+                    <div class="brand-text">KAIRUX</div>
+                    <div class="tool-subtitle">H-12: El Auditor Digital</div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Auditoría Lista</span>
+                </div>
+                <div class="status-item">
+                    📊 <span id="toolsCount">0 Herramientas</span>
+                </div>
+                <div class="plan-badge" id="currentPlan">PLAN CRECIMIENTO</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-title">Auditoría Digital Kairux</div>
+                <div class="welcome-description">
+                    Descubre el verdadero estado de tu arsenal digital. Identifica redundancias, 
+                    optimiza costos y obtén recomendaciones inteligentes para maximizar tu ROI tecnológico.
+                </div>
+                <button class="start-audit-btn" onclick="startAudit()">
+                    🚀 Iniciar Auditoría Digital
+                </button>
+            </div>
+
+            <!-- Audit Form -->
+            <div class="audit-form" id="auditForm">
+                <div class="form-grid">
+                    <!-- Main Form -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span>🛠️</span>
+                            <span>Registra tus Herramientas Digitales</span>
+                        </div>
+                        
+                        <form id="toolForm">
+                            <div class="form-group">
+                                <label class="form-label">Nombre de la Herramienta</label>
+                                <input type="text" class="form-input" id="toolName" placeholder="ej. HubSpot, QuickBooks, Slack..." required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-select" id="toolCategory" required>
+                                    <option value="">Seleccionar categoría</option>
+                                    <option value="CRM">Gestión de Clientes (CRM)</option>
+                                    <option value="Marketing">Marketing Digital</option>
+                                    <option value="Finanzas">Finanzas y Contabilidad</option>
+                                    <option value="Productividad">Productividad y Colaboración</option>
+                                    <option value="Comunicación">Comunicación</option>
+                                    <option value="Ventas">Ventas y E-commerce</option>
+                                    <option value="Operaciones">Operaciones y Logística</option>
+                                    <option value="RRHH">Recursos Humanos</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Función Principal</label>
+                                <input type="text" class="form-input" id="toolFunction" placeholder="ej. Gestionar contactos, Facturación, Videoconferencias...">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Costo Mensual (₡)</label>
+                                <input type="number" class="form-input" id="toolCost" min="0" step="1000" placeholder="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Frecuencia de Uso</label>
+                                <select class="form-select" id="toolUsage">
+                                    <option value="Alto">Alto (Diario)</option>
+                                    <option value="Medio">Medio (2-3 veces por semana)</option>
+                                    <option value="Bajo">Bajo (Ocasional)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Importancia para el Negocio</label>
+                                <select class="form-select" id="toolImportance">
+                                    <option value="Crítica">Crítica (Negocio para si falla)</option>
+                                    <option value="Alta">Alta (Muy importante)</option>
+                                    <option value="Media">Media (Importante)</option>
+                                    <option value="Baja">Baja (Opcional)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Fecha de Contratación</label>
+                                <input type="date" class="form-input" id="toolDate">
+                            </div>
+                            
+                            <button type="submit" class="add-tool-btn">
+                                ➕ Agregar Herramienta
+                            </button>
+                        </form>
+                        
+                        <!-- Tools List -->
+                        <div class="tools-list" id="toolsList">
+                            <div class="empty">
+                                <p>🔍 Comienza agregando tus herramientas digitales</p>
+                                <small>Registra todas las aplicaciones, software y servicios que usa tu empresa</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Sidebar -->
+                    <div class="summary-sidebar">
+                        <div class="summary-card">
+                            <div class="summary-value" id="totalTools">0</div>
+                            <div class="summary-label">Herramientas</div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-value" id="totalCost">₡0</div>
+                            <div class="summary-label">Costo Mensual</div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-value" id="totalCategories">0</div>
+                            <div class="summary-label">Categorías</div>
+                        </div>
+                        
+                        <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()" disabled>
+                            🤖 Analizar con IA Kairux
+                        </button>
+                        
+                        <div class="insight-card alert-success" style="margin-top: 1rem;">
+                            <div class="insight-title">💡 Tip Kairux</div>
+                            <div class="insight-description">
+                                Incluye todas las herramientas, incluso las gratuitas. 
+                                Esto nos ayuda a detectar redundancias y oportunidades.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="results-section" id="resultsSection">
+                    <div class="glass-panel">
+                        <div class="section-title">
+                            <span>🎯</span>
+                            <span>Insights de la Auditoría</span>
+                        </div>
+                        
+                        <div class="results-grid" id="insightsGrid">
+                            <!-- Dynamic content -->
+                        </div>
+                        
+                        <!-- Charts -->
+                        <div class="charts-section">
+                            <div class="chart-container">
+                                <div class="chart-title">Distribución por Categoría</div>
+                                <canvas id="categoryChart" width="300" height="200"></canvas>
+                            </div>
+                            
+                            <div class="chart-container">
+                                <div class="chart-title">Análisis Costo vs Valor</div>
+                                <canvas id="valueChart" width="300" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plan Configuration System
+        const planConfig = {
+            ESENCIAL: {
+                features: ['basic-inventory'],
+                maxTools: 10,
+                aiAnalysis: false,
+                exportReports: false
+            },
+            CRECIMIENTO: {
+                features: ['basic-inventory', 'add-tools', 'basic-insights'],
+                maxTools: 25,
+                aiAnalysis: true,
+                exportReports: false
+            },
+            DE_PRIMERA_CALIDAD: {
+                features: ['full-inventory', 'advanced-insights', 'charts'],
+                maxTools: 50,
+                aiAnalysis: true,
+                exportReports: true
+            },
+            ELITE: {
+                features: ['everything'],
+                maxTools: -1, // unlimited
+                aiAnalysis: true,
+                exportReports: true,
+                advancedRecommendations: true
+            }
+        };
+
+        // Current configuration (comes from Bubble)
+        let currentPlan = 'CRECIMIENTO';
+        let digitalTools = [];
+        let toolCounter = 0;
+
+        // Initialize Application
+        function startAudit() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('auditForm').style.display = 'block';
+            
+            // Set default date
+            document.getElementById('toolDate').valueAsDate = new Date();
+        }
+
+        // Add Tool Function
+        document.getElementById('toolForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const config = planConfig[currentPlan];
+            
+            // Check plan limits
+            if (config.maxTools !== -1 && digitalTools.length >= config.maxTools) {
+                alert(`⚠️ Límite alcanzado. Tu plan ${currentPlan} permite máximo ${config.maxTools} herramientas. Upgrade para agregar más.`);
+                return;
+            }
+            
+            const newTool = {
+                id: ++toolCounter,
+                name: document.getElementById('toolName').value,
+                category: document.getElementById('toolCategory').value,
+                function: document.getElementById('toolFunction').value,
+                cost: parseInt(document.getElementById('toolCost').value) || 0,
+                usage: document.getElementById('toolUsage').value,
+                importance: document.getElementById('toolImportance').value,
+                dateAdded: document.getElementById('toolDate').value
+            };
+            
+            digitalTools.push(newTool);
+            
+            // Update UI
+            updateSummary();
+            renderToolsList();
+            
+            // Clear form
+            document.getElementById('toolForm').reset();
+            document.getElementById('toolDate').valueAsDate = new Date();
+            
+            // Focus back to name input
+            document.getElementById('toolName').focus();
+            
+            // Send to Bubble
+            console.log('🔗 Enviando herramienta a Bubble:', newTool);
+            // bubble_fn_addDigitalTool(newTool);
+        });
+
+        // Update Summary Cards
+        function updateSummary() {
+            const totalCost = digitalTools.reduce((sum, tool) => sum + tool.cost, 0);
+            const categories = [...new Set(digitalTools.map(t => t.category))].length;
+            
+            document.getElementById('totalTools').textContent = digitalTools.length;
+            document.getElementById('totalCost').textContent = `₡${(totalCost/1000).toFixed(0)}K`;
+            document.getElementById('totalCategories').textContent = categories;
+            document.getElementById('toolsCount').textContent = `${digitalTools.length} Herramientas`;
+            
+            // Enable analysis button if tools exist
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            if (digitalTools.length > 0 && planConfig[currentPlan].aiAnalysis) {
+                analyzeBtn.disabled = false;
+            } else {
+                analyzeBtn.disabled = true;
+            }
+        }
+
+        // Render Tools List
+        function renderToolsList() {
+            const container = document.getElementById('toolsList');
+            
+            if (digitalTools.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <p>🔍 Comienza agregando tus herramientas digitales</p>
+                        <small>Registra todas las aplicaciones, software y servicios que usa tu empresa</small>
+                    </div>
+                `;
+                container.classList.add('empty');
+                return;
+            }
+            
+            container.classList.remove('empty');
+            container.innerHTML = digitalTools.map(tool => `
+                <div class="tool-item">
+                    <div class="tool-header">
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-cost">₡${tool.cost.toLocaleString()}/mes</div>
+                    </div>
+                    <div class="tool-details">
+                        <div><strong>Categoría:</strong> ${tool.category}</div>
+                        <div><strong>Uso:</strong> ${tool.usage}</div>
+                        <div><strong>Importancia:</strong> ${tool.importance}</div>
+                    </div>
+                    <div class="tool-details" style="margin-top: 0.5rem;">
+                        <div><strong>Función:</strong> ${tool.function || 'No especificada'}</div>
+                        <div><strong>Desde:</strong> ${formatDate(tool.dateAdded)}</div>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="tool-action-btn" onclick="editTool(${tool.id})">Editar</button>
+                        <button class="tool-action-btn delete" onclick="deleteTool(${tool.id})">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Analysis Functions
+        function runAnalysis() {
+            const config = planConfig[currentPlan];
+            
+            if (!config.aiAnalysis) {
+                alert('⚠️ El análisis por IA requiere plan CRECIMIENTO o superior.');
+                return;
+            }
+            
+            const btn = document.getElementById('analyzeBtn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '⏳ Analizando...';
+            btn.disabled = true;
+            
+            // Simulate AI analysis
+            setTimeout(() => {
+                generateInsights();
+                showResults();
+                btn.textContent = '✅ Análisis Completo';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }, 3000);
+        }
+
+        function generateInsights() {
+            const insights = [];
+            const totalCost = digitalTools.reduce((sum, tool) => sum + tool.cost, 0);
+            
+            // Redundancy Detection
+            const categoryCount = {};
+            digitalTools.forEach(tool => {
+                categoryCount[tool.category] = (categoryCount[tool.category] || 0) + 1;
+            });
+            
+            Object.entries(categoryCount).forEach(([category, count]) => {
+                if (count > 1) {
+                    const toolsInCategory = digitalTools.filter(t => t.category === category);
+                    const minCost = Math.min(...toolsInCategory.map(t => t.cost));
+                    insights.push({
+                        type: 'warning',
+                        title: `Redundancia detectada en ${category}`,
+                        description: `Tienes ${count} herramientas de ${category}. Considera consolidar para ahorrar hasta ₡${minCost.toLocaleString()}/mes.`,
+                        action: 'Revisar consolidación',
+                        savings: minCost
+                    });
+                }
+            });
+
+            // Low Value Tools
+            const lowValueTools = digitalTools.filter(t => t.usage === 'Bajo' && t.importance === 'Baja');
+            if (lowValueTools.length > 0) {
+                const savings = lowValueTools.reduce((sum, tool) => sum + tool.cost, 0);
+                insights.push({
+                    type: 'danger',
+                    title: `${lowValueTools.length} herramientas subutilizadas`,
+                    description: `Herramientas con uso bajo e importancia baja. Potencial ahorro: ₡${savings.toLocaleString()}/mes.`,
+                    action: 'Evaluar cancelación',
+                    savings: savings
+                });
+            }
+
+            // High Cost Alert
+            if (totalCost > 100000) {
+                insights.push({
+                    type: 'warning',
+                    title: 'Inversión digital elevada',
+                    description: `Tu gasto mensual de ₡${totalCost.toLocaleString()} supera el promedio PYME (₡75K). Revisa ROI de cada herramienta.`,
+                    action: 'Análisis de ROI'
+                });
+            }
+
+            // Missing Categories
+            const existingCategories = [...new Set(digitalTools.map(t => t.category))];
+            const essentialCategories = ['CRM', 'Marketing', 'Finanzas'];
+            const missing = essentialCategories.filter(cat => !existingCategories.includes(cat));
+            
+            if (missing.length > 0) {
+                insights.push({
+                    type: 'success',
+                    title: `Oportunidad: ${missing.join(', ')}`,
+                    description: `Tu arsenal digital podría beneficiarse de herramientas en estas categorías esenciales.`,
+                    action: 'Explorar opciones'
+                });
+            }
+
+            // Efficiency Score
+            const efficiencyScore = calculateEfficiencyScore();
+            if (efficiencyScore < 7) {
+                insights.push({
+                    type: 'warning',
+                    title: `Índice de Eficiencia: ${efficiencyScore}/10`,
+                    description: 'Tu arsenal digital tiene margen de optimización. Implementa las recomendaciones para mejorar.',
+                    action: 'Optimizar arsenal'
+                });
+            } else {
+                insights.push({
+                    type: 'success',
+                    title: `Excelente: Índice ${efficiencyScore}/10`,
+                    description: 'Tu arsenal digital está bien optimizado. Mantén este nivel de eficiencia.',
+                    action: 'Mantener curso'
+                });
+            }
+
+            return insights;
+        }
+
+        function calculateEfficiencyScore() {
+            if (digitalTools.length === 0) return 0;
+            
+            let score = 10;
+            
+            // Penalize redundancies
+            const categoryCount = {};
+            digitalTools.forEach(tool => {
+                categoryCount[tool.category] = (categoryCount[tool.category] || 0) + 1;
+            });
+            const redundancies = Object.values(categoryCount).filter(count => count > 1).length;
+            score -= redundancies * 0.8;
+            
+            // Penalize low-value tools
+            const lowValue = digitalTools.filter(t => t.usage === 'Bajo' && t.importance === 'Baja').length;
+            score -= lowValue * 1.2;
+            
+            // Penalize high costs relative to usage
+            const totalCost = digitalTools.reduce((sum, tool) => sum + tool.cost, 0);
+            const avgCostPerTool = totalCost / digitalTools.length;
+            if (avgCostPerTool > 25000) score -= 1;
+            
+            return Math.max(1.0, Math.min(10.0, score)).toFixed(1);
+        }
+
+        function showResults() {
+            const insights = generateInsights();
+            const container = document.getElementById('insightsGrid');
+            
+            container.innerHTML = insights.map(insight => `
+                <div class="insight-card alert-${insight.type}">
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-description">${insight.description}</div>
+                    <div class="insight-action" onclick="handleInsightAction('${insight.action}', ${insight.savings || 0})">
+                        ${insight.action}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Show charts
+            createCharts();
+            
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createCharts() {
+            createCategoryChart();
+            createValueChart();
+        }
+
+        function createCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            const categoryData = {};
+            
+            digitalTools.forEach(tool => {
+                categoryData[tool.category] = (categoryData[tool.category] || 0) + 1;
+            });
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        data: Object.values(categoryData),
+                        backgroundColor: [
+                            'rgba(66, 165, 245, 0.8)',
+                            'rgba(0, 200, 83, 0.8)',
+                            'rgba(255, 171, 0, 0.8)',
+                            'rgba(92, 107, 192, 0.8)',
+                            'rgba(255, 82, 82, 0.8)',
+                            'rgba(156, 39, 176, 0.8)',
+                            'rgba(121, 85, 72, 0.8)',
+                            'rgba(96, 125, 139, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createValueChart() {
+            const ctx = document.getElementById('valueChart').getContext('2d');
+            
+            const chartData = digitalTools.map(tool => ({
+                x: tool.cost,
+                y: getValueScore(tool),
+                label: tool.name
+            }));
+
+            new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Herramientas',
+                        data: chartData,
+                        backgroundColor: 'rgba(66, 165, 245, 0.6)',
+                        borderColor: 'rgba(66, 165, 245, 1)',
+                        borderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw.label}: ₡${context.raw.x.toLocaleString()} - Valor: ${context.raw.y}/10`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Costo Mensual (₡)',
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + (value/1000) + 'K';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Puntuación de Valor',
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Utility Functions
+        function getValueScore(tool) {
+            let score = 5;
+            
+            if (tool.usage === 'Alto') score += 3;
+            else if (tool.usage === 'Medio') score += 1;
+            else score -= 1;
+            
+            if (tool.importance === 'Crítica') score += 3;
+            else if (tool.importance === 'Alta') score += 2;
+            else if (tool.importance === 'Media') score += 1;
+            else score -= 1;
+            
+            return Math.max(1, Math.min(10, score));
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-CR', { 
+                year: 'numeric', 
+                month: 'short' 
+            });
+        }
+
+        function editTool(toolId) {
+            const tool = digitalTools.find(t => t.id === toolId);
+            if (tool) {
+                // Pre-fill form with tool data
+                document.getElementById('toolName').value = tool.name;
+                document.getElementById('toolCategory').value = tool.category;
+                document.getElementById('toolFunction').value = tool.function;
+                document.getElementById('toolCost').value = tool.cost;
+                document.getElementById('toolUsage').value = tool.usage;
+                document.getElementById('toolImportance').value = tool.importance;
+                document.getElementById('toolDate').value = tool.dateAdded;
+                
+                // Remove from array (will be re-added on submit)
+                digitalTools = digitalTools.filter(t => t.id !== toolId);
+                updateSummary();
+                renderToolsList();
+                
+                // Scroll to form
+                document.getElementById('toolForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteTool(toolId) {
+            if (confirm('¿Estás seguro de eliminar esta herramienta?')) {
+                digitalTools = digitalTools.filter(t => t.id !== toolId);
+                updateSummary();
+                renderToolsList();
+                
+                // Hide results if no tools left
+                if (digitalTools.length === 0) {
+                    document.getElementById('resultsSection').style.display = 'none';
+                }
+            }
+        }
+
+        function handleInsightAction(action, savings) {
+            switch(action) {
+                case 'Revisar consolidación':
+                    alert(`💡 Kairux Sugerencia: Revisa herramientas con funciones similares. Ahorro potencial: ₡${savings.toLocaleString()}/mes. Conectando con H-13 para opciones de consolidación.`);
+                    break;
+                case 'Evaluar cancelación':
+                    alert(`⚠️ Kairux Recomendación: Evalúa cancelar herramientas subutilizadas. Ahorro: ₡${savings.toLocaleString()}/mes. Enviando datos a H-06 para análisis de ROI.`);
+                    break;
+                case 'Explorar opciones':
+                    alert('🚀 Kairux Conexión: Te dirigimos a H-13 (Digitalizador Estratégico) para identificar herramientas faltantes en tu arsenal digital.');
+                    break;
+                case 'Análisis de ROI':
+                    alert('📊 Kairux Integración: Enviando datos de costos a H-05 (Libro Contable) y H-06 (Analista de Rentabilidad) para evaluación completa.');
+                    break;
+                default:
+                    console.log('Acción:', action);
+            }
+        }
+
+        // Export Function for Kairux Ecosystem
+        function exportKairuxData() {
+            return {
+                pilar: 'Madurez Digital',
+                herramienta: 'H-12: El Auditor Digital',
+                data: {
+                    tools: digitalTools,
+                    summary: {
+                        totalCost: digitalTools.reduce((sum, tool) => sum + tool.cost, 0),
+                        toolCount: digitalTools.length,
+                        categories: [...new Set(digitalTools.map(t => t.category))].length,
+                        efficiencyScore: calculateEfficiencyScore()
+                    },
+                    insights: generateInsights(),
+                    costBreakdown: digitalTools.map(tool => ({
+                        category: 'Herramientas Digitales',
+                        subcategory: tool.category,
+                        description: tool.name,
+                        amount: tool.cost,
+                        recurrence: 'monthly',
+                        source: 'H-12'
+                    }))
+                },
+                integrations: {
+                    h05_financial_data: digitalTools.map(tool => ({
+                        description: `${tool.name} (${tool.category})`,
+                        type: 'Gasto',
+                        category: 'Herramientas Digitales',
+                        amount: tool.cost,
+                        date: tool.dateAdded,
+                        recurrence: 'monthly'
+                    })),
+                    h06_roi_data: digitalTools.map(tool => ({
+                        investment_name: tool.name,
+                        initial_cost: tool.cost * 12, // Annual cost
+                        monthly_cost: tool.cost,
+                        category: tool.category,
+                        importance: tool.importance,
+                        usage: tool.usage
+                    }))
+                },
+                timestamp: new Date().toISOString(),
+                plan: currentPlan
+            };
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current plan badge
+            document.getElementById('currentPlan').textContent = `PLAN ${currentPlan}`;
+            
+            // Apply plan restrictions
+            const config = planConfig[currentPlan];
+            if (!config.aiAnalysis) {
+                document.getElementById('analyzeBtn').classList.add('plan-restricted');
+                document.getElementById('analyzeBtn').disabled = true;
+            }
+            
+            console.log('🔍 H-12: El Auditor Digital - Kairux Activado');
+            console.log('📊 Plan actual:', currentPlan);
+            console.log('⚙️ Configuración:', config);
+        });
+
+        // Global functions for Bubble integration
+        window.kairuxH12 = {
+            exportData: exportKairuxData,
+            updatePlan: (newPlan) => {
+                currentPlan = newPlan;
+                document.getElementById('currentPlan').textContent = `PLAN ${newPlan}`;
+                
+                const config = planConfig[newPlan];
+                const analyzeBtn = document.getElementById('analyzeBtn');
+                
+                if (config.aiAnalysis) {
+                    analyzeBtn.classList.remove('plan-restricted');
+                    if (digitalTools.length > 0) {
+                        analyzeBtn.disabled = false;
+                    }
+                } else {
+                    analyzeBtn.classList.add('plan-restricted');
+                    analyzeBtn.disabled = true;
+                }
+            },
+            importTools: (toolsArray) => {
+                digitalTools = toolsArray;
+                toolCounter = Math.max(...toolsArray.map(t => t.id));
+                updateSummary();
+                renderToolsList();
+            },
+            getEfficiencyScore: calculateEfficiencyScore,
+            sendToFinancialTools: () => {
+                const costData = exportKairuxData().integrations.h05_financial_data;
+                console.log('💰 Enviando a H-05:', costData);
+                // bubble_fn_sendToH05(costData);
+                return costData;
+            }
+        };
+    </script>
+</body>
+</html>

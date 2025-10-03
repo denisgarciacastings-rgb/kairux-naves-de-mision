@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-14: El Taller de Contenido | Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --kai-blue: #0D47A1;
+            --kai-emerald: #00C853;
+            --kai-gold: #FFAB00;
+            --digital-gradient: linear-gradient(135deg, #42A5F5 0%, #5C6BC0 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: var(--kai-emerald);
+            --warning: var(--kai-gold);
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 75%, rgba(66, 165, 245, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 75% 25%, rgba(92, 107, 192, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 171, 0, 0.1) 0%, transparent 50%);
+            animation: contentFlow 30s ease infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes contentFlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .content-workshop {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            min-height: 80px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(66, 165, 245, 0.6), transparent);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--digital-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.4);
+        }
+
+        .brand-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: var(--digital-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tool-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .plan-badge {
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+            overflow-y: visible;
+            flex: 1;
+        }
+
+        @media (min-width: 1200px) {
+            .main-content {
+                grid-template-areas: 
+                    "calendar calendar editor editor"
+                    "templates templates editor editor"
+                    "library library preview preview";
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .calendar { grid-area: calendar; }
+            .templates { grid-area: templates; }
+            .library { grid-area: library; }
+            .editor { grid-area: editor; }
+            .preview { grid-area: preview; }
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: visible;
+            transition: all 0.3s ease;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-panel:hover {
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .panel-icon {
+            font-size: 1.3rem;
+        }
+
+        .panel-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .panel-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* Calendar with Digital colors */
+        .calendar {
+            background: linear-gradient(135deg, var(--digital-accent), rgba(92, 107, 192, 0.05));
+        }
+
+        .calendar-day.today {
+            background: var(--digital-gradient);
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.has-content {
+            background: var(--digital-accent);
+            color: var(--info);
+        }
+
+        /* Templates with Digital theme */
+        .templates {
+            background: linear-gradient(135deg, var(--digital-accent), rgba(92, 107, 192, 0.03));
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: var(--digital-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Editor with Digital accents */
+        .editor {
+            background: linear-gradient(135deg, rgba(66, 165, 245, 0.05), rgba(92, 107, 192, 0.02));
+        }
+
+        .toolbar-btn:hover,
+        .toolbar-btn.active {
+            background: var(--digital-gradient);
+            color: white;
+        }
+
+        .content-editor:focus,
+        .meta-input:focus,
+        .library-search:focus {
+            border-color: var(--info);
+            background: rgba(66, 165, 245, 0.08);
+            box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.1);
+        }
+
+        .publish-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .publish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--digital-glow);
+        }
+
+        /* Preview with Digital theme */
+        .preview {
+            background: linear-gradient(135deg, var(--digital-accent), rgba(255, 171, 0, 0.02));
+        }
+
+        .platform-btn.active {
+            background: var(--digital-gradient);
+            color: white;
+        }
+
+        /* Help button with Digital colors */
+        .help-button {
+            background: var(--digital-gradient);
+            color: white;
+            box-shadow: 0 8px 25px var(--digital-glow);
+        }
+
+        .help-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--digital-glow);
+        }
+
+        /* Tour modal with Digital theme */
+        .tour-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step-number {
+            background: var(--digital-gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Plan restricted overlay */
+        .plan-restricted::after {
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .mini-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day.header {
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: default;
+        }
+
+        .calendar-day.today {
+            background: var(--kai-gold);
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .calendar-day.has-content {
+            background: rgba(0, 200, 83, 0.2);
+            color: var(--success);
+        }
+
+        .calendar-day:not(.header):hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upcoming-posts {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .post-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .post-time {
+            color: var(--kai-gold);
+            font-weight: 600;
+        }
+
+        .post-platform {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        /* Templates */
+        .templates {
+            min-height: 400px;
+        }
+
+        .template-categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: var(--digital-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .template-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .template-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .template-description {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Editor */
+        .editor {
+            min-height: 500px;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .toolbar-btn:hover,
+        .toolbar-btn.active {
+            background: var(--digital-gradient);
+            color: white;
+        }
+
+        .content-editor {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 200px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            flex: 1;
+        }
+
+        .content-editor:focus {
+            border-color: var(--info);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .editor-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .meta-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .meta-input:focus {
+            border-color: var(--info);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .publish-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .publish-btn {
+            background: var(--kai-emerald);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .publish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4);
+        }
+
+        .save-draft-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        /* Library */
+        .library {
+            min-height: 350px;
+        }
+
+        .library-search {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            width: 100%;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .library-search:focus {
+            border-color: var(--info);
+        }
+
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .asset-item {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.5rem;
+        }
+
+        .asset-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Preview */
+        .preview {
+            background: linear-gradient(135deg, rgba(0, 200, 83, 0.1), rgba(255, 171, 0, 0.05));
+        }
+
+        .preview-platforms {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .platform-btn.active {
+            background: var(--kai-emerald);
+            color: white;
+        }
+
+        .preview-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            flex: 1;
+            min-height: 250px;
+        }
+
+        .preview-post {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .preview-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Welcome Tour */
+        .tour-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tour-modal.active {
+            display: flex;
+        }
+
+        .tour-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .tour-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .tour-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .tour-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tour-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .step-number {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--kai-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tour-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .tour-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tour-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tour-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .help-button {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--kai-gold);
+            color: #1a1a2e;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 171, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .help-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 171, 0, 0.6);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            width: 250px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-icon {
+            color: var(--info);
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+            cursor: help;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                min-height: auto;
+            }
+
+            .status-bar {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .glass-panel {
+                min-height: auto;
+                padding: 1rem;
+            }
+
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .editor-toolbar {
+                justify-content: center;
+            }
+
+            .editor-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .publish-section {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .assets-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .help-button {
+                bottom: 1rem;
+                left: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .tour-content {
+                width: 95vw;
+                max-width: none;
+                margin: 1rem;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 2rem;
+            }
+
+            .tour-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .tooltip::after {
+                position: fixed;
+                left: 50%;
+                bottom: 20px;
+                transform: translateX(-50%);
+                width: 90vw;
+                max-width: 300px;
+            }
+        }
+
+        .plan-restricted {
+            position: relative;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .plan-restricted::after {
+            content: 'Disponible en plan CRECIMIENTO';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-workshop">
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">✍️</div>
+                <div>
+                    <div class="brand-text">KAIRUX</div>
+                    <div class="tool-subtitle">H-14: El Taller de Contenido</div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Taller Activo</span>
+                </div>
+                <div class="status-item">
+                    📝 <span id="postsCount">12 Posts Programados</span>
+                </div>
+                <div class="plan-badge" id="currentPlan">PLAN CRECIMIENTO</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Calendar Editorial -->
+            <div class="glass-panel calendar">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📅</span>
+                        <span>Calendario Editorial
+                            <span class="help-icon tooltip" data-tooltip="Aquí planificas cuándo vas a publicar cada post. Los días en verde ya tienen contenido programado.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">Enero 2024</div>
+                </div>
+                
+                <div class="mini-calendar" id="miniCalendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+                
+                <div class="upcoming-posts">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.75rem; font-family: 'Montserrat', sans-serif;">Próximas Publicaciones</h4>
+                    <div class="post-item">
+                        <div class="post-time">Hoy, 3:00 PM</div>
+                        <div>Tips para ahorro de energía en casa</div>
+                    <div class="post-item">
+                        <div class="post-time">Hoy, 3:00 PM</div>
+                        <div>Tips para ahorro de energía en casa</div>
+                        <div class="post-platform">Facebook, Instagram</div>
+                    </div>
+                    <div class="post-item">
+                        <div class="post-time">Mañana, 10:00 AM</div>
+                        <div>Promoción especial fin de semana</div>
+                        <div class="post-platform">Instagram Stories</div>
+                    </div>
+                    <div class="post-item">
+                        <div class="post-time">Viernes, 2:00 PM</div>
+                        <div>Cliente satisfecho testimonio</div>
+                        <div class="post-platform">Facebook</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates -->
+            <div class="glass-panel templates">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📋</span>
+                        <span>Plantillas de Contenido
+                            <span class="help-icon tooltip" data-tooltip="Ideas listas para usar según tu tipo de negocio. Solo cambia los detalles y ya tienes un post profesional.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">Para tu industria</div>
+                </div>
+                
+                <div class="template-categories">
+                    <div class="category-btn active" onclick="filterTemplates('promociones')">Promociones</div>
+                    <div class="category-btn" onclick="filterTemplates('tips')">Tips & Consejos</div>
+                    <div class="category-btn" onclick="filterTemplates('testimonios')">Testimonios</div>
+                    <div class="category-btn" onclick="filterTemplates('educativo')">Educativo</div>
+                </div>
+                
+                <div class="templates-grid" id="templatesGrid">
+                    <div class="template-card" data-category="promociones" onclick="useTemplate('descuento-especial')">
+                        <div class="template-icon">🏷️</div>
+                        <div class="template-name">Descuento Especial</div>
+                        <div class="template-description">Anuncia ofertas irresistibles</div>
+                    </div>
+                    <div class="template-card" data-category="promociones" onclick="useTemplate('producto-destacado')">
+                        <div class="template-icon">⭐</div>
+                        <div class="template-name">Producto Destacado</div>
+                        <div class="template-description">Resalta tu mejor producto</div>
+                    </div>
+                    <div class="template-card" data-category="tips" onclick="useTemplate('consejo-experto')">
+                        <div class="template-icon">💡</div>
+                        <div class="template-name">Consejo Experto</div>
+                        <div class="template-description">Comparte tu conocimiento</div>
+                    </div>
+                    <div class="template-card" data-category="tips" onclick="useTemplate('paso-a-paso')">
+                        <div class="template-icon">📝</div>
+                        <div class="template-name">Paso a Paso</div>
+                        <div class="template-description">Tutorial simple y claro</div>
+                    </div>
+                    <div class="template-card" data-category="testimonios" onclick="useTemplate('cliente-feliz')">
+                        <div class="template-icon">😊</div>
+                        <div class="template-name">Cliente Feliz</div>
+                        <div class="template-description">Testimonio auténtico</div>
+                    </div>
+                    <div class="template-card" data-category="educativo" onclick="useTemplate('sabias-que')">
+                        <div class="template-icon">🤔</div>
+                        <div class="template-name">¿Sabías que...?</div>
+                        <div class="template-description">Dato interesante</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor -->
+            <div class="glass-panel editor">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">✍️</span>
+                        <span>Editor de Contenido
+                            <span class="help-icon tooltip" data-tooltip="Aquí escribes tu post. Puedes darle formato, agregar emojis y programar cuándo se va a publicar.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">Borrador</div>
+                </div>
+                
+                <div class="editor-toolbar">
+                    <div class="toolbar-btn tooltip" data-tooltip="Texto en negritas" onclick="formatText('bold')"><strong>B</strong></div>
+                    <div class="toolbar-btn tooltip" data-tooltip="Texto en cursivas" onclick="formatText('italic')"><em>I</em></div>
+                    <div class="toolbar-btn tooltip" data-tooltip="Agregar emoji" onclick="showEmojiPicker()">😊</div>
+                    <div class="toolbar-btn tooltip" data-tooltip="Agregar hashtags populares" onclick="showHashtagSuggestions()">#️⃣</div>
+                    <div class="toolbar-btn tooltip" data-tooltip="Mencionar a alguien" onclick="showMentions()">@</div>
+                    <div class="toolbar-btn tooltip" data-tooltip="Agregar imagen" onclick="addImage()">🖼️</div>
+                </div>
+                
+                <textarea class="content-editor" id="contentEditor" placeholder="¿Qué quieres compartir hoy? 
+
+Tip: Escribe como si le estuvieras hablando a un amigo. Sé auténtico y útil.
+
+Ejemplo:
+¡Buenos días! ☀️ 
+¿Sabían que cambiar a bombillos LED puede reducir su factura eléctrica hasta en 80%? 💡
+
+Nosotros tenemos una promoción especial esta semana:
+✅ LED de 9W = ₡2,500 (antes ₡3,500)
+✅ Instalación gratis si compran 5 o más
+
+¿Quieren ahorrar en su próxima factura? Coméntenos 👇
+
+#AhorroEnergia #LED #PromocionEspecial #Costa Rica"></textarea>
+                
+                <div class="editor-meta">
+                    <input type="text" class="meta-input" placeholder="Título del post (opcional)" id="postTitle">
+                    <select class="meta-input" id="postCategory">
+                        <option value="">Categoría del post</option>
+                        <option value="promocion">Promoción</option>
+                        <option value="tip">Tip o Consejo</option>
+                        <option value="producto">Producto</option>
+                        <option value="servicio">Servicio</option>
+                        <option value="testimonio">Testimonio</option>
+                        <option value="educativo">Educativo</option>
+                    </select>
+                </div>
+                
+                <div class="publish-section">
+                    <div>
+                        <input type="datetime-local" class="meta-input" id="publishTime" style="margin-right: 1rem;">
+                        <button class="save-draft-btn" onclick="saveDraft()">💾 Guardar Borrador</button>
+                    </div>
+                    <button class="publish-btn" onclick="schedulePost()">📅 Programar Post</button>
+                </div>
+            </div>
+
+            <!-- Library -->
+            <div class="glass-panel library">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🎨</span>
+                        <span>Biblioteca de Assets
+                            <span class="help-icon tooltip" data-tooltip="Tus fotos, logos e imágenes guardadas. Puedes arrastrar cualquiera al editor.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action" onclick="uploadAsset()">Subir Imagen</div>
+                </div>
+                
+                <input type="text" class="library-search" placeholder="Buscar imágenes, logos..." id="librarySearch">
+                
+                <div class="assets-grid">
+                    <div class="asset-item tooltip" data-tooltip="Logo de la empresa" onclick="selectAsset('logo')">🏢</div>
+                    <div class="asset-item tooltip" data-tooltip="Foto del equipo" onclick="selectAsset('team')">👥</div>
+                    <div class="asset-item tooltip" data-tooltip="Producto estrella" onclick="selectAsset('product1')">⭐</div>
+                    <div class="asset-item tooltip" data-tooltip="Local físico" onclick="selectAsset('store')">🏪</div>
+                    <div class="asset-item tooltip" data-tooltip="Promoción actual" onclick="selectAsset('promo')">🏷️</div>
+                    <div class="asset-item tooltip" data-tooltip="Cliente satisfecho" onclick="selectAsset('testimonial')">😊</div>
+                    <div class="asset-item tooltip" data-tooltip="Servicio técnico" onclick="selectAsset('service')">🔧</div>
+                    <div class="asset-item tooltip" data-tooltip="Certificado de calidad" onclick="selectAsset('certificate')">🏆</div>
+                    <div class="asset-item tooltip" data-tooltip="Subir nueva imagen" onclick="uploadAsset()">➕</div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="glass-panel preview">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">👁️</span>
+                        <span>Vista Previa
+                            <span class="help-icon tooltip" data-tooltip="Aquí ves cómo se verá tu post en cada plataforma antes de publicarlo.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">Tiempo real</div>
+                </div>
+                
+                <div class="preview-platforms">
+                    <div class="platform-btn active" onclick="switchPreview('facebook')">Facebook</div>
+                    <div class="platform-btn" onclick="switchPreview('instagram')">Instagram</div>
+                    <div class="platform-btn" onclick="switchPreview('twitter')">Twitter</div>
+                </div>
+                
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-post" id="previewPost">
+                        <strong>Tu Empresa</strong> • hace 2 minutos<br><br>
+                        <span id="previewText">Escribe algo en el editor para ver la vista previa aquí...</span>
+                    </div>
+                    <div class="preview-meta">
+                        <span>👍 Me gusta • 💬 Comentar • 🔄 Compartir</span>
+                        <span id="characterCount">0/280 caracteres</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Button -->
+        <button class="help-button" onclick="openTour()" title="Ayuda y Tutorial">?</button>
+
+        <!-- Welcome Tour Modal -->
+        <div class="tour-modal" id="welcomeTour">
+            <div class="tour-content">
+                <div class="tour-title">Bienvenido a tu Taller de Contenido</div>
+                <div class="tour-description">
+                    Aquí puedes crear posts profesionales para Facebook, Instagram y otras redes sociales. 
+                    <strong>No necesitas ser diseñador</strong> - tenemos plantillas y herramientas fáciles de usar.
+                </div>
+                
+                <div class="tour-steps">
+                    <div class="tour-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Elige una plantilla</div>
+                        <div class="step-description">Ideas listas para tu tipo de negocio</div>
+                    </div>
+                    <div class="tour-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Personaliza el contenido</div>
+                        <div class="step-description">Cambia el texto por el tuyo</div>
+                    </div>
+                    <div class="tour-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Programa y publica</div>
+                        <div class="step-description">Decide cuándo se va a publicar</div>
+                    </div>
+                </div>
+                
+                <div class="tour-buttons">
+                    <button class="tour-btn" onclick="startContentTour()">Ver Tutorial</button>
+                    <button class="tour-btn secondary" onclick="closeTour()">Empezar a Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plan Configuration
+        const planConfig = {
+            ESENCIAL: {
+                features: ['basic-templates'],
+                monthlyPosts: 10,
+                templates: 5,
+                scheduling: false
+            },
+            CRECIMIENTO: {
+                features: ['templates', 'scheduling', 'calendar'],
+                monthlyPosts: 50,
+                templates: 20,
+                scheduling: true
+            },
+            PREMIUM: {
+                features: ['all-templates', 'ai-suggestions', 'analytics'],
+                monthlyPosts: 200,
+                templates: -1,
+                scheduling: true,
+                aiSuggestions: true
+            },
+            ELITE: {
+                features: ['everything', 'custom-templates', 'bulk-scheduling'],
+                monthlyPosts: -1,
+                templates: -1,
+                scheduling: true,
+                aiSuggestions: true,
+                customTemplates: true
+            }
+        };
+
+        let currentPlan = 'CRECIMIENTO';
+        let postsThisMonth = 12;
+        let selectedTemplate = null;
+        let currentPreviewPlatform = 'facebook';
+
+        // Content Templates Database
+        const templates = {
+            'descuento-especial': {
+                title: 'Descuento Especial',
+                content: `🔥 ¡OFERTA ESPECIAL! 🔥
+
+¿Buscas [PRODUCTO/SERVICIO]? ¡Esta es tu oportunidad!
+
+✅ [X]% de descuento
+✅ Solo por tiempo limitado
+✅ Calidad garantizada
+
+💬 Comenta "QUIERO" para más información
+📞 WhatsApp: [TU-NUMERO]
+
+#Oferta #Descuento #[TuNegocio]`,
+                category: 'promociones'
+            },
+            'consejo-experto': {
+                title: 'Consejo de Experto',
+                content: `💡 CONSEJO DEL DÍA
+
+¿Sabías que [DATO INTERESANTE]?
+
+Como expertos en [TU-AREA], queremos compartir este tip:
+
+👉 [CONSEJO PRACTICO]
+👉 [BENEFICIO]
+👉 [COMO APLICARLO]
+
+¿Te fue útil? ¡Compártelo! 🔄
+
+#Tips #Consejos #[TuExpertise]`,
+                category: 'tips'
+            },
+            'cliente-feliz': {
+                title: 'Cliente Satisfecho',
+                content: `⭐ TESTIMONIO REAL ⭐
+
+"[TESTIMONIO DEL CLIENTE]" - [NOMBRE DEL CLIENTE]
+
+Nos llena de orgullo cuando nuestros clientes quedan satisfechos 😊
+
+¿Tú también has tenido una buena experiencia con nosotros? ¡Cuéntanos en los comentarios! 👇
+
+#ClientesSatisfechos #Testimonios #Calidad`,
+                category: 'testimonios'
+            }
+        };
+
+        // Initialize Calendar
+        function initializeCalendar() {
+            const calendar = document.getElementById('miniCalendar');
+            const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+            const today = new Date();
+            const month = today.getMonth();
+            const year = today.getFullYear();
+            
+            // Add headers
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+            
+            // Add days
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay();
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendar.appendChild(emptyDay);
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                if (day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Simulate some days with content
+                if ([5, 12, 18, 25, 29].includes(day)) {
+                    dayElement.classList.add('has-content');
+                }
+                
+                dayElement.onclick = () => selectDate(day);
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Template Functions
+        function filterTemplates(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter templates
+            const templateCards = document.querySelectorAll('.template-card');
+            templateCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === 'all' || cardCategory === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function useTemplate(templateId) {
+            const template = templates[templateId];
+            if (template) {
+                document.getElementById('contentEditor').value = template.content;
+                document.getElementById('postCategory').value = template.category;
+                selectedTemplate = templateId;
+                updatePreview();
+                
+                // Show guidance for first-time users
+                if (localStorage.getItem('kairuxH14FirstTemplate') === null) {
+                    setTimeout(() => {
+                        alert(`📝 Plantilla aplicada: "${template.title}"\n\nAhora personaliza el contenido:\n• Cambia [PRODUCTO/SERVICIO] por lo tuyo\n• Agrega tu número de WhatsApp\n• Ajusta el mensaje a tu estilo\n\n¡Así de fácil!`);
+                        localStorage.setItem('kairuxH14FirstTemplate', 'true');
+                    }, 500);
+                }
+            }
+        }
+
+        // Editor Functions
+        function formatText(type) {
+            const editor = document.getElementById('contentEditor');
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            const selectedText = text.substring(start, end);
+            
+            if (selectedText) {
+                let formattedText = selectedText;
+                switch(type) {
+                    case 'bold':
+                        formattedText = `**${selectedText}**`;
+                        break;
+                    case 'italic':
+                        formattedText = `*${selectedText}*`;
+                        break;
+                }
+                
+                editor.value = text.substring(0, start) + formattedText + text.substring(end);
+                updatePreview();
+            }
+        }
+
+        function showEmojiPicker() {
+            const emojis = ['😊', '🔥', '⭐', '💡', '👍', '❤️', '🎉', '🚀', '💪', '👏', '🙏', '✨'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const editor = document.getElementById('contentEditor');
+            const cursorPos = editor.selectionStart;
+            const text = editor.value;
+            
+            editor.value = text.slice(0, cursorPos) + randomEmoji + text.slice(cursorPos);
+            editor.focus();
+            editor.setSelectionRange(cursorPos + 2, cursorPos + 2);
+            updatePreview();
+        }
+
+        function showHashtagSuggestions() {
+            const hashtags = ['#CostaRica', '#PYME', '#Negocios', '#Calidad', '#Servicio', '#Local'];
+            const suggestion = hashtags[Math.floor(Math.random() * hashtags.length)];
+            
+            const editor = document.getElementById('contentEditor');
+            const cursorPos = editor.selectionStart;
+            const text = editor.value;
+            
+            editor.value = text.slice(0, cursorPos) + suggestion + ' ' + text.slice(cursorPos);
+            updatePreview();
+        }
+
+        // Preview Functions
+        function updatePreview() {
+            const content = document.getElementById('contentEditor').value;
+            const previewText = document.getElementById('previewText');
+            const characterCount = document.getElementById('characterCount');
+            
+            if (content.trim()) {
+                previewText.innerHTML = content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+            } else {
+                previewText.textContent = 'Escribe algo en el editor para ver la vista previa aquí...';
+            }
+            
+            const limit = currentPreviewPlatform === 'twitter' ? 280 : 2200;
+            characterCount.textContent = `${content.length}/${limit} caracteres`;
+            characterCount.style.color = content.length > limit ? 'var(--danger)' : 'var(--text-muted)';
+        }
+
+        function switchPreview(platform) {
+            document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentPreviewPlatform = platform;
+            const previewPost = document.getElementById('previewPost');
+            
+            switch(platform) {
+                case 'facebook':
+                    previewPost.style.borderLeft = '3px solid #1877F2';
+                    break;
+                case 'instagram':
+                    previewPost.style.borderLeft = '3px solid #E4405F';
+                    break;
+                case 'twitter':
+                    previewPost.style.borderLeft = '3px solid #1DA1F2';
+                    break;
+            }
+            
+            updatePreview();
+        }
+
+        // Scheduling Functions
+        function schedulePost() {
+            const config = planConfig[currentPlan];
+            const content = document.getElementById('contentEditor').value.trim();
+            
+            if (!content) {
+                alert('⚠️ Escribe algo antes de programar el post');
+                return;
+            }
+            
+            if (!config.scheduling) {
+                alert(`📅 La programación de posts requiere plan CRECIMIENTO o superior.\n\nTu plan actual: ${currentPlan}`);
+                return;
+            }
+            
+            if (config.monthlyPosts !== -1 && postsThisMonth >= config.monthlyPosts) {
+                alert(`📊 Límite mensual alcanzado.\n\nTu plan ${currentPlan} permite ${config.monthlyPosts} posts por mes.\n\nUpgrade para aumentar el límite.`);
+                return;
+            }
+            
+            const publishTime = document.getElementById('publishTime').value;
+            if (!publishTime) {
+                alert('⏰ Selecciona cuándo quieres que se publique el post');
+                return;
+            }
+            
+            // Simulate scheduling
+            postsThisMonth++;
+            document.getElementById('postsCount').textContent = `${postsThisMonth} Posts Programados`;
+            
+            alert(`✅ ¡Post programado exitosamente!\n\nSe publicará el: ${new Date(publishTime).toLocaleString('es-CR')}\n\nPuedes verlo en tu calendario editorial.`);
+            
+            // Clear editor
+            document.getElementById('contentEditor').value = '';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('publishTime').value = '';
+            updatePreview();
+            
+            console.log('📅 Post programado:', { content, publishTime, platform: currentPreviewPlatform });
+        }
+
+        function saveDraft() {
+            const content = document.getElementById('contentEditor').value.trim();
+            if (!content) {
+                alert('⚠️ No hay contenido que guardar');
+                return;
+            }
+            
+            // Simulate saving
+            const drafts = JSON.parse(localStorage.getItem('kairuxH14Drafts') || '[]');
+            drafts.push({
+                id: Date.now(),
+                content,
+                title: document.getElementById('postTitle').value,
+                category: document.getElementById('postCategory').value,
+                created: new Date().toISOString()
+            });
+            
+            localStorage.setItem('kairuxH14Drafts', JSON.stringify(drafts));
+            alert('💾 Borrador guardado exitosamente');
+        }
+
+        // Asset Functions
+        function selectAsset(assetId) {
+            alert(`🖼️ Imagen "${assetId}" seleccionada\n\nEn la versión completa, esta imagen se agregaría automáticamente a tu post.`);
+        }
+
+        function uploadAsset() {
+            const config = planConfig[currentPlan];
+            
+            if (!config.features.includes('templates')) {
+                alert(`📁 La biblioteca de assets requiere plan CRECIMIENTO o superior.\n\nTu plan actual: ${currentPlan}`);
+                return;
+            }
+            
+            alert('📤 Función de subida de imágenes\n\nEn la versión completa, podrías subir tus propias fotos, logos y gráficos desde aquí.');
+        }
+
+        // Tour Functions
+        function openTour() {
+            document.getElementById('welcomeTour').classList.add('active');
+        }
+
+        function closeTour() {
+            document.getElementById('welcomeTour').classList.remove('active');
+            localStorage.setItem('kairuxH14FirstTime', 'false');
+        }
+
+        function startContentTour() {
+            closeTour();
+            alert(`📚 Tutorial H-14: Taller de Contenido\n\n1️⃣ PLANTILLAS: Haz clic en cualquier plantilla de la sección "Plantillas de Contenido"\n\n2️⃣ PERSONALIZAR: El texto aparecerá en el editor. Cambia las partes entre [corchetes] por tu información\n\n3️⃣ VISTA PREVIA: Mira cómo se ve en la sección "Vista Previa"\n\n4️⃣ PROGRAMAR: Elige fecha y hora, luego haz clic en "Programar Post"\n\n¡Así de fácil crearás contenido profesional!`);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCalendar();
+            
+            // Auto-update preview as user types
+            document.getElementById('contentEditor').addEventListener('input', updatePreview);
+            
+            // Set current plan
+            document.getElementById('currentPlan').textContent = `PLAN ${currentPlan}`;
+            
+            // Show welcome tour for first-time users
+            if (localStorage.getItem('kairuxH14FirstTime') === null) {
+                setTimeout(openTour, 1000);
+            }
+            
+            console.log('✍️ H-14: El Taller de Contenido - Kairux Activado');
+            console.log('📝 Sistema de plantillas cargado');
+            console.log('📅 Calendario editorial inicializado');
+        });
+
+        // Global functions for Bubble integration
+        window.kairuxH14 = {
+            updatePlan: (newPlan) => {
+                currentPlan = newPlan;
+                document.getElementById('currentPlan').textContent = `PLAN ${newPlan}`;
+            },
+            getScheduledPosts: () => postsThisMonth,
+            useTemplate: useTemplate,
+            schedulePost: schedulePost,
+            exportContent: () => ({
+                scheduledPosts: postsThisMonth,
+                currentDraft: document.getElementById('contentEditor').value,
+                selectedTemplate,
+                plan: currentPlan
+            })
+        };
+    </script>
+</body>
+</html>

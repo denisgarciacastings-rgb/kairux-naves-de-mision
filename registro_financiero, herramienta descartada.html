@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Financiero Inteligente - PYME Motor 360</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .transaction-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+        
+        .transaction-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .transaction-amount.positive {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .transaction-amount.negative {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        
+        .alert.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert.warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert.danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .chart-container {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 0 30px 30px 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .chart {
+            height: 300px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Registro Financiero Inteligente</h1>
+            <p>Control total de ingresos, gastos y flujo de caja con análisis automático</p>
+        </div>
+        
+        <div class="dashboard" id="dashboard">
+            <div class="metric-card">
+                <div class="metric-label">Ingresos del Mes</div>
+                <div class="metric-value positive" id="totalIngresos">₡0</div>
+                <small>Meta: ₡500,000</small>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Gastos del Mes</div>
+                <div class="metric-value negative" id="totalGastos">₡0</div>
+                <small>Límite: ₡400,000</small>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Flujo de Caja</div>
+                <div class="metric-value" id="flujoCaja">₡0</div>
+                <small>Proyección mensual</small>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Margen de Ganancia</div>
+                <div class="metric-value" id="margenGanancia">0%</div>
+                <small>Objetivo: >20%</small>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Días de Liquidez</div>
+                <div class="metric-value warning" id="diasLiquidez">0</div>
+                <small>Mínimo recomendado: 30</small>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Índice de Salud</div>
+                <div class="metric-value" id="indiceSalud">0/10</div>
+                <small>Score financiero</small>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="section">
+                <h3>📈 Registrar Transacción</h3>
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Transacción</label>
+                        <select id="tipo" required>
+                            <option value="">Seleccionar tipo</option>
+                            <option value="ingreso">💰 Ingreso</option>
+                            <option value="gasto_fijo">🏢 Gasto Fijo</option>
+                            <option value="gasto_variable">📊 Gasto Variable</option>
+                            <option value="inversion">💎 Inversión</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monto">Monto (₡)</label>
+                        <input type="number" id="monto" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" id="descripcion" placeholder="Ej: Venta productos, Alquiler oficina..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">➕ Registrar Transacción</button>
+                </form>
+            </div>
+            
+            <div class="section">
+                <h3>📋 Transacciones Recientes</h3>
+                <div class="transaction-list" id="transactionList">
+                    <!-- Las transacciones aparecerán aquí -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h3>📊 Análisis de Flujo de Caja (Últimos 6 Meses)</h3>
+            <div class="chart">
+                📈 Gráfico de flujo de caja mensual se conectará con Looker Studio
+            </div>
+        </div>
+        
+        <div id="alertas" style="padding: 0 30px;">
+            <!-- Las alertas automáticas aparecerán aquí -->
+        </div>
+    </div>
+
+    <script>
+        // Datos de la aplicación
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        
+        // Categorías por tipo
+        const categorias = {
+            ingreso: ['Ventas', 'Servicios', 'Otros ingresos', 'Inversiones'],
+            gasto_fijo: ['Alquiler', 'Salarios', 'Seguros', 'Servicios públicos', 'Software'],
+            gasto_variable: ['Marketing', 'Suministros', 'Transporte', 'Comisiones', 'Otros'],
+            inversion: ['Equipos', 'Tecnología', 'Capacitación', 'Inventario']
+        };
+        
+        // Inicializar
+        document.getElementById('fecha').valueAsDate = new Date();
+        
+        // Manejar cambio de tipo para actualizar categorías
+        document.getElementById('tipo').addEventListener('change', function() {
+            const categoriaSelect = document.getElementById('categoria');
+            const tipo = this.value;
+            
+            categoriaSelect.innerHTML = '<option value="">Seleccionar categoría</option>';
+            
+            if (tipo && categorias[tipo]) {
+                categorias[tipo].forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoriaSelect.appendChild(option);
+                });
+            }
+        });
+        
+        // Manejar envío del formulario
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const transaction = {
+                id: Date.now(),
+                tipo: document.getElementById('tipo').value,
+                categoria: document.getElementById('categoria').value,
+                monto: parseFloat(document.getElementById('monto').value),
+                descripcion: document.getElementById('descripcion').value,
+                fecha: document.getElementById('fecha').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            transactions.push(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            
+            // Limpiar formulario
+            this.reset();
+            document.getElementById('fecha').valueAsDate = new Date();
+            document.getElementById('categoria').innerHTML = '<option value="">Seleccionar categoría</option>';
+            
+            // Actualizar interfaz
+            updateDashboard();
+            updateTransactionList();
+            generateAlerts();
+        });
+        
+        function updateDashboard() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            // Filtrar transacciones del mes actual
+            const monthTransactions = transactions.filter(t => {
+                const transDate = new Date(t.fecha);
+                return transDate.getMonth() === currentMonth && transDate.getFullYear() === currentYear;
+            });
+            
+            // Calcular métricas
+            const ingresos = monthTransactions
+                .filter(t => t.tipo === 'ingreso')
+                .reduce((sum, t) => sum + t.monto, 0);
+            
+            const gastos = monthTransactions
+                .filter(t => ['gasto_fijo', 'gasto_variable', 'inversion'].includes(t.tipo))
+                .reduce((sum, t) => sum + t.monto, 0);
+            
+            const flujoCaja = ingresos - gastos;
+            const margenGanancia = ingresos > 0 ? ((flujoCaja / ingresos) * 100) : 0;
+            
+            // Calcular días de liquidez (simplificado)
+            const gastoPromedioDiario = gastos / 30;
+            const diasLiquidez = gastoPromedioDiario > 0 ? Math.floor(flujoCaja / gastoPromedioDiario) : 0;
+            
+            // Calcular índice de salud financiera
+            let indiceSalud = 0;
+            if (flujoCaja > 0) indiceSalud += 3;
+            if (margenGanancia > 15) indiceSalud += 2;
+            if (diasLiquidez > 30) indiceSalud += 2;
+            if (ingresos > gastos * 1.2) indiceSalud += 2;
+            if (gastos < ingresos * 0.8) indiceSalud += 1;
+            
+            // Actualizar interfaz
+            document.getElementById('totalIngresos').textContent = `₡${ingresos.toLocaleString()}`;
+            document.getElementById('totalGastos').textContent = `₡${gastos.toLocaleString()}`;
+            
+            const flujoCajaElement = document.getElementById('flujoCaja');
+            flujoCajaElement.textContent = `₡${flujoCaja.toLocaleString()}`;
+            flujoCajaElement.className = `metric-value ${flujoCaja >= 0 ? 'positive' : 'negative'}`;
+            
+            document.getElementById('margenGanancia').textContent = `${margenGanancia.toFixed(1)}%`;
+            document.getElementById('margenGanancia').className = `metric-value ${margenGanancia > 15 ? 'positive' : margenGanancia > 5 ? 'warning' : 'negative'}`;
+            
+            document.getElementById('diasLiquidez').textContent = diasLiquidez;
+            document.getElementById('diasLiquidez').className = `metric-value ${diasLiquidez > 30 ? 'positive' : diasLiquidez > 15 ? 'warning' : 'negative'}`;
+            
+            document.getElementById('indiceSalud').textContent = `${indiceSalud}/10`;
+            document.getElementById('indiceSalud').className = `metric-value ${indiceSalud >= 7 ? 'positive' : indiceSalud >= 4 ? 'warning' : 'negative'}`;
+        }
+        
+        function updateTransactionList() {
+            const list = document.getElementById('transactionList');
+            const recentTransactions = [...transactions]
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                .slice(0, 10);
+            
+            if (recentTransactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay transacciones registradas</p>';
+                return;
+            }
+            
+            list.innerHTML = recentTransactions.map(t => `
+                <div class="transaction-item">
+                    <div>
+                        <strong>${t.descripcion}</strong><br>
+                        <small>${t.categoria} • ${new Date(t.fecha).toLocaleDateString()}</small>
+                    </div>
+                    <div class="transaction-amount ${t.tipo === 'ingreso' ? 'positive' : 'negative'}">
+                        ${t.tipo === 'ingreso' ? '+' : '-'}₡${t.monto.toLocaleString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function generateAlerts() {
+            const alertContainer = document.getElementById('alertas');
+            const alerts = [];
+            
+            // Analizar datos para generar alertas inteligentes
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            const monthTransactions = transactions.filter(t => {
+                const transDate = new Date(t.fecha);
+                return transDate.getMonth() === currentMonth && transDate.getFullYear() === currentYear;
+            });
+            
+            const ingresos = monthTransactions
+                .filter(t => t.tipo === 'ingreso')
+                .reduce((sum, t) => sum + t.monto, 0);
+            
+            const gastos = monthTransactions
+                .filter(t => ['gasto_fijo', 'gasto_variable', 'inversion'].includes(t.tipo))
+                .reduce((sum, t) => sum + t.monto, 0);
+            
+            const flujoCaja = ingresos - gastos;
+            const margenGanancia = ingresos > 0 ? ((flujoCaja / ingresos) * 100) : 0;
+            
+            // Generar alertas basadas en el análisis
+            if (flujoCaja < 0) {
+                alerts.push({
+                    type: 'danger',
+                    message: '⚠️ ALERTA CRÍTICA: Flujo de caja negativo. Revise gastos urgentemente.'
+                });
+            }
+            
+            if (margenGanancia < 10) {
+                alerts.push({
+                    type: 'warning',
+                    message: '📊 Margen de ganancia bajo. Considere optimizar costos o aumentar precios.'
+                });
+            }
+            
+            if (gastos > ingresos * 0.9) {
+                alerts.push({
+                    type: 'warning',
+                    message: '💸 Los gastos representan más del 90% de los ingresos. Monitoree de cerca.'
+                });
+            }
+            
+            if (flujoCaja > ingresos * 0.3) {
+                alerts.push({
+                    type: 'success',
+                    message: '✅ Excelente flujo de caja. Considere invertir el excedente.'
+                });
+            }
+            
+            // Mostrar alertas
+            alertContainer.innerHTML = alerts.map(alert => `
+                <div class="alert ${alert.type}">
+                    ${alert.message}
+                </div>
+            `).join('');
+        }
+        
+        // Inicializar la interfaz
+        updateDashboard();
+        updateTransactionList();
+        generateAlerts();
+    </script>
+</body>
+</html>

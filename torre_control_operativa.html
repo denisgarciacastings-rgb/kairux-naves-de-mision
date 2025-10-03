@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-10: La Torre de Control Operativa - Kairux</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #00d4aa;
+            --warning: #ffb74d;
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --operational: #2196f3;
+            --strategic: #9c27b0;
+            --support: #ff9800;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(33, 150, 243, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(156, 39, 176, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255, 152, 0, 0.2) 0%, transparent 50%);
+            animation: operationalShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes operationalShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--operational), var(--strategic), var(--support), transparent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--operational) 0%, var(--strategic) 50%, var(--support) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .status-bar {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-areas: 
+                "kpis kpis heatmap heatmap"
+                "pareto efficiency timeline timeline"
+                "scorecard scorecard improvements improvements";
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: 200px 350px 300px;
+            gap: 1.5rem;
+            padding: 2rem;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .panel-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* KPIs Operacionales */
+        .kpis-panel {
+            grid-area: kpis;
+        }
+
+        .kpis-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            height: calc(100% - 50px);
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .kpi-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .kpi-trend {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+
+        /* Mapa de Calor */
+        .heatmap-panel {
+            grid-area: heatmap;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            height: calc(100% - 50px);
+        }
+
+        .process-heat-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-heat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--success);
+        }
+
+        .process-heat-item.medium::before {
+            background: var(--warning);
+        }
+
+        .process-heat-item.poor::before {
+            background: var(--danger);
+        }
+
+        .process-heat-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Gráfico de Pareto */
+        .pareto-panel {
+            grid-area: pareto;
+        }
+
+        /* Eficiencia */
+        .efficiency-panel {
+            grid-area: efficiency;
+        }
+
+        .efficiency-gauge {
+            position: relative;
+            height: calc(100% - 50px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .gauge-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 12px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: rotate(-90deg);
+        }
+
+        .gauge-fill {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 12px solid var(--success);
+            border-radius: 50%;
+            border-color: var(--success) transparent transparent transparent;
+            transform: rotate(-90deg);
+            transition: all 1s ease;
+        }
+
+        .gauge-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gauge-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .gauge-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Timeline */
+        .timeline-panel {
+            grid-area: timeline;
+        }
+
+        .timeline-container {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .timeline-date {
+            background: var(--operational);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .timeline-content {
+            margin-left: 1rem;
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Scorecard */
+        .scorecard-panel {
+            grid-area: scorecard;
+        }
+
+        .scorecard-metrics {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            height: calc(100% - 50px);
+        }
+
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .metric-value-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-bar {
+            width: 60px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        .scorecard-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Mejoras */
+        .improvements-panel {
+            grid-area: improvements;
+        }
+
+        .improvements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: calc(100% - 50px);
+        }
+
+        .improvement-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        .improvement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .improvement-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .improvement-impact {
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .improvement-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .improvement-metrics {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .improvement-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart containers */
+        .chart-container {
+            height: calc(100% - 50px);
+            position: relative;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            transform: translateY(-2px);
+        }
+
+        /* Tooltips Contextuales - UX Mejorada */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip-trigger::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            max-width: 250px;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .tooltip-trigger:hover::after {
+            opacity: 1;
+        }
+
+        /* Tooltip para explicaciones largas */
+        .tooltip-long::after {
+            max-width: 300px;
+            white-space: normal;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        /* Indicador de ayuda sutil */
+        .help-indicator {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 10px;
+            line-height: 14px;
+            text-align: center;
+            margin-left: 0.5rem;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .help-indicator:hover {
+            background: var(--info);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Quick Info Cards para métricas complejas */
+        .metric-info {
+            background: rgba(66, 165, 245, 0.1);
+            border: 1px solid rgba(66, 165, 245, 0.3);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            color: var(--info);
+            margin-top: 0.25rem;
+            text-align: center;
+        }
+
+        /* Branding sutil */
+        .kairux-brand {
+            background: var(--primary-gradient);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .brand-separator {
+            width: 2px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Onboarding hints sutiles */
+        .first-time-hint {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--warning);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-areas: 
+                    "kpis kpis kpis"
+                    "heatmap heatmap efficiency"
+                    "pareto timeline timeline"
+                    "scorecard improvements improvements";
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 200px 300px 350px 300px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-areas: 
+                    "kpis kpis"
+                    "heatmap efficiency"
+                    "pareto timeline"
+                    "scorecard improvements";
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto auto;
+                height: auto;
+            }
+
+            .kpis-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>H-08 Conectado</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>H-09 Conectado</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Live Data</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; justify-content: center;">
+            <div style="background: var(--primary-gradient); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 1.1rem;">KAIRUX</div>
+            <div style="width: 2px; height: 30px; background: rgba(255,255,255,0.3);"></div>
+            <div>
+                <h1>⚡ Torre de Control Operativa</h1>
+                <p>Dashboard Ejecutivo - Consolidación de Procesos y Desperdicios</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="glass-panel kpis-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger" data-tooltip="Métricas clave que resumen el desempeño operacional de todos tus procesos">
+                    📊 KPIs Operacionales
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Tiempo Real</div>
+            </div>
+            <div class="kpis-grid">
+                <div class="kpi-card tooltip-trigger" data-tooltip="Promedio de eficiencia de todos tus procesos. Meta: >80%">
+                    <div class="kpi-value positive" id="eficienciaGlobal">85%</div>
+                    <div class="kpi-label">Eficiencia Global</div>
+                    <div class="kpi-trend positive">+3%</div>
+                    <div class="metric-info">vs mes anterior</div>
+                </div>
+                <div class="kpi-card tooltip-trigger" data-tooltip="Tiempo promedio que toma completar un proceso desde inicio a fin">
+                    <div class="kpi-value" id="tiempoCiclo">24min</div>
+                    <div class="kpi-label">Tiempo Ciclo Prom</div>
+                    <div class="kpi-trend warning">-2min</div>
+                    <div class="metric-info">objetivo: <20min</div>
+                </div>
+                <div class="kpi-card tooltip-trigger" data-tooltip="Costo promedio de ejecutar una transacción completa en tu empresa">
+                    <div class="kpi-value" id="costoTransaccion">₡8.5K</div>
+                    <div class="kpi-label">Costo/Transacción</div>
+                    <div class="kpi-trend positive">-₡1.2K</div>
+                    <div class="metric-info">ahorro mensual</div>
+                </div>
+                <div class="kpi-card tooltip-trigger" data-tooltip="Medida de desperdicios detectados en tus procesos. Escala 0-10, menor es mejor">
+                    <div class="kpi-value warning" id="indiceDesperdicios">3.2/10</div>
+                    <div class="kpi-label">Índice Desperdicios</div>
+                    <div class="kpi-trend positive">-1.1</div>
+                    <div class="metric-info">mejorando</div>
+                </div>
+                <div class="kpi-card tooltip-trigger" data-tooltip="Calificación de cuánto has mejorado tus procesos en el último período">
+                    <div class="kpi-value positive" id="scoreMejora">7.8/10</div>
+                    <div class="kpi-label">Score Mejora</div>
+                    <div class="kpi-trend positive">+0.5</div>
+                    <div class="metric-info">excelente</div>
+                </div>
+                <div class="kpi-card tooltip-trigger" data-tooltip="Retorno de inversión de todas las mejoras operacionales implementadas">
+                    <div class="kpi-value positive" id="roiOperacional">32%</div>
+                    <div class="kpi-label">ROI Operacional</div>
+                    <div class="kpi-trend positive">+8%</div>
+                    <div class="metric-info">vs trimestre anterior</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mapa de Calor de Eficiencia -->
+        <div class="glass-panel heatmap-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger tooltip-long" data-tooltip="Visualización que muestra qué tan eficiente es cada uno de tus procesos. Verde=Excelente, Amarillo=Mejorable, Rojo=Crítico">
+                    🔥 Mapa de Calor - Procesos
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Por Eficiencia</div>
+            </div>
+            <div class="heatmap-grid" id="heatmapGrid">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Gráfico de Pareto -->
+        <div class="glass-panel pareto-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger tooltip-long" data-tooltip="Gráfico que muestra cuáles desperdicios causan 80% de tus pérdidas. Te ayuda a priorizar qué problemas resolver primero">
+                    📈 Pareto de Desperdicios
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">80/20 Rule</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="paretoChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Gauge de Eficiencia -->
+        <div class="glass-panel efficiency-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger" data-tooltip="Medidor que muestra tu eficiencia operacional general en tiempo real">
+                    ⚡ Eficiencia Global
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Real Time</div>
+            </div>
+            <div class="efficiency-gauge">
+                <div class="gauge-container">
+                    <div class="gauge-bg"></div>
+                    <div class="gauge-fill" id="efficiencyGauge"></div>
+                    <div class="gauge-center">
+                        <div class="gauge-value" id="efficiencyValue">85%</div>
+                        <div class="gauge-label">Eficiencia</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline de Mejoras -->
+        <div class="glass-panel timeline-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger tooltip-long" data-tooltip="Cronología de todas las mejoras que has implementado en tu empresa, con su impacto y resultados">
+                    📅 Timeline de Mejoras
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Últimos 30 días</div>
+            </div>
+            <div class="timeline-container" id="timelineContainer">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Scorecard Operacional -->
+        <div class="glass-panel scorecard-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger tooltip-long" data-tooltip="Tablero de puntuación que compara tu desempeño actual vs las metas establecidas en cada área crítica">
+                    🎯 Scorecard Operacional
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Benchmarks</div>
+            </div>
+            <div class="scorecard-metrics">
+                <div class="metrics-list">
+                    <div class="metric-row tooltip-trigger" data-tooltip="Porcentaje de procesos que se ejecutan según estándares definidos">
+                        <div class="metric-name">Cumplimiento Procesos</div>
+                        <div class="metric-value-container">
+                            <span>92%</span>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-row tooltip-trigger" data-tooltip="Cuánto has logrado reducir los desperdicios identificados">
+                        <div class="metric-name">Reducción Desperdicios</div>
+                        <div class="metric-value-container">
+                            <span>78%</span>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-row tooltip-trigger" data-tooltip="Mejora en tiempos de ejecución de procesos vs línea base">
+                        <div class="metric-name">Optimización Tiempo</div>
+                        <div class="metric-value-container">
+                            <span>85%</span>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-row tooltip-trigger" data-tooltip="Nivel de satisfacción del equipo con los procesos mejorados">
+                        <div class="metric-name">Satisfacción Proceso</div>
+                        <div class="metric-value-container">
+                            <span>89%</span>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" style="width: 89%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scorecard-summary tooltip-trigger" data-tooltip="Calificación general basada en todas las métricas operacionales">
+                    <div class="score-circle">A</div>
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Score Global</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">86/100 puntos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mejoras Implementadas -->
+        <div class="glass-panel improvements-panel">
+            <div class="panel-header">
+                <div class="panel-title tooltip-trigger tooltip-long" data-tooltip="Lista de las mejoras más recientes implementadas con su impacto económico y operacional">
+                    🚀 Mejoras Implementadas
+                    <span class="help-indicator">?</span>
+                </div>
+                <div class="panel-action">Este Mes</div>
+            </div>
+            <div class="improvements-grid" id="improvementsGrid">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-btn" onclick="refreshData()">🔄 Actualizar</div>
+        <div class="control-btn" onclick="exportReport()">📄 Reporte</div>
+        <div class="control-btn" onclick="syncKairux()">📡 Sync Kairux</div>
+        <div class="control-btn" onclick="configureAlerts()">🔔 Alertas</div>
+    </div>
+
+    <script>
+        // Datos simulados consolidados de H-08 y H-09
+        const operationalData = {
+            processes: [
+                { name: 'Atención Cliente', efficiency: 92, type: 'operational', time: 15, cost: 5000 },
+                { name: 'Producción', efficiency: 78, type: 'operational', time: 45, cost: 12000 },
+                { name: 'Ventas', efficiency: 95, type: 'strategic', time: 30, cost: 8000 },
+                { name: 'Logística', efficiency: 65, type: 'support', time: 60, cost: 15000 },
+                { name: 'Administración', efficiency: 88, type: 'support', time: 20, cost: 6000 },
+                { name: 'Control Calidad', efficiency: 91, type: 'operational', time: 25, cost: 7000 }
+            ],
+            wastes: [
+                { type: 'waiting', count: 12, cost: 180000, impact: 'high' },
+                { type: 'defects', count: 8, cost: 145000, impact: 'high' },
+                { type: 'motion', count: 15, cost: 95000, impact: 'medium' },
+                { type: 'transport', count: 6, cost: 78000, impact: 'medium' },
+                { type: 'inventory', count: 4, cost: 65000, impact: 'low' },
+                { type: 'overprocessing', count: 7, cost: 42000, impact: 'low' }
+            ],
+            improvements: [
+                {
+                    title: 'Reducción Tiempo Espera',
+                    description: 'Implementación de sistema de colas digitales',
+                    impact: '25% ↓',
+                    savings: '₡45K/mes',
+                    date: '2024-01-15'
+                },
+                {
+                    title: 'Automatización QA',
+                    description: 'Sistema automático de control de calidad',
+                    impact: '40% ↓',
+                    savings: '₡38K/mes',
+                    date: '2024-01-10'
+                },
+                {
+                    title: 'Optimización Layout',
+                    description: 'Reorganización de espacios de trabajo',
+                    impact: '30% ↓',
+                    savings: '₡28K/mes',
+                    date: '2024-01-05'
+                },
+                {
+                    title: 'Capacitación 5S',
+                    description: 'Implementación metodología 5S en producción',
+                    impact: '20% ↓',
+                    savings: '₡22K/mes',
+                    date: '2023-12-28'
+                }
+            ],
+            timeline: [
+                { date: 'Hoy', title: 'Sistema Kanban Implementado', description: 'Reducción 35% en tiempo de espera', type: 'success' },
+                { date: 'Ayer', title: 'Capacitación Lean Completada', description: '15 empleados certificados en Lean Manufacturing', type: 'info' },
+                { date: '3 días', title: 'Mejora en Proceso de Ventas', description: 'ROI incrementado en 18%', type: 'success' },
+                { date: '1 semana', title: 'Detección Cuello Botella', description: 'Identificado en proceso logístico', type: 'warning' },
+                { date: '2 semanas', title: 'Plan 5S Iniciado', description: 'Reorganización completa del área productiva', type: 'info' }
+            ]
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            createHeatmap();
+            createParetoChart();
+            createTimeline();
+            createImprovements();
+            updateEfficiencyGauge();
+            
+            // Simulación de datos en tiempo real
+            setInterval(updateRealTimeData, 30000);
+        });
+
+        // Al final de initializeDashboard()
+        function initializeDashboard() {
+            console.log('⚡ Torre de Control Operativa iniciada');
+            console.log('🔗 Conectado a H-08 (Cartógrafo) y H-09 (Gestor Desperdicios)');
+            showNotification('📊 Dashboard operacional cargado exitosamente', 'success');
+            
+            // Mostrar hints para usuarios primerizos
+            showFirstTimeHints();
+        }
+
+        function showFirstTimeHints() {
+            // Verificar si es primera vez
+            const isFirstTime = !localStorage.getItem('kairux_dashboard_visited');
+            
+            if (isFirstTime) {
+                // Agregar indicadores visuales
+                setTimeout(() => {
+                    const hint1 = document.createElement('div');
+                    hint1.className = 'first-time-hint';
+                    hint1.textContent = '!';
+                    hint1.style.zIndex = '1001';
+                    
+                    const kpiPanel = document.querySelector('.kpis-panel');
+                    if (kpiPanel) {
+                        kpiPanel.style.position = 'relative';
+                        kpiPanel.appendChild(hint1);
+                    }
+                    
+                    // Mostrar mensaje de bienvenida
+                    showWelcomeMessage();
+                    
+                    // Marcar como visitado
+                    localStorage.setItem('kairux_dashboard_visited', 'true');
+                }, 2000);
+            }
+        }
+
+        function showWelcomeMessage() {
+            const welcomeModal = document.createElement('div');
+            welcomeModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(5px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+            `;
+            
+            welcomeModal.innerHTML = `
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; max-width: 500px; text-align: center; color: var(--text-primary);">
+                    <div style="background: var(--primary-gradient); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">KAIRUX</div>
+                    <h2 style="margin-bottom: 1rem;">🎯 Torre de Control Operativa</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.5;">
+                        Esta es tu central de comando operativa. Aquí ves el desempeño consolidado de todos tus procesos y desperdicios.
+                    </p>
+                    <div style="text-align: left; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin: 1rem 0; font-size: 0.9rem;">
+                        <strong>💡 Consejos rápidos:</strong><br>
+                        • Pasa el cursor sobre cualquier elemento para ver explicaciones<br>
+                        • Los números verdes son buenos, rojos necesitan atención<br>
+                        • Haz clic en los procesos del mapa de calor para ver detalles
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: var(--primary-gradient); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Entendido, comencemos
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(welcomeModal);
+        }
+
+        function createHeatmap() {
+            const heatmapGrid = document.getElementById('heatmapGrid');
+            heatmapGrid.innerHTML = '';
+
+            operationalData.processes.forEach(process => {
+                const item = document.createElement('div');
+                
+                let efficiencyClass = 'excellent';
+                if (process.efficiency < 70) efficiencyClass = 'poor';
+                else if (process.efficiency < 85) efficiencyClass = 'medium';
+                
+                item.className = `process-heat-item ${efficiencyClass}`;
+                item.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">${process.name}</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">${process.efficiency}%</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">${process.time}min • ₡${(process.cost/1000).toFixed(0)}K</div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    showProcessDetails(process);
+                });
+                
+                heatmapGrid.appendChild(item);
+            });
+        }
+
+        function createParetoChart() {
+            const ctx = document.getElementById('paretoChart').getContext('2d');
+            
+            // Ordenar desperdicios por costo (descendente)
+            const sortedWastes = [...operationalData.wastes].sort((a, b) => b.cost - a.cost);
+            const totalCost = sortedWastes.reduce((sum, w) => sum + w.cost, 0);
+            
+            let cumulativePercent = 0;
+            const cumulativeData = sortedWastes.map(waste => {
+                cumulativePercent += (waste.cost / totalCost) * 100;
+                return cumulativePercent;
+            });
+
+            const wasteNames = {
+                waiting: 'Espera',
+                defects: 'Defectos',
+                motion: 'Movimiento',
+                transport: 'Transporte',
+                inventory: 'Inventario',
+                overprocessing: 'Sobre-proceso'
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedWastes.map(w => wasteNames[w.type]),
+                    datasets: [
+                        {
+                            label: 'Costo Anual (₡K)',
+                            data: sortedWastes.map(w => w.cost / 1000),
+                            backgroundColor: 'rgba(255, 183, 77, 0.8)',
+                            borderColor: '#ffb74d',
+                            borderWidth: 2,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '% Acumulado',
+                            type: 'line',
+                            data: cumulativeData,
+                            borderColor: '#00d4aa',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#00d4aa',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: { size: 11 }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + value + 'K';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            max: 100,
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createTimeline() {
+            const timelineContainer = document.getElementById('timelineContainer');
+            timelineContainer.innerHTML = '';
+
+            operationalData.timeline.forEach(item => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                let borderColor = 'var(--success)';
+                if (item.type === 'warning') borderColor = 'var(--warning)';
+                else if (item.type === 'info') borderColor = 'var(--info)';
+                
+                timelineItem.style.borderLeftColor = borderColor;
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-date">${item.date}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${item.title}</div>
+                        <div class="timeline-description">${item.description}</div>
+                    </div>
+                `;
+                
+                timelineContainer.appendChild(timelineItem);
+            });
+        }
+
+        function createImprovements() {
+            const improvementsGrid = document.getElementById('improvementsGrid');
+            improvementsGrid.innerHTML = '';
+
+            operationalData.improvements.slice(0, 4).forEach(improvement => {
+                const improvementItem = document.createElement('div');
+                improvementItem.className = 'improvement-item';
+                
+                improvementItem.innerHTML = `
+                    <div class="improvement-header">
+                        <div class="improvement-title">${improvement.title}</div>
+                        <div class="improvement-impact">${improvement.impact}</div>
+                    </div>
+                    <div class="improvement-description">${improvement.description}</div>
+                    <div class="improvement-metrics">
+                        <div class="improvement-metric">
+                            💰 <span>${improvement.savings}</span>
+                        </div>
+                        <div class="improvement-metric">
+                            📅 <span>${new Date(improvement.date).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `;
+                
+                improvementsGrid.appendChild(improvementItem);
+            });
+        }
+
+        function updateEfficiencyGauge() {
+            const efficiency = 85; // Valor actual
+            const gaugeFill = document.getElementById('efficiencyGauge');
+            const efficiencyValue = document.getElementById('efficiencyValue');
+            
+            // Calcular rotación (270 grados = 100%)
+            const rotation = (efficiency / 100) * 270 - 90;
+            
+            gaugeFill.style.transform = `rotate(${rotation}deg)`;
+            
+            // Cambiar color según eficiencia
+            if (efficiency >= 80) {
+                gaugeFill.style.borderColor = 'var(--success) transparent transparent transparent';
+            } else if (efficiency >= 60) {
+                gaugeFill.style.borderColor = 'var(--warning) transparent transparent transparent';
+            } else {
+                gaugeFill.style.borderColor = 'var(--danger) transparent transparent transparent';
+            }
+            
+            efficiencyValue.textContent = efficiency + '%';
+        }
+
+        function showProcessDetails(process) {
+            const details = `
+                📊 Detalles del Proceso: ${process.name}
+                
+                • Eficiencia: ${process.efficiency}%
+                • Tiempo Promedio: ${process.time} minutos
+                • Costo por Transacción: ₡${process.cost.toLocaleString()}
+                • Tipo: ${process.type.charAt(0).toUpperCase() + process.type.slice(1)}
+                
+                ${process.efficiency < 75 ? '⚠️ Requiere atención: Eficiencia por debajo del objetivo' : '✅ Rendimiento dentro del rango objetivo'}
+            `;
+            
+            alert(details);
+        }
+
+        function updateRealTimeData() {
+            // Simular actualización de datos en tiempo real
+            const kpis = [
+                'eficienciaGlobal', 'tiempoCiclo', 'costoTransaccion', 
+                'indiceDesperdicios', 'scoreMejora', 'roiOperacional'
+            ];
+            
+            kpis.forEach(kpi => {
+                const element = document.getElementById(kpi);
+                if (element && Math.random() > 0.7) { // 30% probabilidad de cambio
+                    element.style.transform = 'scale(1.1)';
+                    element.style.transition = 'transform 0.3s ease';
+                    
+                    setTimeout(() => {
+                        element.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            });
+            
+            console.log('📊 Datos operacionales actualizados en tiempo real');
+        }
+
+        function refreshData() {
+            showNotification('🔄 Actualizando datos operacionales...', 'info');
+            
+            setTimeout(() => {
+                // Simular actualización de datos
+                createHeatmap();
+                updateEfficiencyGauge();
+                
+                showNotification('✅ Datos actualizados exitosamente', 'success');
+            }, 1500);
+        }
+
+        function exportReport() {
+            const reportData = {
+                timestamp: new Date().toISOString(),
+                kpis_operacionales: {
+                    eficiencia_global: document.getElementById('eficienciaGlobal').textContent,
+                    tiempo_ciclo_promedio: document.getElementById('tiempoCiclo').textContent,
+                    costo_transaccion: document.getElementById('costoTransaccion').textContent,
+                    indice_desperdicios: document.getElementById('indiceDesperdicios').textContent,
+                    score_mejora_continua: document.getElementById('scoreMejora').textContent,
+                    roi_operacional: document.getElementById('roiOperacional').textContent
+                },
+                procesos: operationalData.processes,
+                desperdicios: operationalData.wastes,
+                mejoras_implementadas: operationalData.improvements,
+                scorecard: {
+                    cumplimiento_procesos: '92%',
+                    reduccion_desperdicios: '78%',
+                    optimizacion_tiempo: '85%',
+                    satisfaccion_proceso: '89%',
+                    score_global: 'A (86/100)'
+                }
+            };
+            
+            console.log('📄 Generando reporte operacional:', reportData);
+            
+            showNotification('📄 Reporte operacional generado exitosamente', 'success');
+            
+            // En un entorno real, esto descargaría un PDF o Excel
+            setTimeout(() => {
+                showNotification('📧 Reporte enviado por email', 'info');
+            }, 2000);
+        }
+
+        function syncKairux() {
+            // Datos consolidados para el Puente de Mando Kairux
+            const kairuxData = {
+                timestamp: new Date().toISOString(),
+                source: 'torre_control_operativa',
+                metricas_consolidadas: {
+                    eficiencia_global_procesos: 85,
+                    tiempo_ciclo_promedio_minutos: 24,
+                    costo_promedio_transaccion: 8500,
+                    indice_desperdicios: 3.2,
+                    score_mejora_continua: 7.8,
+                    roi_operacional: 32
+                },
+                analisis_procesos: {
+                    total_procesos_mapeados: operationalData.processes.length,
+                    procesos_eficientes: operationalData.processes.filter(p => p.efficiency >= 80).length,
+                    procesos_criticos: operationalData.processes.filter(p => p.efficiency < 70).length,
+                    distribucion_tipos: {
+                        operacionales: operationalData.processes.filter(p => p.type === 'operational').length,
+                        estrategicos: operationalData.processes.filter(p => p.type === 'strategic').length,
+                        soporte: operationalData.processes.filter(p => p.type === 'support').length
+                    }
+                },
+                analisis_desperdicios: {
+                    total_tipos_detectados: operationalData.wastes.length,
+                    costo_total_anual: operationalData.wastes.reduce((sum, w) => sum + w.cost, 0),
+                    desperdicios_criticos: operationalData.wastes.filter(w => w.impact === 'high').length,
+                    top_desperdicio: operationalData.wastes.sort((a, b) => b.cost - a.cost)[0]
+                },
+                mejoras_mes: {
+                    total_implementadas: operationalData.improvements.length,
+                    ahorro_mensual_total: operationalData.improvements
+                        .reduce((sum, imp) => sum + parseInt(imp.savings.replace(/[₡K\/mes]/g, '')), 0),
+                    impacto_promedio: '28.75%'
+                }
+            };
+            
+            console.log('📡 Enviando datos consolidados al Puente de Mando Kairux:', kairuxData);
+            
+            // En un entorno real: bubble_fn_sendOperationalDashboard(kairuxData);
+            
+            showNotification('📡 Datos enviados al Puente de Mando Kairux exitosamente', 'success');
+            
+            setTimeout(() => {
+                showNotification('✅ Sincronización completada. Métricas disponibles en Dashboard Ejecutivo', 'success');
+            }, 2500);
+        }
+
+        function configureAlerts() {
+            const alertsConfig = {
+                eficiencia_global: { min: 80, enabled: true },
+                tiempo_ciclo: { max: 30, enabled: true },
+                indice_desperdicios: { max: 4.0, enabled: true },
+                costo_transaccion: { max: 10000, enabled: true }
+            };
+            
+            console.log('🔔 Configuración de alertas:', alertsConfig);
+            
+            showNotification('🔔 Alertas operacionales configuradas', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--info)'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                font-weight: 600;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        refreshData();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        syncKairux();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportReport();
+                        break;
+                }
+            }
+        });
+
+        // CSS para animaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

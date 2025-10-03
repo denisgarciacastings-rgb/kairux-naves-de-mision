@@ -1,0 +1,1980 @@
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Es inexistente o nunca lo hemos pensado.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Es básico y desactualizado; existe, pero con información incorrecta o incompleta.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Es completo pero no lo mantenemos activamente; la información es correcta, pero no se actualiza o gestionan reseñas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Es relevante y está actualizado; tenemos nuestro perfil completo, con fotos y al día.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Está optimizado y lo gestionamos activamente; con reseñas, publicaciones y monitoreo constante.</div>
+                            </div><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAIRUX 360° - Diagnóstico Elite PYME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #00d4aa;
+            --warning: #ffb74d;
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: backgroundShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .brand-text {
+            font-weight: 800;
+            font-size: 2.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 20px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-20px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(20px); opacity: 0; }
+        }
+
+        .section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInLeft 0.6s ease forwards;
+        }
+
+        .question:nth-child(even) {
+            animation: fadeInRight 0.6s ease forwards;
+        }
+
+        .question-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .question-required {
+            color: var(--danger);
+            margin-left: 0.25rem;
+        }
+
+        .question-help {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-style: italic;
+            padding: 0.75rem;
+            background: rgba(0, 212, 170, 0.05);
+            border-left: 3px solid var(--success);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--success);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1), 0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .custom-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dropdown-selected {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 54px;
+        }
+
+        .dropdown-selected:hover {
+            border-color: var(--info);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .dropdown-selected.active {
+            border-color: var(--success);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .dropdown-selected.active .dropdown-arrow {
+            transform: rotate(180deg);
+            color: var(--success);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.75);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .dropdown-options::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 16px;
+            z-index: -1;
+        }
+
+        .dropdown-options.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-option {
+            padding: 1rem 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            background: transparent;
+        }
+
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-option:hover {
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--success);
+            transform: translateX(4px);
+            border-left: 3px solid var(--success);
+        }
+
+        .dropdown-option.selected {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--success);
+            border-left: 3px solid var(--success);
+            font-weight: 600;
+        }
+
+        .dropdown-option-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .validation-message {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .validation-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .validation-message.error {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid rgba(255, 82, 82, 0.3);
+            color: var(--danger);
+        }
+
+        .validation-message.success {
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            color: var(--success);
+        }
+
+        .field-check {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--success);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            animation: checkBounce 0.4s ease;
+        }
+
+        .field-check.show {
+            display: flex;
+        }
+
+        @keyframes checkBounce {
+            0% { transform: translateY(-50%) scale(0); }
+            50% { transform: translateY(-50%) scale(1.2); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            z-index: 1000;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .auto-save-indicator.show {
+            display: flex;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .questions-counter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .counter-badge {
+            background: var(--primary-gradient);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+
+        .nav-button {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-button.primary {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
+
+        .nav-button.primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .submit-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-button {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 16px;
+            padding: 1.25rem 3rem;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid var(--text-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-animation {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--success);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: successBounce 0.6s ease;
+        }
+
+        @keyframes successBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .pulse-animation {
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .selection-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .selection-ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            pointer-events: none;
+        }
+
+        .selection-ripple.animate::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #7c8ee8 0%, #8b5fa8 100%);
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .brand-text {
+                font-size: 2rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">⚡</div>
+                <div class="brand-text">KAIRUX 360°</div>
+            </div>
+            <div class="subtitle">Diagnóstico Estratégico - Método Kairux</div>
+            <div class="description">
+                Cada PYME guarda un potencial ilimitado. Complete este diagnóstico avanzado para obtener una radiografía accionable de su empresa y su plan de acción personalizado.
+            </div>
+        </div>
+
+        <!-- Barra de Progreso -->
+        <div class="progress-bar">
+            <div class="progress-info">
+                <div class="progress-text">Progreso del Diagnóstico</div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="questions-counter">
+                        <span class="counter-badge" id="answeredCount">0/48</span>
+                        <span>completadas</span>
+                    </div>
+                    <div class="progress-percentage">0%</div>
+                </div>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form id="diagnosticoForm">
+            <!-- SECCIÓN A: INFORMACIÓN BÁSICA -->
+            <div class="section" data-section="1">
+                <div class="section-header">
+                    <div class="section-icon">🏢</div>
+                    <div>
+                        <div class="section-title">SECCIÓN A: CONOZCAMOS SU EMPRESA</div>
+                        <div class="section-description">Para personalizar su diagnóstico, necesitamos entender el corazón de su negocio.</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">La empresa se dedica principalmente a:<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="actividad_principal" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione una opción...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="productos_fisicos">Vende productos físicos (ej: ropa, muebles, artesanías)</div>
+                                <div class="dropdown-option" data-value="servicios_profesionales">Ofrece servicios profesionales (ej: consultoría, reparaciones, belleza)</div>
+                                <div class="dropdown-option" data-value="alimentacion">Opera en alimentación (ej: restaurante, cafetería, distribución)</div>
+                                <div class="dropdown-option" data-value="tecnologia">Desarrolla tecnología (ej: software, soluciones digitales)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Por favor, cuéntenos brevemente en una frase: ¿qué hace único su negocio?<span class="question-required">*</span></label>
+                    <div class="question-help">Ej: "Somos una ferretería que ofrece asesoría técnica especializada"</div>
+                    <div class="input-group">
+                        <input type="text" class="form-input" name="propuesta_unica" required placeholder="Describa qué hace único a su negocio...">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Nombre de la empresa<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="text" class="form-input" name="nombre_empresa" required placeholder="Ingrese el nombre de su empresa">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Nombre de persona de contacto principal<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="text" class="form-input" name="contacto_principal" required placeholder="Nombre completo del contacto principal">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Teléfono de contacto de la empresa<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="tel" class="form-input" name="telefono_empresa" required placeholder="+506 8888-8888">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Correo electrónico de la empresa<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="email" class="form-input" name="email_empresa" required placeholder="contacto@empresa.com">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Pensando en los últimos 6 meses, ¿cuál ha sido su facturación mensual promedio estimada (en colones costarricenses)?<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="text" class="form-input" name="facturacion_mensual" required placeholder="₡500,000 - ₡50,000,000">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">De igual manera, ¿cuáles han sido sus costos fijos mensuales promedio estimados (en colones costarricenses) durante los últimos 6 meses?<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="text" class="form-input" name="costos_fijos" required placeholder="₡200,000 - ₡20,000,000">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cuántas personas, incluyéndole a usted, trabajan actualmente en la empresa a tiempo completo o parcial?<span class="question-required">*</span></label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" name="numero_empleados" required placeholder="1 - 250" min="1">
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN B: EXCELENCIA OPERATIVA -->
+            <div class="section" data-section="2">
+                <div class="section-header">
+                    <div class="section-icon">⚙️</div>
+                    <div>
+                        <div class="section-title">SECCIÓN B: EXCELENCIA OPERATIVA</div>
+                        <div class="section-description">El motor interno - Hablemos de sus procesos y cómo asegura calidad y eficiencia en el día a día.</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo se documentan o registran las actividades y tareas clave en su empresa?<span class="question-required">*</span></label>
+                    <div class="question-help">Para cada afirmación, elija la opción que mejor describa la situación actual de su empresa. Un '1' indica una situación crítica o inexistente, y un '5' una práctica altamente optimizada y estratégica.</div>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="documentacion_tareas" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione el nivel actual...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No hay nada escrito; las tareas se aprenden "sobre la marcha" y sin un orden fijo.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Existen ideas o notas básicas; algunas tareas importantes tienen explicaciones verbales o muy pocas anotaciones.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Tenemos guías simples; algunas actividades clave tienen pasos escritos, pero no están completas o actualizadas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Hay procedimientos claros; la mayoría de las actividades importantes tienen un paso a paso definido y accesible.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Contamos con un sistema de mejora continua; todas las tareas clave tienen procedimientos detallados, se revisan y mejoran constantemente.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Qué herramientas utiliza para la organización de tareas y proyectos en su empresa?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="herramientas_organizacion" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione su nivel actual...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Solo papel y mente; todo se maneja de forma informal sin herramientas.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>WhatsApp o recordatorios simples; utilizamos herramientas básicas de comunicación personal.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Excel o listas básicas; manejo las tareas en hojas de cálculo o listas no colaborativas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Herramientas dedicadas (ej. Trello, Asana, Monday); utilizo software específico para la gestión de tareas.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Contamos con un sistema integrado de gestión de proyectos/tareas que optimiza flujos de trabajo y colaboración.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo realiza el control de calidad y la evaluación de sus proveedores principales?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="control_calidad_proveedores" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione su enfoque actual...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No realizo evaluación; solo me enfoco en el precio del proveedor.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>El control es reactivo; solo reacciono ante problemas de calidad o entrega.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Realizo revisiones básicas; verificaciones simples al recibir productos/servicios.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Realizo una evaluación regular; tengo un proceso para evaluar y calificar a mis proveedores clave.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Contamos con un sistema colaborativo; trabajo activamente con proveedores para asegurar la calidad y buscar mejoras conjuntas.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo gestiona los desperdicios (como tiempo, materiales, recursos) en su empresa?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="gestion_desperdicios" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione su nivel de gestión...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No los identifico; no sé qué me hace perder tiempo, materiales o recursos.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Los identifico sin métricas; sé que hay desperdicios, pero no los mido ni los cuantifico.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Implemento acciones esporádicas para reducir desperdicios, pero sin un plan sistemático.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Realizo medición y acciones; identifico, mido y tomo acciones regulares para controlar los desperdicios.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Tengo un programa activo de mejora continua; me enfoco en la reducción de desperdicios y optimización de recursos.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Tiene un protocolo establecido para la gestión de quejas o problemas de clientes?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="protocolo_quejas" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su protocolo actual...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Es ad-hoc; las quejas se resuelven de forma individual y no hay un proceso definido.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Es informal; intento resolver las quejas, pero no registro nada ni uso la información para mejorar.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Es básico pero no sistematizado; tengo una idea de cómo manejar las quejas, pero sin un protocolo claro o seguimiento.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Es definido con seguimiento; existe un protocolo claro para la gestión de quejas y se le da seguimiento.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Es automatizado y de aprendizaje; el protocolo está sistematizado, automatizado y se utiliza para la mejora continua del servicio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo solicita activamente el feedback y la opinión de sus clientes?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="feedback_clientes" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione su enfoque...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Nunca; no solicito activamente la opinión de mis clientes.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>De forma oportunista; solo si el cliente menciona algo o surge la oportunidad.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>De manera informal; de vez en cuando, mediante conversaciones casuales o solicitudes no estructuradas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Utilizo un sistema regular; uso encuestas simples, redes sociales o formularios para obtener feedback.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Tengo un proceso activo y accionable; recopilo feedback de forma sistemática y lo uso para mejorar productos/servicios.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Pensando en la satisfacción general de sus clientes, ¿cuál es su percepción?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="satisfaccion_clientes" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe la satisfacción...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Muy insatisfechos (equivalente a 1-4 en una escala de 10).</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Insatisfechos (equivalente a 5-6 en una escala de 10).</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Neutros (equivalente a 7 en una escala de 10).</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Satisfechos (equivalente a 8 en una escala de 10).</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Muy satisfechos (equivalente a 9-10 en una escala de 10).</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo monitorea el desempeño general de su negocio, incluyendo sus indicadores clave (KPIs operativos)?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="monitoreo_kpis" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Seleccione su sistema de monitoreo...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>De forma reactiva; solo reacciono cuando surgen problemas graves.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Esporádicamente; reviso el desempeño de vez en cuando, sin un plan.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>De manera informal; tengo una idea general, pero no uso indicadores clave o métricas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Utilizo indicadores clave; uso métricas definidas para monitorear el desempeño de forma regular.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Tengo un sistema integral; cuento con un dashboard con KPIs operativos que guían la mejora continua y la toma de decisiones.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo participa su equipo en la mejora de procesos y calidad?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="participacion_equipo" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe la participación del equipo...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Solo la dirección toma decisiones; el equipo no participa.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Algunos empleados clave proponen ideas de forma aislada.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Existe un buzón de sugerencias o canal informal, pero no se gestiona activamente.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Se fomenta activamente la participación del equipo en la mejora de procesos y la calidad.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>El equipo está empoderado y es responsable de la mejora continua y la innovación operativa.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Qué tan alineadas están sus operaciones diarias con la estrategia general de su empresa?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="alineacion_operaciones" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe la alineación estratégica...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Cumple funciones sin ver el panorama global.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Satisface necesidades inmediatas sin una visión estratégica.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Contribuye parcialmente a objetivos mayores.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Está claramente alineado con metas departamentales.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Es eslabón esencial para lograr la visión empresarial.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN C: MADUREZ DIGITAL -->
+            <div class="section" data-section="3">
+                <div class="section-header">
+                    <div class="section-icon">💻</div>
+                    <div>
+                        <div class="section-title">SECCIÓN C: MADUREZ DIGITAL</div>
+                        <div class="section-description">Su huella en línea - Exploremos su presencia digital y cómo usa tecnología para crecer.</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo describe el perfil de Google My Business o su presencia en directorios online?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="google_my_business" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su presencia online...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1">Es inexistente o nunca lo hemos pensado.</div>
+                                <div class="dropdown-option" data-value="2">Es básico y desactualizado; existe, pero con información incorrecta o incompleta.</div>
+                                <div class="dropdown-option" data-value="3">Es completo pero no lo mantenemos activamente; la información es correcta, pero no se actualiza o gestionan reseñas.</div>
+                                <div class="dropdown-option" data-value="4">Es relevante y está actualizado; tenemos nuestro perfil completo, con fotos y al día.</div>
+                                <div class="dropdown-option" data-value="5">Está optimizado y lo gestionamos activamente; con reseñas, publicaciones y monitoreo constante.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cuál es la frecuencia y estrategia de publicación de contenido en redes sociales o en su sitio web?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="estrategia_contenido" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su estrategia de contenido...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Publicamos menos de 1 vez al mes o es nula.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Publicamos 2-3 veces al mes, sin un plan ni estrategia clara.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Publicamos 1 vez a la semana, con contenido básico y sin una estrategia definida.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Publicamos 1 vez a la semana, con un calendario y plan de contenido establecido.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Publicamos 3-5 veces a la semana con contenido estratégico y variado, enfocado en atraer y convertir.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo es el tiempo de respuesta a mensajes y comentarios en sus canales digitales?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="tiempo_respuesta_digital" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su tiempo de respuesta...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Respondemos después de 48 horas o no respondemos; ignoramos la mayoría de mensajes.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>La respuesta es irregular; a menudo tardamos más de 24 horas en responder.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Intentamos responder en menos de 24 horas, pero no es consistente.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Casi siempre respondemos en menos de 24 horas de forma profesional.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Contamos con un sistema garantizado de respuesta en menos de 24 horas, con seguimiento y automatización.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Su empresa cuenta con un canal digital que le permite realizar transacciones (como una tienda online o un sistema de reservas)?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="canal_transacciones" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe sus canales transaccionales...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No, solo tenemos presencia informativa (redes sociales básicas, sitio web estático).</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Sí, tenemos un canal online, pero no se usa para transacciones directas (solo para información).</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Sí, tenemos un canal, pero está subutilizado, no es intuitivo o presenta fallas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Es funcional y lo usamos; los clientes pueden comprar o agendar citas directamente.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Está optimizado y automatizado; el canal es una fuente principal de ingresos con excelente experiencia de usuario.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo realiza el análisis de métricas y datos provenientes de sus canales digitales?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="analisis_metricas" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su análisis de datos...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No realizo análisis; no reviso ninguna estadística digital.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Realizo revisión sin uso; miro los números, pero no los utilizo para tomar decisiones.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Las uso para decisiones básicas; algunas métricas para decisiones sencillas (ej. ¿cuántos "me gusta"?).</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Hago análisis estratégico; utilizo métricas clave para decisiones de marketing y ventas y el retorno de la inversión.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>La optimización es basada en datos; el análisis de métricas digitales es crucial para la mejora continua y el retorno de la inversión.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo utiliza la publicidad pagada en plataformas digitales (como Google Ads o Facebook Ads)?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="publicidad_pagada" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su uso de publicidad pagada...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>No la utilizamos en absoluto.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Es esporádica y sin resultados claros; hemos invertido, pero sin ganancias medibles.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>La usamos sin medición; invertimos, pero no sabemos si nos está dando ganancias.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>La utilizamos con optimización; implementamos publicidad pagada y la optimizamos para obtener resultados.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Es una estrategia integral; la publicidad pagada es un componente clave de nuestra estrategia de crecimiento digital, con un retorno claro en nuestros anuncios.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cómo gestiona los datos de sus clientes (tiene una base de datos o un sistema para gestionarlos)?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="gestion_datos_clientes" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su gestión de datos...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>La gestión es desorganizada; tenemos contactos dispersos en diferentes lugares (celular, email).</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Es una lista básica; tenemos una lista de contactos, pero sin información detallada.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>El uso es básico; utilizamos una base de datos simple para enviar comunicaciones generales.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Es un uso estratégico; utilizamos una base de datos con segmentos para campañas específicas.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Tenemos un sistema especializado para clientes; gestiona clientes, interacciones y ventas de forma integral.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Cuál es la presencia y actividad de su empresa en las redes sociales relevantes para su negocio?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="actividad_redes_sociales" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe su actividad en redes...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Es inexistente o el perfil está inactivo.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>El perfil está inactivo o las publicaciones son muy esporádicas.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Hay baja actividad; publicamos de vez en cuando, sin mucha interacción.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Es activa y regular; publicamos con frecuencia e interactuamos con nuestros seguidores.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Hay alta interacción y comunidad; hemos creado una comunidad activa y comprometida en redes sociales.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">¿Qué tan alineada está su inversión y estrategia digital con los objetivos generales de su empresa?<span class="question-required">*</span></label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" data-name="alineacion_digital" data-required="true">
+                            <div class="dropdown-selected">
+                                <span class="dropdown-text">Evalúe la alineación digital...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Es una isla desconectada de su estrategia central.</div>
+                                <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Tiene puentes frágiles con objetivos generales.</div>
+                                <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Muestra sincronía parcial con algunas metas.</div>
+                                <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Apoya activamente sus prioridades estratégicas.</div>
+                                <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Es el sistema circulatorio de su modelo de negocio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-message"></div>
+                </div>
+            </div>
+
+            <!-- Continuará con las otras secciones... -->
+            <div class="navigation-buttons">
+                <button type="button" class="nav-button" id="prevBtn" style="display: none;">⬅️ Anterior</button>
+                <button type="button" class="nav-button primary" id="nextBtn">Siguiente ➡️</button>
+            </div>
+        </form>
+
+        <!-- Sección de envío -->
+        <div class="submit-section" style="display: none;" id="submitSection">
+            <h2 style="margin-bottom: 1rem; color: var(--text-primary);">¡Diagnóstico Completado!</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Está a punto de enviar su diagnóstico PYME 360°. Recibirá un reporte personalizado con oportunidades de mejora y su plan de acción específico.
+            </p>
+            <button type="submit" form="diagnosticoForm" class="submit-button" id="submitBtn">
+                🚀 Generar Mi Diagnóstico Elite
+            </button>
+            
+            <div class="success-animation" id="successAnimation">
+                <div class="success-icon">✓</div>
+                <h3>¡Diagnóstico Enviado con Éxito!</h3>
+                <p>Su análisis está siendo procesado. Recibirá su reporte personalizado en breve.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicador de auto-guardado -->
+    <div class="auto-save-indicator" id="autoSaveIndicator">
+        <span>💾</span>
+        <span>Guardando progreso...</span>
+    </div>
+
+    <script>
+        // Estado del formulario
+        let currentSection = 1;
+        const totalSections = 5; // A, B, C, D, E
+        let formData = {};
+        let totalQuestions = 48;
+        let answeredQuestions = 0;
+
+        // Inicializar el formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            setupDropdowns();
+            setupValidation();
+            setupNavigation();
+            showCurrentSection();
+        });
+
+        function initializeForm() {
+            // Hacer visible la primera sección
+            const firstSection = document.querySelector('.section[data-section="1"]');
+            if (firstSection) {
+                firstSection.classList.add('visible');
+            }
+
+            // Animar preguntas de la primera sección
+            setTimeout(() => {
+                const questions = firstSection.querySelectorAll('.question');
+                questions.forEach((question, index) => {
+                    setTimeout(() => {
+                        question.style.animationDelay = `${index * 100}ms`;
+                    }, index * 100);
+                });
+            }, 300);
+        }
+
+        function setupDropdowns() {
+            const dropdowns = document.querySelectorAll('.custom-dropdown');
+            
+            dropdowns.forEach(dropdown => {
+                const selected = dropdown.querySelector('.dropdown-selected');
+                const options = dropdown.querySelector('.dropdown-options');
+                const optionItems = dropdown.querySelectorAll('.dropdown-option');
+                
+                // Toggle dropdown
+                selected.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeAllDropdowns();
+                    selected.classList.toggle('active');
+                    options.classList.toggle('show');
+                    
+                    // Animación de apertura
+                    if (options.classList.contains('show')) {
+                        selected.classList.add('pulse-animation');
+                        setTimeout(() => selected.classList.remove('pulse-animation'), 300);
+                    }
+                });
+                
+                // Seleccionar opción
+                optionItems.forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        // Animación de selección
+                        option.classList.add('selection-ripple', 'animate');
+                        setTimeout(() => {
+                            option.classList.remove('animate');
+                        }, 600);
+                        
+                        // Actualizar selección
+                        const text = option.textContent.trim();
+                        const value = option.dataset.value;
+                        
+                        selected.querySelector('.dropdown-text').textContent = text;
+                        dropdown.dataset.value = value;
+                        
+                        // Marcar como seleccionado
+                        optionItems.forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        
+                        // Cerrar dropdown
+                        selected.classList.remove('active');
+                        options.classList.remove('show');
+                        
+                        // Validar
+                        validateField(dropdown);
+                        
+                        // Actualizar progreso
+                        updateProgress();
+                        
+                        // Guardar en formData
+                        const fieldName = dropdown.dataset.name;
+                        if (fieldName) {
+                            formData[fieldName] = {
+                                value: value,
+                                text: text
+                            };
+                        }
+                        
+                        console.log('Campo actualizado:', fieldName, value);
+                    });
+                });
+            });
+            
+            // Cerrar dropdowns al hacer clic fuera
+            document.addEventListener('click', closeAllDropdowns);
+        }
+
+        function closeAllDropdowns() {
+            const activeDropdowns = document.querySelectorAll('.dropdown-selected.active');
+            const openOptions = document.querySelectorAll('.dropdown-options.show');
+            
+            activeDropdowns.forEach(dropdown => dropdown.classList.remove('active'));
+            openOptions.forEach(options => options.classList.remove('show'));
+        }
+
+        function setupValidation() {
+            // Validación para inputs de texto
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                // Agregar contenedor para el checkmark
+                const inputGroup = input.closest('.input-group');
+                if (!inputGroup.querySelector('.field-check')) {
+                    const checkmark = document.createElement('div');
+                    checkmark.className = 'field-check';
+                    checkmark.innerHTML = '✓';
+                    inputGroup.appendChild(checkmark);
+                }
+
+                input.addEventListener('blur', () => {
+                    validateField(input);
+                    showAutoSaveIndicator();
+                });
+                
+                input.addEventListener('input', () => {
+                    clearValidationMessage(input);
+                    updateProgress();
+                    
+                    // Guardar en formData
+                    if (input.name) {
+                        formData[input.name] = input.value;
+                    }
+
+                    // Formateo de moneda para campos específicos
+                    if (input.name === 'facturacion_mensual' || input.name === 'costos_fijos') {
+                        formatCurrencyField(input);
+                    }
+                });
+            });
+        }
+
+        function formatCurrencyField(input) {
+            // Remover formato anterior y obtener solo números
+            let value = input.value.replace(/[^\d]/g, '');
+            
+            if (value === '') {
+                return;
+            }
+            
+            // Convertir a número y formatear
+            let numberValue = parseInt(value);
+            
+            // Formatear con separadores de miles
+            let formatted = numberValue.toLocaleString('es-CR');
+            
+            // Actualizar el valor con el símbolo de colón
+            input.value = '₡' + formatted;
+            
+            // Guardar el valor numérico real en formData
+            if (input.name) {
+                formData[input.name] = numberValue;
+            }
+        }
+
+        function validateField(field) {
+            const validationMessage = field.closest('.question').querySelector('.validation-message');
+            let isValid = true;
+            let message = '';
+            
+            if (field.classList.contains('custom-dropdown')) {
+                const isRequired = field.dataset.required === 'true';
+                const hasValue = field.dataset.value && field.dataset.value !== '';
+                
+                if (isRequired && !hasValue) {
+                    isValid = false;
+                    message = 'Este campo es obligatorio. Por favor seleccione una opción.';
+                }
+            } else {
+                // Validación para inputs
+                const rawValue = field.value.replace(/[^\d]/g, ''); // Para campos de moneda
+                
+                if (field.hasAttribute('required') && !field.value.trim()) {
+                    isValid = false;
+                    message = 'Este campo es obligatorio.';
+                } else if (field.type === 'email' && field.value && !isValidEmail(field.value)) {
+                    isValid = false;
+                    message = 'Por favor ingrese un correo electrónico válido.';
+                } else if (field.type === 'tel' && field.value && !isValidPhone(field.value)) {
+                    isValid = false;
+                    message = 'Por favor ingrese un número de teléfono válido.';
+                } else if (field.value.trim() && isValid) {
+                    // Mostrar checkmark para campos válidos
+                    const checkmark = field.closest('.input-group')?.querySelector('.field-check');
+                    if (checkmark) {
+                        checkmark.classList.add('show');
+                    }
+                }
+            }
+            
+            // Ocultar checkmark si hay error
+            if (!isValid) {
+                const checkmark = field.closest('.input-group')?.querySelector('.field-check');
+                if (checkmark) {
+                    checkmark.classList.remove('show');
+                }
+            }
+            
+            showValidationMessage(validationMessage, message, isValid);
+            return isValid;
+        }
+
+        function showValidationMessage(messageElement, message, isValid) {
+            messageElement.textContent = message;
+            messageElement.className = 'validation-message show ' + (isValid ? 'success' : 'error');
+            
+            if (isValid && message) {
+                messageElement.textContent = '✓ Campo completado correctamente';
+            }
+        }
+
+        function clearValidationMessage(field) {
+            const validationMessage = field.closest('.question').querySelector('.validation-message');
+            validationMessage.classList.remove('show');
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isValidPhone(phone) {
+            return /^[\+]?[\d\s\-\(\)]{8,15}$/.test(phone);
+        }
+
+        function setupNavigation() {
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            
+            nextBtn.addEventListener('click', nextSection);
+            prevBtn.addEventListener('click', prevSection);
+        }
+
+        function nextSection() {
+            if (!validateCurrentSection()) {
+                showSectionError();
+                return;
+            }
+            
+            if (currentSection < totalSections) {
+                currentSection++;
+                showCurrentSection();
+                updateNavigationButtons();
+            } else {
+                showSubmitSection();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 1) {
+                currentSection--;
+                showCurrentSection();
+                updateNavigationButtons();
+                hideSubmitSection();
+            }
+        }
+
+        function showCurrentSection() {
+            // Ocultar todas las secciones con fade out
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    section.classList.remove('visible');
+                    section.style.display = 'none';
+                }, 400);
+            });
+            
+            // Mostrar sección actual con fade in mejorado
+            setTimeout(() => {
+                const currentSectionElement = document.querySelector(`.section[data-section="${currentSection}"]`);
+                if (currentSectionElement) {
+                    currentSectionElement.style.display = 'block';
+                    currentSectionElement.style.opacity = '0';
+                    currentSectionElement.style.transform = 'translateY(30px)';
+                    
+                    setTimeout(() => {
+                        currentSectionElement.classList.add('visible');
+                        currentSectionElement.style.opacity = '1';
+                        currentSectionElement.style.transform = 'translateY(0)';
+                        animateQuestions(currentSectionElement);
+                    }, 50);
+                }
+            }, 450);
+            
+            // Scroll to top suavemente
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function animateQuestions(section) {
+            const questions = section.querySelectorAll('.question');
+            questions.forEach((question, index) => {
+                question.style.opacity = '0';
+                question.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    question.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    question.style.opacity = '1';
+                    question.style.transform = 'translateX(0)';
+                }, index * 100);
+            });
+        }
+
+        function updateNavigationButtons() {
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            
+            // Mostrar/ocultar botón anterior
+            if (currentSection > 1) {
+                prevBtn.style.display = 'flex';
+            } else {
+                prevBtn.style.display = 'none';
+            }
+            
+            // Actualizar texto del botón siguiente
+            if (currentSection === totalSections) {
+                nextBtn.innerHTML = 'Finalizar Diagnóstico 🎯';
+                nextBtn.classList.add('primary');
+            } else {
+                nextBtn.innerHTML = 'Siguiente ➡️';
+                nextBtn.classList.add('primary');
+            }
+        }
+
+        function validateCurrentSection() {
+            const currentSectionElement = document.querySelector(`.section[data-section="${currentSection}"]`);
+            if (!currentSectionElement) return true;
+            
+            let isValid = true;
+            const requiredFields = currentSectionElement.querySelectorAll('[data-required="true"], [required]');
+            
+            requiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+
+        function showSectionError() {
+            // Crear notificación de error elegante
+            const errorNotification = document.createElement('div');
+            errorNotification.style.cssText = `
+                position: fixed;
+                top: 120px;
+                right: 2rem;
+                background: rgba(255, 82, 82, 0.95);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                backdrop-filter: blur(20px);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                animation: slideInRight 0.5s ease;
+                border-left: 4px solid #fff;
+            `;
+            errorNotification.innerHTML = '⚠️ Por favor complete todos los campos obligatorios antes de continuar';
+            
+            document.body.appendChild(errorNotification);
+            
+            // Remover después de 4 segundos
+            setTimeout(() => {
+                errorNotification.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(errorNotification)) {
+                        document.body.removeChild(errorNotification);
+                    }
+                }, 500);
+            }, 4000);
+            
+            // Agregar estilos de animación si no existen
+            if (!document.querySelector('#errorAnimationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'errorAnimationStyles';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOutRight {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function showSubmitSection() {
+            document.getElementById('submitSection').style.display = 'block';
+            document.querySelector('.navigation-buttons').style.display = 'none';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        function hideSubmitSection() {
+            document.getElementById('submitSection').style.display = 'none';
+            document.querySelector('.navigation-buttons').style.display = 'flex';
+        }
+
+        function updateProgress() {
+            // Contar preguntas respondidas
+            answeredQuestions = 0;
+            
+            // Contar dropdowns con valores
+            const dropdowns = document.querySelectorAll('.custom-dropdown[data-required="true"]');
+            dropdowns.forEach(dropdown => {
+                if (dropdown.dataset.value && dropdown.dataset.value !== '') {
+                    answeredQuestions++;
+                }
+            });
+            
+            // Contar inputs completados
+            const inputs = document.querySelectorAll('.form-input[required]');
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    answeredQuestions++;
+                }
+            });
+            
+            const progressPercentage = Math.round((answeredQuestions / totalQuestions) * 100);
+            
+            // Actualizar barra de progreso
+            document.querySelector('.progress-fill').style.width = progressPercentage + '%';
+            document.querySelector('.progress-percentage').textContent = progressPercentage + '%';
+            
+            // Actualizar contador de preguntas
+            const counterElement = document.getElementById('answeredCount');
+            if (counterElement) {
+                counterElement.textContent = `${answeredQuestions}/${totalQuestions}`;
+            }
+            
+            console.log(`Progreso: ${answeredQuestions}/${totalQuestions} (${progressPercentage}%)`);
+        }
+
+        function showAutoSaveIndicator() {
+            const indicator = document.getElementById('autoSaveIndicator');
+            if (!indicator) return;
+            
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.querySelector('span:last-child').textContent = 'Progreso guardado ✓';
+                indicator.style.background = 'rgba(0, 212, 170, 0.1)';
+                indicator.style.borderColor = 'rgba(0, 212, 170, 0.3)';
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                    setTimeout(() => {
+                        indicator.querySelector('span:last-child').textContent = 'Guardando progreso...';
+                        indicator.style.background = 'var(--glass-bg)';
+                        indicator.style.borderColor = 'var(--glass-border)';
+                    }, 300);
+                }, 2000);
+            }, 800);
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('diagnosticoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitForm();
+        });
+
+        function submitForm() {
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Mostrar loading
+            submitBtn.innerHTML = '<div class="loading-spinner"></div>Procesando Diagnóstico...';
+            submitBtn.disabled = true;
+            
+            // Recopilar todos los datos
+            const finalFormData = {
+                ...formData,
+                timestamp: new Date().toISOString(),
+                progress: {
+                    answeredQuestions: answeredQuestions,
+                    totalQuestions: totalQuestions,
+                    completionRate: Math.round((answeredQuestions / totalQuestions) * 100)
+                }
+            };
+            
+            console.log('📊 Datos del diagnóstico KAIRUX:', finalFormData);
+            
+            // Simular envío a Bubble via Toolbox
+            setTimeout(() => {
+                // Aquí es donde se conectaría con Bubble
+                sendToBubble(finalFormData);
+                
+                // Mostrar éxito
+                showSuccessAnimation();
+                
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 3000);
+        }
+
+        function sendToBubble(data) {
+            // Esta función se conectaría con Bubble via Toolbox
+            console.log('🚀 Enviando a Bubble via Toolbox:', data);
+            
+            // Ejemplo de lo que sería la llamada real:
+            // bubble_fn_procesarDiagnosticoPYME(data);
+            
+            // Aquí también se enviaría a Google Sheets via API
+            console.log('📊 Sincronizando con Google Sheets...');
+        }
+
+        function showSuccessAnimation() {
+            const submitSection = document.getElementById('submitSection');
+            const successAnimation = document.getElementById('successAnimation');
+            
+            submitSection.innerHTML = '';
+            successAnimation.style.display = 'flex';
+            submitSection.appendChild(successAnimation);
+            
+            // Confetti effect (opcional)
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#00d4aa', '#ffb74d', '#42a5f5'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: absolute;
+                    width: 10px;
+                    height: 10px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    left: ${Math.random() * 100}%;
+                    animation: confettiFall ${2 + Math.random() * 3}s linear forwards;
+                    z-index: 10000;
+                `;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    if (document.body.contains(confetti)) {
+                        document.body.removeChild(confetti);
+                    }
+                }, 5000);
+            }
+            
+            // Agregar estilos de confetti
+            if (!document.querySelector('#confettiStyles')) {
+                const style = document.createElement('style');
+                style.id = 'confettiStyles';
+                style.textContent = `
+                    @keyframes confettiFall {
+                        0% {
+                            transform: translateY(-100vh) rotateZ(0deg);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translateY(100vh) rotateZ(720deg);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Guardar progreso localmente (backup)
+        setInterval(() => {
+            if (Object.keys(formData).length > 0) {
+                console.log('💾 Guardando progreso...');
+                showAutoSaveIndicator();
+                // En producción no usaríamos localStorage por las restricciones
+                // pero mantendríamos el progreso en memoria durante la sesión
+            }
+        }, 30000); // Cada 30 segundos
+    </script>
+
+    <!-- Continúa con las secciones restantes D y E -->
+    <script>
+        // Agregar las secciones faltantes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                addRemainingSection();
+            }, 1000);
+        });
+
+        function addRemainingSection() {
+            const form = document.getElementById('diagnosticoForm');
+            const navButtons = document.querySelector('.navigation-buttons');
+            
+            // SECCIÓN D: SALUD FINANCIERA
+            const sectionD = `
+                <div class="section" data-section="4">
+                    <div class="section-header">
+                        <div class="section-icon">💰</div>
+                        <div>
+                            <div class="section-title">SECCIÓN D: SALUD FINANCIERA</div>
+                            <div class="section-description">El latir de su negocio - Datos confidenciales vitales para identificar oportunidades de rentabilidad.</div>
+                        </div>
+                    </div>
+                    <!-- Aquí irían todas las preguntas financieras -->
+                    <div class="question">
+                        <label class="question-label">En cuanto a la remuneración de los socios o propietarios, ¿cómo la manejan en su empresa?<span class="question-required">*</span></label>
+                        <div class="dropdown-container">
+                            <div class="custom-dropdown" data-name="remuneracion_socios" data-required="true">
+                                <div class="dropdown-selected">
+                                    <span class="dropdown-text">Seleccione su situación actual...</span>
+                                    <span class="dropdown-arrow">▼</span>
+                                </div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option" data-value="1"><span class="dropdown-option-number">1</span>Sin estructura: Hacemos retiros variables según urgencias personales, mezclando finanzas.</div>
+                                    <div class="dropdown-option" data-value="2"><span class="dropdown-option-number">2</span>Estimado informal: Tenemos un monto aproximado sin registro contable formal.</div>
+                                    <div class="dropdown-option" data-value="3"><span class="dropdown-option-number">3</span>Salario fijo no formalizado: Pagamos un monto fijo, pero sin recibos ni deducciones claras.</div>
+                                    <div class="dropdown-option" data-value="4"><span class="dropdown-option-number">4</span>Remuneración formalizada: Asignamos un salario registrado contablemente como gasto.</div>
+                                    <div class="dropdown-option" data-value="5"><span class="dropdown-option-number">5</span>Sistema integral: Tenemos salario + bonos vinculados a resultados con planificación fiscal.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="validation-message"></div>
+                    </div>
+                    <!-- Más preguntas de la sección D... -->
+                </div>
+
+                <div class="section" data-section="5">
+                    <div class="section-header">
+                        <div class="section-icon">🎯</div>
+                        <div>
+                            <div class="section-title">SECCIÓN E: GESTIÓN ESTRATÉGICA Y LIDERAZGO</div>
+                            <div class="section-description">El timón de su negocio - Reflexionemos sobre dirección y cómo navega hacia el futuro.</div>
+                        </div>
+                    </div>
+                    <!-- Preguntas finales -->
+                    <div class="question">
+                        <label class="question-label">Si tuviera una varita mágica para resolver un desafío inmediato en su negocio, ¿cuál sería?<span class="question-required">*</span></label>
+                        <div class="question-help">Ej: "Reducir tiempos de entrega en un 30%" o "Triplicar el número de clientes online"</div>
+                        <div class="input-group">
+                            <input type="text" class="form-input" name="desafio_principal" required placeholder="Describa su principal desafío...">
+                        </div>
+                        <div class="validation-message"></div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Qué pregunta no le hicimos en este diagnóstico, pero cree que revelaría algo crucial sobre su negocio?<span class="question-required">*</span></label>
+                        <div class="input-group">
+                            <textarea class="form-input" name="pregunta_adicional" required placeholder="Comparta su perspectiva única..." rows="3" style="min-height: 100px; resize: vertical;"></textarea>
+                        </div>
+                        <div class="validation-message"></div>
+                    </div>
+                </div>
+            `;
+            
+            form.insertAdjacentHTML('beforeend', sectionD);
+            
+            // Reinicializar dropdowns para las nuevas secciones
+            setupDropdowns();
+            
+            console.log('✅ Secciones adicionales cargadas');
+        }
+    </script>
+</body>
+</html>

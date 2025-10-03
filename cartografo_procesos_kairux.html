@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-08: El Cartógrafo de Procesos Inteligente - Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #00d4aa;
+            --warning: #ffb74d;
+            --danger: #ff5252;
+            --info: #42a5f5;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+            --operational: #2196f3;
+            --strategic: #9c27b0;
+            --support: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(33, 150, 243, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 152, 0, 0.2) 0%, transparent 50%);
+            animation: backgroundShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Header */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--operational), transparent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Main Container */
+        .container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: calc(100vh - 120px);
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--operational);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--operational), #1976d2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00a693);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d32f2f);
+            color: white;
+        }
+
+        /* Process Canvas */
+        .canvas-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .canvas-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .canvas-main {
+            height: calc(100% - 70px);
+            position: relative;
+            overflow: auto;
+            padding: 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Process Cards */
+        .process-card {
+            position: absolute;
+            width: 280px;
+            min-height: 120px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1rem;
+            cursor: move;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .process-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .process-card.dragging {
+            transform: rotate(5deg);
+            z-index: 1000;
+        }
+
+        .process-card.strategic {
+            border-color: var(--strategic);
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), var(--glass-bg));
+        }
+
+        .process-card.operational {
+            border-color: var(--operational);
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), var(--glass-bg));
+        }
+
+        .process-card.support {
+            border-color: var(--support);
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), var(--glass-bg));
+        }
+
+        .process-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .process-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .process-type-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-strategic {
+            background: rgba(156, 39, 176, 0.2);
+            color: var(--strategic);
+        }
+
+        .badge-operational {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--operational);
+        }
+
+        .badge-support {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--support);
+        }
+
+        .process-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .process-kpis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .kpi-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .kpi-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .process-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .process-responsible {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .bottleneck-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, var(--operational), transparent);
+            transform-origin: left center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* PDCA Modal */
+        .pdca-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .pdca-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .pdca-cycle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .pdca-step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .pdca-step h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Metrics Dashboard */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .sidebar {
+                max-height: 300px;
+            }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        /* Help System */
+        .help-icon {
+            color: var(--text-muted);
+            cursor: help;
+            font-size: 0.9rem;
+            margin-left: 0.25rem;
+        }
+
+        .help-icon:hover {
+            color: var(--info);
+        }
+
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .onboarding-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🗺️ El Cartógrafo de Procesos Inteligente</h1>
+        <p>Mapeo visual basado en SIPOC, ISO 9001 y metodología Lean</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Company Info -->
+            <div class="glass-panel">
+                <div class="panel-title">
+                    🏢 Información Empresarial
+                    <span class="help-icon tooltip" data-tooltip="Define el contexto de tu organización">ℹ️</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre de la Empresa</label>
+                    <input type="text" class="form-input" id="empresaNombre" placeholder="Mi Empresa PYME">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sector Industrial</label>
+                    <select class="form-select" id="empresaSector">
+                        <option value="">Seleccionar sector...</option>
+                        <option value="retail">Retail/Comercio</option>
+                        <option value="servicios">Servicios</option>
+                        <option value="manufactura">Manufactura</option>
+                        <option value="alimentos">Alimentos y Bebidas</option>
+                        <option value="tecnologia">Tecnología</option>
+                        <option value="construccion">Construcción</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Número de Empleados</label>
+                    <input type="number" class="form-input" id="numEmpleados" placeholder="8" min="1">
+                </div>
+            </div>
+
+            <!-- Process Builder -->
+            <div class="glass-panel">
+                <div class="panel-title">
+                    ➕ Constructor SIPOC
+                    <span class="help-icon tooltip" data-tooltip="Suppliers-Inputs-Process-Outputs-Customers">ℹ️</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre del Proceso</label>
+                    <input type="text" class="form-input" id="procesoNombre" placeholder="Atención al Cliente">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-textarea" id="procesoDescripcion" placeholder="Describe el proceso paso a paso..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Proceso</label>
+                    <select class="form-select" id="procesoTipo">
+                        <option value="operational">🔧 Operativo</option>
+                        <option value="strategic">🎯 Estratégico</option>
+                        <option value="support">🛠️ Soporte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Responsable</label>
+                    <input type="text" class="form-input" id="procesoResponsable" placeholder="María González">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tiempo de Ciclo (min)</label>
+                    <input type="number" class="form-input" id="procesoTiempo" placeholder="15" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Costo Estimado (₡)</label>
+                    <input type="number" class="form-input" id="procesoCosto" placeholder="5000" min="0">
+                </div>
+                <button class="btn btn-primary" onclick="agregarProceso()">
+                    ➕ Agregar al Mapa
+                </button>
+            </div>
+
+            <!-- Metrics -->
+            <div class="glass-panel">
+                <div class="panel-title">📊 Métricas del Sistema</div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalProcesos">0</div>
+                        <div class="metric-label">Procesos</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="tiempoTotal">0</div>
+                        <div class="metric-label">Min Total</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="eficienciaGlobal">0%</div>
+                        <div class="metric-label">Eficiencia</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="cuellosDetectados">0</div>
+                        <div class="metric-label">Cuellos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-container">
+            <div class="canvas-header">
+                <div class="canvas-title">🗺️ Lienzo de Procesos Interactivo</div>
+                <div class="canvas-controls">
+                    <button class="btn btn-primary" onclick="autoLayout()">🎯 Auto Layout</button>
+                    <button class="btn btn-success" onclick="exportarKairux()">📡 Sync Kairux</button>
+                </div>
+            </div>
+            <div class="canvas-main" id="processCanvas">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-muted);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+                    <h3>Lienzo de Procesos Vacío</h3>
+                    <p>Agrega tu primer proceso usando el panel lateral</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDCA Modal -->
+    <div class="pdca-modal" id="pdcaModal">
+        <div class="pdca-content">
+            <h3>🔄 Ciclo PDCA de Mejora</h3>
+            <p id="pdcaProcessName"></p>
+            <div class="pdca-cycle">
+                <div class="pdca-step">
+                    <h4>📋 PLANIFICAR</h4>
+                    <textarea class="form-textarea" id="pdcaPlan" placeholder="¿Qué mejora propones?"></textarea>
+                </div>
+                <div class="pdca-step">
+                    <h4>⚡ HACER</h4>
+                    <textarea class="form-textarea" id="pdcaDo" placeholder="¿Cómo lo implementarás?"></textarea>
+                </div>
+                <div class="pdca-step">
+                    <h4>✅ VERIFICAR</h4>
+                    <textarea class="form-textarea" id="pdcaCheck" placeholder="¿Cómo medirás el resultado?"></textarea>
+                </div>
+                <div class="pdca-step">
+                    <h4>🚀 ACTUAR</h4>
+                    <textarea class="form-textarea" id="pdcaAct" placeholder="¿Cómo estandarizarás?"></textarea>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <button class="btn btn-success" onclick="guardarPDCA()">💾 Guardar Mejora</button>
+                <button class="btn btn-danger" onclick="cerrarPDCA()">❌ Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Overlay -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-content">
+            <h3>🎯 ¡Bienvenido al Cartógrafo de Procesos!</h3>
+            <p style="margin: 1rem 0;">Esta herramienta te ayudará a mapear visualmente los procesos de tu empresa usando metodología SIPOC y detectar automáticamente cuellos de botella.</p>
+            <button class="btn btn-primary" onclick="cerrarOnboarding()">🚀 ¡Empezar a Mapear!</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let procesos = [];
+        let selectedProcess = null;
+        let draggedProcess = null;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            mostrarOnboarding();
+            actualizarMetricas();
+        });
+
+        function mostrarOnboarding() {
+            document.getElementById('onboardingOverlay').style.display = 'flex';
+        }
+
+        function cerrarOnboarding() {
+            document.getElementById('onboardingOverlay').style.display = 'none';
+        }
+
+        function agregarProceso() {
+            const nombre = document.getElementById('procesoNombre').value.trim();
+            const descripcion = document.getElementById('procesoDescripcion').value.trim();
+            const tipo = document.getElementById('procesoTipo').value;
+            const responsable = document.getElementById('procesoResponsable').value.trim();
+            const tiempo = parseInt(document.getElementById('procesoTiempo').value) || 0;
+            const costo = parseInt(document.getElementById('procesoCosto').value) || 0;
+
+            if (!nombre || !descripcion || !responsable) {
+                alert('⚠️ Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            const proceso = {
+                id: Date.now(),
+                nombre,
+                descripcion,
+                tipo,
+                responsable,
+                tiempo,
+                costo,
+                x: Math.random() * 400 + 100,
+                y: Math.random() * 300 + 100,
+                kpis: {
+                    tiempo: tiempo,
+                    costo: costo,
+                    calidad: Math.floor(Math.random() * 5) + 6, // 6-10
+                    satisfaccion: Math.floor(Math.random() * 5) + 6 // 6-10
+                },
+                pdca: {
+                    plan: '',
+                    do: '',
+                    check: '',
+                    act: ''
+                }
+            };
+
+            procesos.push(proceso);
+            crearTarjetaProceso(proceso);
+            limpiarFormulario();
+            actualizarMetricas();
+            
+            // Mostrar mensaje de éxito
+            mostrarNotificacion('✅ Proceso agregado al mapa visual', 'success');
+        }
+
+        function crearTarjetaProceso(proceso) {
+            const canvas = document.getElementById('processCanvas');
+            
+            // Limpiar mensaje de canvas vacío si existe
+            if (procesos.length === 1) {
+                canvas.innerHTML = '';
+            }
+
+            const card = document.createElement('div');
+            card.className = `process-card ${proceso.tipo}`;
+            card.id = `process-${proceso.id}`;
+            card.style.left = proceso.x + 'px';
+            card.style.top = proceso.y + 'px';
+            card.draggable = true;
+
+            // Determinar si es cuello de botella
+            const esCuelloBotella = proceso.tiempo > 30;
+            
+            card.innerHTML = `
+                ${esCuelloBotella ? '<div class="bottleneck-indicator">⚠️</div>' : ''}
+                <div class="process-card-header">
+                    <div class="process-title">${proceso.nombre}</div>
+                    <div class="process-type-badge badge-${proceso.tipo}">
+                        ${proceso.tipo === 'operational' ? '🔧 Operativo' : 
+                          proceso.tipo === 'strategic' ? '🎯 Estratégico' : '🛠️ Soporte'}
+                    </div>
+                </div>
+                <div class="process-details">${proceso.descripcion}</div>
+                <div class="process-kpis">
+                    <div class="kpi-item">
+                        <div class="kpi-value">${proceso.kpis.tiempo}min</div>
+                        <div class="kpi-label">Tiempo</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">₡${(proceso.kpis.costo/1000).toFixed(0)}K</div>
+                        <div class="kpi-label">Costo</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">${proceso.kpis.calidad}/10</div>
+                        <div class="kpi-label">Calidad</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">${proceso.kpis.satisfaccion}/10</div>
+                        <div class="kpi-label">Satisfacción</div>
+                    </div>
+                </div>
+                <div class="process-actions">
+                    <div class="process-responsible">👤 ${proceso.responsable}</div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn" style="padding: 0.3rem; font-size: 0.8rem;" onclick="abrirPDCA(${proceso.id})" title="Ciclo PDCA de Mejora">🔄</button>
+                        <button class="btn" style="padding: 0.3rem; font-size: 0.8rem;" onclick="eliminarProceso(${proceso.id})" title="Eliminar Proceso">🗑️</button>
+                    </div>
+                </div>
+            `;
+
+            // Event listeners para drag & drop
+            card.addEventListener('dragstart', function(e) {
+                draggedProcess = proceso;
+                card.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            card.addEventListener('dragend', function(e) {
+                card.classList.remove('dragging');
+                draggedProcess = null;
+            });
+
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'BUTTON') {
+                    selectedProcess = proceso;
+                    destacarProceso(proceso.id);
+                }
+            });
+
+            canvas.appendChild(card);
+        }
+
+        // Permitir drop en el canvas
+        document.getElementById('processCanvas').addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        document.getElementById('processCanvas').addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedProcess) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left - 140; // Centrar la carta
+                const y = e.clientY - rect.top - 60;
+                
+                draggedProcess.x = Math.max(0, x);
+                draggedProcess.y = Math.max(0, y);
+                
+                const card = document.getElementById(`process-${draggedProcess.id}`);
+                card.style.left = draggedProcess.x + 'px';
+                card.style.top = draggedProcess.y + 'px';
+            }
+        });
+
+        function destacarProceso(id) {
+            // Quitar destaque de todos los procesos
+            document.querySelectorAll('.process-card').forEach(card => {
+                card.style.borderWidth = '2px';
+            });
+            
+            // Destacar el proceso seleccionado
+            const card = document.getElementById(`process-${id}`);
+            if (card) {
+                card.style.borderWidth = '3px';
+                card.style.boxShadow = '0 0 30px rgba(33, 150, 243, 0.5)';
+            }
+        }
+
+        function eliminarProceso(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este proceso?')) {
+                procesos = procesos.filter(p => p.id !== id);
+                const card = document.getElementById(`process-${id}`);
+                if (card) {
+                    card.remove();
+                }
+                actualizarMetricas();
+                
+                // Si no hay procesos, mostrar mensaje de canvas vacío
+                if (procesos.length === 0) {
+                    const canvas = document.getElementById('processCanvas');
+                    canvas.innerHTML = `
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+                            <h3>Lienzo de Procesos Vacío</h3>
+                            <p>Agrega tu primer proceso usando el panel lateral</p>
+                        </div>
+                    `;
+                }
+                
+                mostrarNotificacion('🗑️ Proceso eliminado del mapa', 'info');
+            }
+        }
+
+        function abrirPDCA(id) {
+            const proceso = procesos.find(p => p.id === id);
+            if (!proceso) return;
+
+            selectedProcess = proceso;
+            document.getElementById('pdcaProcessName').textContent = `Proceso: ${proceso.nombre}`;
+            document.getElementById('pdcaPlan').value = proceso.pdca.plan || '';
+            document.getElementById('pdcaDo').value = proceso.pdca.do || '';
+            document.getElementById('pdcaCheck').value = proceso.pdca.check || '';
+            document.getElementById('pdcaAct').value = proceso.pdca.act || '';
+            
+            document.getElementById('pdcaModal').style.display = 'flex';
+        }
+
+        function guardarPDCA() {
+            if (!selectedProcess) return;
+
+            selectedProcess.pdca = {
+                plan: document.getElementById('pdcaPlan').value,
+                do: document.getElementById('pdcaDo').value,
+                check: document.getElementById('pdcaCheck').value,
+                act: document.getElementById('pdcaAct').value
+            };
+
+            cerrarPDCA();
+            mostrarNotificacion('💾 Ciclo PDCA guardado para mejora continua', 'success');
+        }
+
+        function cerrarPDCA() {
+            document.getElementById('pdcaModal').style.display = 'none';
+            selectedProcess = null;
+        }
+
+        function autoLayout() {
+            if (procesos.length === 0) return;
+
+            // Layout automático en grid
+            const cols = Math.ceil(Math.sqrt(procesos.length));
+            const spacing = 320;
+            
+            procesos.forEach((proceso, index) => {
+                const row = Math.floor(index / cols);
+                const col = index % cols;
+                
+                proceso.x = col * spacing + 50;
+                proceso.y = row * 180 + 50;
+                
+                const card = document.getElementById(`process-${proceso.id}`);
+                if (card) {
+                    card.style.left = proceso.x + 'px';
+                    card.style.top = proceso.y + 'px';
+                }
+            });
+            
+            mostrarNotificacion('🎯 Layout automático aplicado', 'success');
+        }
+
+        function actualizarMetricas() {
+            const total = procesos.length;
+            const tiempoTotal = procesos.reduce((sum, p) => sum + p.tiempo, 0);
+            const cuellos = procesos.filter(p => p.tiempo > 30).length;
+            
+            // Calcular eficiencia global
+            let eficiencia = 0;
+            if (total > 0) {
+                const tiempoPromedio = tiempoTotal / total;
+                const costoPromedio = procesos.reduce((sum, p) => sum + p.costo, 0) / total;
+                const calidadPromedio = procesos.reduce((sum, p) => sum + p.kpis.calidad, 0) / total;
+                
+                // Algoritmo de eficiencia basado en múltiples factores
+                const factorTiempo = Math.max(0, 100 - (tiempoPromedio - 10) * 2);
+                const factorCosto = costoPromedio < 10000 ? 90 : 70;
+                const factorCalidad = calidadPromedio * 10;
+                const factorCuellos = Math.max(0, 100 - (cuellos * 20));
+                
+                eficiencia = Math.round((factorTiempo + factorCosto + factorCalidad + factorCuellos) / 4);
+            }
+
+            document.getElementById('totalProcesos').textContent = total;
+            document.getElementById('tiempoTotal').textContent = tiempoTotal;
+            document.getElementById('eficienciaGlobal').textContent = eficiencia + '%';
+            document.getElementById('cuellosDetectados').textContent = cuellos;
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('procesoNombre').value = '';
+            document.getElementById('procesoDescripcion').value = '';
+            document.getElementById('procesoResponsable').value = '';
+            document.getElementById('procesoTiempo').value = '';
+            document.getElementById('procesoCosto').value = '';
+            document.getElementById('procesoTipo').value = 'operational';
+        }
+
+        function exportarKairux() {
+            if (procesos.length === 0) {
+                alert('⚠️ No hay procesos para exportar. Agrega al menos un proceso al mapa.');
+                return;
+            }
+
+            const empresa = document.getElementById('empresaNombre').value || 'Mi Empresa';
+            const sector = document.getElementById('empresaSector').value || 'No especificado';
+            const empleados = document.getElementById('numEmpleados').value || 'No especificado';
+
+            // Datos para enviar al Puente de Mando Kairux
+            const datosKairux = {
+                timestamp: new Date().toISOString(),
+                source: 'cartografo_procesos',
+                empresa: {
+                    nombre: empresa,
+                    sector: sector,
+                    empleados: empleados
+                },
+                procesos: procesos.map(p => ({
+                    id: p.id,
+                    nombre: p.nombre,
+                    tipo: p.tipo,
+                    tiempo: p.tiempo,
+                    costo: p.costo,
+                    responsable: p.responsable,
+                    kpis: p.kpis,
+                    es_cuello_botella: p.tiempo > 30
+                })),
+                metricas_operacionales: {
+                    total_procesos: procesos.length,
+                    tiempo_total_ciclo: procesos.reduce((sum, p) => sum + p.tiempo, 0),
+                    eficiencia_global: parseInt(document.getElementById('eficienciaGlobal').textContent),
+                    cuellos_botella: procesos.filter(p => p.tiempo > 30).length,
+                    distribucion_tipos: {
+                        operativos: procesos.filter(p => p.tipo === 'operational').length,
+                        estrategicos: procesos.filter(p => p.tipo === 'strategic').length,
+                        soporte: procesos.filter(p => p.tipo === 'support').length
+                    }
+                }
+            };
+
+            console.log('📡 Enviando datos al Puente de Mando Kairux:', datosKairux);
+            
+            // En un entorno real, aquí iría la llamada al Toolbox de Bubble:
+            // bubble_fn_sendOperationalData(datosKairux);
+            
+            mostrarNotificacion('📡 Datos enviados al Puente de Mando Kairux exitosamente', 'success');
+            
+            // Simular respuesta exitosa
+            setTimeout(() => {
+                mostrarNotificacion('✅ Sincronización completada. Datos disponibles en Dashboard Ejecutivo', 'success');
+            }, 2000);
+        }
+
+        function mostrarNotificacion(mensaje, tipo = 'info') {
+            const notificacion = document.createElement('div');
+            notificacion.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${tipo === 'success' ? 'var(--success)' : tipo === 'error' ? 'var(--danger)' : 'var(--info)'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease;
+                max-width: 400px;
+            `;
+            notificacion.textContent = mensaje;
+            
+            // Agregar animación CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notificacion);
+            
+            setTimeout(() => {
+                notificacion.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => notificacion.remove(), 300);
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        exportarKairux();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        autoLayout();
+                        break;
+                    case 'n':
+                        e.preventDefault();
+                        document.getElementById('procesoNombre').focus();
+                        break;
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                cerrarPDCA();
+            }
+        });
+
+        // Tooltips para ayuda contextual
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.classList.contains('tooltip')) {
+                // Tooltip ya manejado por CSS
+            }
+        });
+
+        // Auto-save cada 30 segundos
+        setInterval(() => {
+            if (procesos.length > 0) {
+                localStorage.setItem('kairux_procesos', JSON.stringify(procesos));
+                console.log('💾 Auto-guardado realizado');
+            }
+        }, 30000);
+
+        // Cargar datos guardados al iniciar
+        window.addEventListener('load', function() {
+            const datosGuardados = localStorage.getItem('kairux_procesos');
+            if (datosGuardados) {
+                try {
+                    const procesosGuardados = JSON.parse(datosGuardados);
+                    procesosGuardados.forEach(proceso => {
+                        procesos.push(proceso);
+                        crearTarjetaProceso(proceso);
+                    });
+                    actualizarMetricas();
+                    mostrarNotificacion('📂 Datos previos cargados automáticamente', 'info');
+                } catch (error) {
+                    console.error('Error cargando datos:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría de Herramientas Digitales Premium - PYME Motor 360</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            animation: slide 25s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #2a5298;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2a5298, #667eea, #2a5298);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+
+        .section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+        }
+
+        .section h2 {
+            color: #1e3c72;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(42, 82, 152, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: #2a5298;
+            box-shadow: 0 15px 35px rgba(42, 82, 152, 0.15);
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #20c997;
+            box-shadow: 0 15px 40px rgba(32, 201, 151, 0.15);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tool-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .tool-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .status-partial { background: #fff3cd; color: #856404; }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 15px rgba(42, 82, 152, 0.2);
+            background: white;
+        }
+
+        .select-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .select-field:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 15px rgba(42, 82, 152, 0.2);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            box-shadow: 0 8px 20px rgba(42, 82, 152, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1e3c72, #152a5c);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(42, 82, 152, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #20c997, #17a2b8);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(220, 53, 69, 0.4);
+        }
+
+        .add-tool-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 3px dashed #adb5bd;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .add-tool-section:hover {
+            border-color: #2a5298;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            transform: scale(1.02);
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 6px solid #28a745;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .recommendations h3 {
+            color: #155724;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .recommendation-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .cost-analysis {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 6px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .cost-analysis h3 {
+            color: #856404;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: progress-shine 2s infinite;
+        }
+
+        @keyframes progress-shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #a8e6cf);
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .export-section {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            text-align: center;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .export-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 15px,
+                rgba(255,255,255,0.02) 15px,
+                rgba(255,255,255,0.02) 30px
+            );
+            animation: slide 30s linear infinite;
+        }
+
+        .export-section h3 {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .export-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-search"></i> Auditoría de Herramientas Digitales</h1>
+            <p>Análisis Premium para Optimización Tecnológica PYME</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard de Estadísticas -->
+            <div class="section">
+                <h2><i class="fas fa-chart-pie"></i> Dashboard de Herramientas</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalTools">0</div>
+                        <div class="stat-label">Total Herramientas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyCost">₡0</div>
+                        <div class="stat-label">Costo Mensual</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeTools">0</div>
+                        <div class="stat-label">Herramientas Activas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="efficiencyScore">0%</div>
+                        <div class="stat-label">Score de Eficiencia</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="unusedTools">0</div>
+                        <div class="stat-label">Sin Uso Regular</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="potentialSavings">₡0</div>
+                        <div class="stat-label">Ahorro Potencial</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agregar Nueva Herramienta -->
+            <div class="section">
+                <h2><i class="fas fa-plus-circle"></i> Agregar Herramienta Digital</h2>
+                <div class="add-tool-section" onclick="toggleAddTool()">
+                    <i class="fas fa-plus" style="font-size: 3rem; color: #2a5298; margin-bottom: 15px;"></i>
+                    <h3>Agregar Nueva Herramienta</h3>
+                    <p>Haz clic aquí para registrar una nueva herramienta digital</p>
+                </div>
+
+                <div id="addToolForm" style="display: none; margin-top: 30px;">
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="input-group">
+                                <label>Nombre de la Herramienta:</label>
+                                <input type="text" class="input-field" id="toolName" placeholder="Ej: Google Workspace">
+                            </div>
+                            <div class="input-group">
+                                <label>Categoría:</label>
+                                <select class="select-field" id="toolCategory">
+                                    <option value="">Seleccionar categoría...</option>
+                                    <option value="comunicacion">Comunicación</option>
+                                    <option value="productividad">Productividad</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="ventas">Ventas</option>
+                                    <option value="finanzas">Finanzas</option>
+                                    <option value="operaciones">Operaciones</option>
+                                    <option value="diseno">Diseño</option>
+                                    <option value="desarrollo">Desarrollo Web</option>
+                                    <option value="almacenamiento">Almacenamiento</option>
+                                    <option value="seguridad">Seguridad</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Función Principal:</label>
+                                <textarea class="input-field" id="toolFunction" rows="3" placeholder="Describe para qué se usa principalmente..."></textarea>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="input-group">
+                                <label>Costo Mensual (₡):</label>
+                                <input type="number" class="input-field" id="toolCost" placeholder="0">
+                            </div>
+                            <div class="input-group">
+                                <label>Frecuencia de Uso:</label>
+                                <select class="select-field" id="toolUsage">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="diario">Diario</option>
+                                    <option value="semanal">Semanal</option>
+                                    <option value="mensual">Mensual</option>
+                                    <option value="ocasional">Ocasional</option>
+                                    <option value="nunca">Nunca/Muy rara vez</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Estado Actual:</label>
+                                <select class="select-field" id="toolStatus">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="active">Activa - Uso completo</option>
+                                    <option value="partial">Parcial - Uso limitado</option>
+                                    <option value="inactive">Inactiva - Sin uso</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label class="tooltip" data-tooltip="Del 1 al 10, qué tan importante es para tu negocio">
+                                    Nivel de Importancia:
+                                    <i class="fas fa-question-circle" style="color: #6c757d;"></i>
+                                </label>
+                                <select class="select-field" id="toolImportance">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="10">10 - Crítica para el negocio</option>
+                                    <option value="9">9 - Muy importante</option>
+                                    <option value="8">8 - Importante</option>
+                                    <option value="7">7 - Moderadamente importante</option>
+                                    <option value="6">6 - Útil</option>
+                                    <option value="5">5 - Neutral</option>
+                                    <option value="4">4 - Poco útil</option>
+                                    <option value="3">3 - Mínima utilidad</option>
+                                    <option value="2">2 - Cuestionable</option>
+                                    <option value="1">1 - Innecesaria</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="btn btn-primary" onclick="addTool()">
+                            <i class="fas fa-save"></i> Guardar Herramienta
+                        </button>
+                        <button class="btn btn-danger" onclick="cancelAddTool()" style="margin-left: 15px;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Herramientas Registradas -->
+            <div class="section">
+                <h2><i class="fas fa-list"></i> Herramientas Registradas</h2>
+                <div id="toolsList" class="tools-grid">
+                    <!-- Las herramientas se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Análisis de Costos -->
+            <div class="cost-analysis">
+                <h3><i class="fas fa-calculator"></i> Análisis de Costos</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="costPerCategory">₡0</div>
+                        <div class="stat-label">Categoría más cara</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="costPerEmployee">₡0</div>
+                        <div class="stat-label">Costo por empleado</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4>Distribución de Costos por Categoría:</h4>
+                    <div id="costBreakdown"></div>
+                </div>
+            </div>
+
+            <!-- Recomendaciones Inteligentes -->
+            <div class="recommendations">
+                <h3><i class="fas fa-lightbulb"></i> Recomendaciones Inteligentes</h3>
+                <div id="recommendationsContent">
+                    <div class="recommendation-item">
+                        <strong><i class="fas fa-info-circle"></i> Consejo:</strong> 
+                        Agrega al menos 5 herramientas para generar un análisis completo y recomendaciones personalizadas.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas del Sistema -->
+            <div class="section">
+                <h2><i class="fas fa-exclamation-triangle"></i> Alertas del Sistema</h2>
+                <div id="alertsContainer">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Sistema listo:</strong> Comienza agregando las herramientas digitales que usa tu empresa para obtener un análisis detallado.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exportación y Acciones -->
+            <div class="export-section">
+                <h3><i class="fas fa-download"></i> Exportar Auditoría Digital</h3>
+                <div class="export-buttons">
+                    <button class="btn btn-success" onclick="exportPDF()">
+                        <i class="fas fa-file-pdf"></i> Reporte PDF
+                    </button>
+                    <button class="btn btn-primary" onclick="exportGoogleSheets()">
+                        <i class="fab fa-google-drive"></i> Google Sheets
+                    </button>
+                    <button class="btn btn-primary" onclick="createActionPlan()">
+                        <i class="fas fa-tasks"></i> Plan de Acción
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de acción flotante -->
+    <div class="floating-action" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        let tools = [];
+        let isAddingTool = false;
+
+        function toggleAddTool() {
+            const form = document.getElementById('addToolForm');
+            const isVisible = form.style.display !== 'none';
+            
+            if (isVisible) {
+                form.style.display = 'none';
+                isAddingTool = false;
+            } else {
+                form.style.display = 'block';
+                isAddingTool = true;
+                document.getElementById('toolName').focus();
+            }
+        }
+
+        function cancelAddTool() {
+            document.getElementById('addToolForm').style.display = 'none';
+            clearForm();
+            isAddingTool = false;
+        }
+
+        function addTool() {
+            const name = document.getElementById('toolName').value;
+            const category = document.getElementById('toolCategory').value;
+            const func = document.getElementById('toolFunction').value;
+            const cost = parseFloat(document.getElementById('toolCost').value) || 0;
+            const usage = document.getElementById('toolUsage').value;
+            const status = document.getElementById('toolStatus').value;
+            const importance = parseInt(document.getElementById('toolImportance').value) || 0;
+
+            if (!name || !category || !func || !usage || !status) {
+                alert('Por favor, completa todos los campos obligatorios.');
+                return;
+            }
+
+            const tool = {
+                id: Date.now(),
+                name,
+                category,
+                function: func,
+                cost,
+                usage,
+                status,
+                importance,
+                dateAdded: new Date().toLocaleDateString()
+            };
+
+            tools.push(tool);
+            updateAllViews();
+            clearForm();
+            cancelAddTool();
+            
+            // Mostrar confirmación
+            showAlert('success', `✅ Herramienta "${name}" agregada exitosamente.`);
+        }
+
+        function deleteTool(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta herramienta?')) {
+                tools = tools.filter(t => t.id !== id);
+                updateAllViews();
+                showAlert('warning', 'Herramienta eliminada del análisis.');
+            }
+        }
+
+        function updateAllViews() {
+            updateStats();
+            updateToolsList();
+            updateCostAnalysis();
+            updateRecommendations();
+            updateAlerts();
+        }
+
+        function updateStats() {
+            const totalTools = tools.length;
+            const monthlyCost = tools.reduce((sum, t) => sum + t.cost, 0);
+            const activeTools = tools.filter(t => t.status === 'active').length;
+            const unusedTools = tools.filter(t => t.usage === 'nunca' || t.status === 'inactive').length;
+            
+            // Calcular eficiencia
+            let efficiency = 0;
+            if (totalTools > 0) {
+                const usageScore = tools.reduce((sum, t) => {
+                    const usagePoints = {
+                        'diario': 10,
+                        'semanal': 7,
+                        'mensual': 5,
+                        'ocasional': 3,
+                        'nunca': 0
+                    };
+                    return sum + (usagePoints[t.usage] || 0);
+                }, 0);
+                
+                const maxPossibleScore = totalTools * 10;
+                efficiency = Math.round((usageScore / maxPossibleScore) * 100);
+            }
+
+            // Calcular ahorro potencial
+            const potentialSavings = tools
+                .filter(t => t.usage === 'nunca' || t.status === 'inactive' || t.importance <= 3)
+                .reduce((sum, t) => sum + t.cost, 0);
+
+            document.getElementById('totalTools').textContent = totalTools;
+            document.getElementById('monthlyCost').textContent = `₡${monthlyCost.toLocaleString()}`;
+            document.getElementById('activeTools').textContent = activeTools;
+            document.getElementById('efficiencyScore').textContent = `${efficiency}%`;
+            document.getElementById('unusedTools').textContent = unusedTools;
+            document.getElementById('potentialSavings').textContent = `₡${potentialSavings.toLocaleString()}`;
+        }
+
+        function updateToolsList() {
+            const container = document.getElementById('toolsList');
+            container.innerHTML = '';
+
+            if (tools.length === 0) {
+                container.innerHTML = `
+                    <div class="tool-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 20px;"></i>
+                        <h3 style="color: #6c757d;">No hay herramientas registradas</h3>
+                        <p style="color: #6c757d;">Agrega herramientas para comenzar el análisis</p>
+                    </div>
+                `;
+                return;
+            }
+
+            tools.forEach(tool => {
+                const statusClass = `status-${tool.status}`;
+                const statusText = {
+                    'active': 'Activa',
+                    'partial': 'Parcial',
+                    'inactive': 'Inactiva'
+                };
+
+                const usageText = {
+                    'diario': 'Diario',
+                    'semanal': 'Semanal',
+                    'mensual': 'Mensual',
+                    'ocasional': 'Ocasional',
+                    'nunca': 'Nunca'
+                };
+
+                const categoryIcons = {
+                    'comunicacion': 'fas fa-comments',
+                    'productividad': 'fas fa-tasks',
+                    'marketing': 'fas fa-bullhorn',
+                    'ventas': 'fas fa-chart-line',
+                    'finanzas': 'fas fa-calculator',
+                    'operaciones': 'fas fa-cogs',
+                    'diseno': 'fas fa-paint-brush',
+                    'desarrollo': 'fas fa-code',
+                    'almacenamiento': 'fas fa-cloud',
+                    'seguridad': 'fas fa-shield-alt'
+                };
+
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-header">
+                        <div>
+                            <i class="${categoryIcons[tool.category] || 'fas fa-tool'}" style="margin-right: 10px; color: #2a5298;"></i>
+                            <span class="tool-name">${tool.name}</span>
+                        </div>
+                        <span class="tool-status ${statusClass}">${statusText[tool.status]}</span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Categoría:</strong> ${tool.category.charAt(0).toUpperCase() + tool.category.slice(1)}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Función:</strong> ${tool.function}
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div><strong>Costo:</strong> ₡${tool.cost.toLocaleString()}/mes</div>
+                        <div><strong>Uso:</strong> ${usageText[tool.usage]}</div>
+                        <div><strong>Importancia:</strong> ${tool.importance}/10</div>
+                        <div><strong>Agregado:</strong> ${tool.dateAdded}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="progress-bar" style="flex-grow: 1; margin-right: 15px;">
+                            <div class="progress-fill" style="width: ${tool.importance * 10}%"></div>
+                        </div>
+                        <button class="btn btn-danger" style="padding: 8px 12px; font-size: 0.9rem;" onclick="deleteTool(${tool.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateCostAnalysis() {
+            const categories = {};
+            tools.forEach(tool => {
+                if (!categories[tool.category]) {
+                    categories[tool.category] = 0;
+                }
+                categories[tool.category] += tool.cost;
+            });
+
+            const mostExpensive = Object.keys(categories).reduce((a, b) => 
+                categories[a] > categories[b] ? a : b, '');
+            
+            const totalEmployees = 8; // Valor por defecto, podría ser dinámico
+            const totalCost = tools.reduce((sum, t) => sum + t.cost, 0);
+            const costPerEmployee = totalCost / totalEmployees;
+
+            document.getElementById('costPerCategory').textContent = 
+                mostExpensive ? `₡${categories[mostExpensive].toLocaleString()}` : '₡0';
+            document.getElementById('costPerEmployee').textContent = 
+                `₡${Math.round(costPerEmployee).toLocaleString()}`;
+
+            // Actualizar breakdown de costos
+            const breakdown = document.getElementById('costBreakdown');
+            breakdown.innerHTML = '';
+            
+            Object.entries(categories).forEach(([category, cost]) => {
+                const percentage = totalCost > 0 ? (cost / totalCost) * 100 : 0;
+                const item = document.createElement('div');
+                item.style.marginBottom = '10px';
+                item.innerHTML = `
+                    <div style="display: flex; justify-content: between; margin-bottom: 5px;">
+                        <span>${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                        <span>₡${cost.toLocaleString()} (${percentage.toFixed(1)}%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                breakdown.appendChild(item);
+            });
+        }
+
+        function updateRecommendations() {
+            const container = document.getElementById('recommendationsContent');
+            container.innerHTML = '';
+
+            if (tools.length === 0) {
+                container.innerHTML = `
+                    <div class="recommendation-item">
+                        <strong><i class="fas fa-info-circle"></i> Consejo:</strong> 
+                        Agrega al menos 5 herramientas para generar un análisis completo y recomendaciones personalizadas.
+                    </div>
+                `;
+                return;
+            }
+
+            const recommendations = [];
+
+            // Herramientas sin uso
+            const unusedTools = tools.filter(t => t.usage === 'nunca' || t.status === 'inactive');
+            if (unusedTools.length > 0) {
+                const savings = unusedTools.reduce((sum, t) => sum + t.cost, 0);
+                recommendations.push({
+                    type: 'warning',
+                    title: 'Herramientas sin uso detectadas',
+                    message: `${unusedTools.length} herramientas no se usan regularmente. Podrías ahorrar ₡${savings.toLocaleString()}/mes cancelando estas suscripciones.`,
+                    action: 'Revisar y cancelar herramientas innecesarias'
+                });
+            }
+
+            // Herramientas de baja importancia pero alto costo
+            const expensiveUnimportant = tools.filter(t => t.cost > 10000 && t.importance <= 5);
+            if (expensiveUnimportant.length > 0) {
+                recommendations.push({
+                    type: 'warning',
+                    title: 'Herramientas costosas de baja prioridad',
+                    message: `${expensiveUnimportant.length} herramientas tienen costo alto pero baja importancia. Considera alternativas más económicas.`,
+                    action: 'Buscar alternativas más económicas'
+                });
+            }
+
+            // Eficiencia alta
+            const efficiency = parseInt(document.getElementById('efficiencyScore').textContent);
+            if (efficiency >= 80 && tools.length >= 5) {
+                recommendations.push({
+                    type: 'success',
+                    title: '¡Excelente gestión de herramientas!',
+                    message: `Tu score de eficiencia del ${efficiency}% indica un uso óptimo de las herramientas digitales.`,
+                    action: 'Mantener el monitoreo regular'
+                });
+            }
+
+            // Falta de diversificación
+            const categories = [...new Set(tools.map(t => t.category))];
+            if (categories.length < 3 && tools.length >= 5) {
+                recommendations.push({
+                    type: 'info',
+                    title: 'Oportunidad de diversificación',
+                    message: 'Todas tus herramientas están concentradas en pocas categorías. Considera herramientas para otras áreas del negocio.',
+                    action: 'Explorar herramientas para marketing, ventas o operaciones'
+                });
+            }
+
+            // Renderizar recomendaciones
+            recommendations.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = 'recommendation-item';
+                const icon = rec.type === 'success' ? 'check-circle' : 
+                           rec.type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+                item.innerHTML = `
+                    <strong><i class="fas fa-${icon}"></i> ${rec.title}:</strong><br>
+                    ${rec.message}<br>
+                    <small><strong>Acción recomendada:</strong> ${rec.action}</small>
+                `;
+                container.appendChild(item);
+            });
+
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="recommendation-item">
+                        <strong><i class="fas fa-thumbs-up"></i> Todo en orden:</strong> 
+                        No se detectaron problemas críticos en tu gestión de herramientas digitales.
+                    </div>
+                `;
+            }
+        }
+
+        function updateAlerts() {
+            const container = document.getElementById('alertsContainer');
+            container.innerHTML = '';
+
+            if (tools.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Sistema listo:</strong> Comienza agregando las herramientas digitales que usa tu empresa para obtener un análisis detallado.
+                    </div>
+                `;
+                return;
+            }
+
+            const alerts = [];
+
+            // Alerta por costos altos
+            const totalCost = tools.reduce((sum, t) => sum + t.cost, 0);
+            if (totalCost > 50000) {
+                alerts.push({
+                    type: 'danger',
+                    message: `Costo mensual alto: ₡${totalCost.toLocaleString()}. Considera optimizar tu stack tecnológico.`
+                });
+            }
+
+            // Alerta por herramientas duplicadas
+            const functions = tools.map(t => t.function.toLowerCase());
+            const duplicates = functions.filter((func, index) => functions.indexOf(func) !== index);
+            if (duplicates.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    message: 'Posibles herramientas duplicadas detectadas. Revisa si tienes funciones similares en diferentes herramientas.'
+                });
+            }
+
+            // Alerta por buena gestión
+            const efficiency = parseInt(document.getElementById('efficiencyScore').textContent);
+            if (efficiency >= 85 && tools.length >= 5) {
+                alerts.push({
+                    type: 'success',
+                    message: `¡Excelente! Tu score de eficiencia del ${efficiency}% indica una gestión óptima de herramientas.`
+                });
+            }
+
+            // Renderizar alertas
+            alerts.forEach(alert => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${alert.type}`;
+                alertDiv.innerHTML = `
+                    <i class="fas fa-${alert.type === 'success' ? 'check-circle' : 
+                                      alert.type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                    ${alert.message}
+                `;
+                container.appendChild(alertDiv);
+            });
+
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Sistema funcionando:</strong> ${tools.length} herramientas registradas y analizadas correctamente.
+                    </div>
+                `;
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('toolName').value = '';
+            document.getElementById('toolCategory').value = '';
+            document.getElementById('toolFunction').value = '';
+            document.getElementById('toolCost').value = '';
+            document.getElementById('toolUsage').value = '';
+            document.getElementById('toolStatus').value = '';
+            document.getElementById('toolImportance').value = '';
+        }
+
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '2000';
+            alertDiv.style.minWidth = '300px';
+            alertDiv.innerHTML = message;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        function exportPDF() {
+            const totalTools = tools.length;
+            const totalCost = tools.reduce((sum, t) => sum + t.cost, 0);
+            alert(`📄 Generando Reporte PDF de Auditoría Digital...\n\n` +
+                  `• ${totalTools} herramientas analizadas\n` +
+                  `• Costo total: ₡${totalCost.toLocaleString()}/mes\n` +
+                  `• Recomendaciones incluidas\n\n` +
+                  `En un entorno real, esto se conectaría con Google Apps Script para generar el PDF automáticamente.`);
+        }
+
+        function exportGoogleSheets() {
+            alert(`📊 Exportando a Google Sheets...\n\n` +
+                  `Esto crearía automáticamente una hoja de cálculo con:\n` +
+                  `• Lista detallada de herramientas\n` +
+                  `• Análisis de costos\n` +
+                  `• Gráficos de eficiencia\n` +
+                  `• Recomendaciones de optimización`);
+        }
+
+        function createActionPlan() {
+            const unusedTools = tools.filter(t => t.usage === 'nunca' || t.status === 'inactive').length;
+            const potentialSavings = tools
+                .filter(t => t.usage === 'nunca' || t.status === 'inactive')
+                .reduce((sum, t) => sum + t.cost, 0);
+                
+            alert(`📋 Creando Plan de Acción Digital...\n\n` +
+                  `Acciones prioritarias identificadas:\n` +
+                  `• ${unusedTools} herramientas para revisar\n` +
+                  `• ₡${potentialSavings.toLocaleString()} de ahorro potencial\n` +
+                  `• Cronograma de optimización 30-60-90 días\n\n` +
+                  `El plan se generará en Google Docs con tareas específicas y fechas.`);
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAllViews();
+            
+            // Agregar herramientas de ejemplo para demostración
+            setTimeout(() => {
+                if (tools.length === 0) {
+                    // Esto es solo para demostración
+                    const exampleTools = [
+                        {
+                            id: 1,
+                            name: "Google Workspace",
+                            category: "productividad",
+                            function: "Suite de oficina y colaboración",
+                            cost: 15000,
+                            usage: "diario",
+                            status: "active",
+                            importance: 9,
+                            dateAdded: new Date().toLocaleDateString()
+                        },
+                        {
+                            id: 2,
+                            name: "Canva Pro",
+                            category: "diseno",
+                            function: "Diseño gráfico y marketing visual",
+                            cost: 8000,
+                            usage: "semanal",
+                            status: "active",
+                            importance: 7,
+                            dateAdded: new Date().toLocaleDateString()
+                        }
+                    ];
+                    
+                    // Comentar estas líneas para empezar con herramientas de ejemplo:
+                    // tools = exampleTools;
+                    // updateAllViews();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

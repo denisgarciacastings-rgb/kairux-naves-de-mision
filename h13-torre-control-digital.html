@@ -1,0 +1,2377 @@
+        <!-- Help Button -->
+        <button class="help-button" onclick="openTour()" title="Ayuda y Tutorial">?</button>
+
+        <!-- Welcome Tour Modal -->
+        <div class="tour-modal" id="welcomeTour">
+            <div class="tour-content">
+                <div class="tour-title">Bienvenido a tu Torre de Control Digital</div>
+                <div class="tour-description">
+                    Esta herramienta te ayuda a entender qué está pasando con tu publicidad en Facebook, Instagram y Google. 
+                    <strong>No necesitas ser experto en marketing</strong> - te explicamos todo en términos sencillos.
+                </div>
+                
+                <div class="tour-steps">
+                    <div class="tour-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Conecta tus cuentas</div>
+                        <div class="step-description">Te ayudamos paso a paso a conectar Facebook y Google</div>
+                    </div>
+                    <div class="tour-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Ve tus números</div>
+                        <div class="step-description">Te mostramos si tu publicidad está funcionando bien</div>
+                    </div>
+                    <div class="tour-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Recibe consejos</div>
+                        <div class="step-description">Te decimos qué mejorar y cómo hacerlo</div>
+                    </div>
+                </div>
+
+                <div class="explanation-card">
+                    <div class="explanation-title">💡 ¿Para qué sirve esto?</div>
+                    <div class="explanation-text">
+                        Imagina que tienes varios anuncios en Facebook y Google, pero no sabes cuáles están funcionando bien y cuáles están perdiendo dinero. 
+                        Esta herramienta te dice exactamente eso, en palabras sencillas, para que puedas tomar mejores decisiones con tu dinero.
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Connection Guide Modal -->
+        <div class="connection-guide" id="connectionGuide">
+            <div class="guide-content">
+                <div class="guide-header">
+                    <div class="guide-title">Guía: Cómo Conectar tus Cuentas</div>
+                    <button class="close-guide" onclick="closeConnectionGuide()">×</button>
+                </div>
+                
+                <div class="guide-steps">
+                    <div class="guide-step">
+                        <div class="guide-step-header">
+                            <div class="guide-step-number">1</div>
+                            <div class="guide-step-title">Conectar Facebook e Instagram</div>
+                        </div>
+                        <div class="guide-step-content">
+                            <p><strong>Lo que vas a hacer:</strong> Darle permiso a Kairux para ver los números de tus anuncios de Facebook e Instagram.</p>
+                            <p><strong>¿Es seguro?</strong> Sí, totalmente. Solo podemos VER tus números, no cambiar ni tocar tus anuncios.</p>
+                            
+                            <div class="explanation-card">
+                                <div class="explanation-title">📋 Pasos a seguir:</div>
+                                <div class="explanation-text">
+                                    1. Haz clic en "Conectar" en la tarjeta de Facebook<br>
+                                    2. Se abrirá una ventana de Facebook<br>
+                                    3. Ingresa tu usuario y contraseña de Facebook<br>
+                                    4. Facebook te preguntará si quieres dar permisos a Kairux - di que SÍ<br>
+                                    5. ¡Listo! En unos segundos verás tus números aquí
+                                </div>
+                            </div>
+                            
+                            <div class="warning-card">
+                                <div class="warning-title">⚠️ Importante</div>
+                                <div class="recommendation-text">Asegúrate de usar la MISMA cuenta de Facebook donde tienes tus anuncios. Si tienes varias cuentas, usa la que maneja la publicidad de tu negocio.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-header">
+                            <div class="guide-step-number">2</div>
+                            <div class="guide-step-title">Conectar Google Ads</div>
+                        </div>
+                        <div class="guide-step-content">
+                            <p><strong>Lo que vas a hacer:</strong> Conectar tu cuenta de Google Ads para ver cómo están funcionando tus anuncios en Google.</p>
+                            
+                            <div class="explanation-card">
+                                <div class="explanation-title">📋 Pasos a seguir:</div>
+                                <div class="explanation-text">
+                                    1. Haz clic en "Conectar" en la tarjeta de Google<br>
+                                    2. Se abrirá una ventana de Google<br>
+                                    3. Selecciona la cuenta de Gmail que usas para Google Ads<br>
+                                    4. Google te preguntará si quieres dar permisos - acepta<br>
+                                    5. Kairux traerá automáticamente todos tus números
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation">
+                                <div class="recommendation-title">💡 Consejo</div>
+                                <div class="recommendation-text">Si no estás seguro de cuál cuenta usar, es la misma donde tienes tu Gmail y donde creaste tus anuncios de Google.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-header">
+                            <div class="guide-step-number">3</div>
+                            <div class="guide-step-title">Conectar Google Analytics (tu sitio web)</div>
+                        </div>
+                        <div class="guide-step-content">
+                            <p><strong>Lo que vas a hacer:</strong> Ver cuántas personas visitan tu sitio web y qué hacen ahí.</p>
+                            
+                            <div class="explanation-card">
+                                <div class="explanation-title">❓ ¿Qué es Google Analytics?</div>
+                                <div class="explanation-text">
+                                    Es como tener una cámara invisible en tu sitio web que cuenta cuántas personas entran, qué páginas ven, y cuánto tiempo se quedan. Es GRATIS y súper útil.
+                                </div>
+                            </div>
+                            
+                            <div class="warning-card">
+                                <div class="warning-title">⚠️ Si no tienes Google Analytics</div>
+                                <div class="recommendation-text">No te preocupes. Podemos ayudarte a instalarlo en tu sitio web. Es gratis y te dará información valiosa sobre tus visitantes.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-header">
+                            <div class="guide-step-number">4</div>
+                            <div class="guide-step-title">¿Qué pasa después de conectar?</div>
+                        </div>
+                        <div class="guide-step-content">
+                            <div class="explanation-card">
+                                <div class="explanation-title">✅ Una vez conectado verás:</div>
+                                <div class="explanation-text">
+                                    • Cuánto dinero gastas en publicidad<br>
+                                    • Cuánto dinero recuperas (si estás ganando o perdiendo)<br>
+                                    • Qué anuncios funcionan mejor<br>
+                                    • Cuántas personas visitan tu sitio web<br>
+                                    • Consejos simples para mejorar tus resultados
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation">
+                                <div class="recommendation-title">🔄 Actualización automática</div>
+                                <div class="recommendation-text">Los números se actualizan solos cada 24 horas. No tienes que hacer nada más. Si quieres ver números más recientes, solo haz clic en "Actualizar".</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Notification -->
+        <div class="alert-notification" id="alertNotification">
+            <div class="alert-title">💡 Consejo Kairux</div>
+            <div class="alert-message">Tu Google Ads tiene mejor rendimiento que Facebook. Considera mover más presupuesto a Google gradualmente.</div>
+        </div>
+    </div>
+
+    <script>
+        // First time user detection
+        let isFirstTimeUser = localStorage.getItem('kairuxH13FirstTime') === null;
+        
+        // Show welcome tour for first-time users
+        if (isFirstTimeUser) {
+            setTimeout(() => {
+                openTour();
+            }, 1000);
+        }
+
+        function openTour() {
+            document.getElementById('welcomeTour').classList.add('active');
+        }
+
+        function closeTour() {
+            document.getElementById('welcomeTour').classList.remove('active');
+            localStorage.setItem('kairuxH13FirstTime', 'false');
+        }
+
+        function startFirstTimeSetup() {
+            closeTour();
+            openConnectionGuide();
+        }
+
+        function openConnectionGuide() {
+            document.getElementById('connectionGuide').classList.add('active');
+        }
+
+        // Enhanced connect platform function with user guidance
+        function connectPlatform(platform) {
+            const config = planConfig[currentPlan];
+            
+            if (config.connections !== -1 && connectedPlatforms.length >= config.connections) {
+                alert(`Tu plan ${currentPlan} permite máximo ${config.connections} conexiones. Upgrade para conectar más plataformas.`);
+                return;
+            }
+
+            // Show guidance for first-time connections
+            if (connectedPlatforms.length === 0) {
+                const shouldShowGuide = confirm('¿Es la primera vez que conectas una plataforma? ¿Quieres ver la guía paso a paso?');
+                if (shouldShowGuide) {
+                    openConnectionGuide();
+                    return;
+                }
+            }
+
+            const card = document.getElementById(`${platform}Connection`);
+            const originalContent = card.innerHTML;
+            
+            card.innerHTML = '<span class="connection-icon">⏳</span><div class="connection-name">Conectando...</div><div class="connection-status">Abriendo ventana de autorización</div>';
+
+            // Simulate realistic OAuth flow with educational messages
+            setTimeout(() => {
+                card.innerHTML = '<span class="connection-icon">🔐</span><div class="connection-name">Autenticando</div><div class="connection-status">Ingresa tus credenciales en la ventana emergente</div>';
+                
+                setTimeout(() => {
+                    card.innerHTML = '<span class="connection-icon">✅</span><div class="connection-name">Verificando permisos</div><div class="connection-status">Confirmando acceso a tus datos</div>';
+                    
+                    setTimeout(() => {
+                        connectedPlatforms.push(platform);
+                        card.classList.remove('disconnected');
+                        card.classList.add('connected');
+                        
+                        // Platform-specific success messages
+                        let platformName = platform === 'instagram' ? 'Instagram Ads' : platform === 'meta' ? 'Meta Business' : 'Google Analytics';
+                        card.innerHTML = `
+                            <span class="connection-icon">${platform === 'instagram' ? '📷' : platform === 'meta' ? '📘' : '📊'}</span>
+                            <div class="connection-name">${platformName}</div>
+                            <div class="connection-status">Conectado</div>
+                        `;
+                        
+                        updateConnectionStatus();
+                        
+                        // Show success message with explanation
+                        showSuccessMessage(platform);
+                        
+                        // If this is their first connection, offer to set up more
+                        if (connectedPlatforms.length === 1) {
+                            setTimeout(() => {
+                                const setupMore = confirm(`¡Excelente! ${platformName} ya está conectado. ¿Quieres conectar otra plataforma para tener una visión completa?`);
+                                if (setupMore) {
+                                    openConnectionGuide();
+                                }
+                            }, 2000);
+                        }
+                        
+                        console.log(`✅ ${platform} conectado exitosamente`);
+                        // bubble_fn_connectPlatform(platform);
+                        
+                    }, 1500);
+                }, 1500);
+            }, 1000);
+        }
+
+        function showSuccessMessage(platform) {
+            const messages = {
+                meta: 'Facebook e Instagram conectados. Ahora puedes ver cuánto gastas y cuánto recuperas con tus anuncios.',
+                google: 'Google Ads conectado. Puedes ver el rendimiento de tus anuncios en búsquedas de Google.',
+                instagram: 'Instagram conectado. Ahora tienes visibilidad completa de tus stories y posts promocionados.',
+                analytics: 'Google Analytics conectado. Puedes ver cuántas personas visitan tu sitio web y qué hacen ahí.'
+            };
+
+            const notification = document.getElementById('alertNotification');
+            const title = notification.querySelector('.alert-title');
+            const message = notification.querySelector('.alert-message');
+            
+            title.textContent = '🎉 ¡Conexión Exitosa!';
+            message.textContent = messages[platform];
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function refreshPlatform(platform) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Conectando...';
+            btn.style.opacity = '0.7';
+            
+            // Educational loading messages
+            const loadingMessages = [
+                'Conectando con la API...',
+                'Obteniendo datos recientes...',
+                'Calculando métricas...',
+                'Actualizando gráficos...'
+            ];
+            
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+                if (messageIndex < loadingMessages.length) {
+                    btn.textContent = loadingMessages[messageIndex];
+                    messageIndex++;
+                } else {
+                    clearInterval(messageInterval);
+                }
+            }, 500);
+            
+            setTimeout(() => {
+                clearInterval(messageInterval);
+                btn.textContent = '✅ Actualizado';
+                
+                // Show what was updated
+                const platformNames = {
+                    meta: 'Facebook e Instagram',
+                    google: 'Google Ads',
+                    analytics: 'tu sitio web'
+                };
+                
+                const notification = document.getElementById('alertNotification');
+                notification.querySelector('.alert-title').textContent = '📊 Datos Actualizados';
+                notification.querySelector('.alert-message').textContent = `Información de ${platformNames[platform]} actualizada con los últimos números disponibles.`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.opacity = '1';
+                    updateLastSync();
+                    notification.classList.remove('show');
+                }, 1500);
+            }, 3000);
+
+            console.log(`🔄 Actualizando datos de ${platform}`);
+            // bubble_fn_refreshPlatformData(platform);
+        }
+
+        // Enhanced explanation system
+        function showMetricExplanation(metric, value) {
+            const explanations = {
+                reach: {
+                    title: '👥 Alcance: Personas únicas que vieron tu contenido',
+                    explanation: `${value} personas diferentes vieron tus anuncios esta semana. Es como contar cuánta gente pasó por la puerta de tu negocio.`,
+                    benchmark: value > 30000 ? 'Excelente alcance' : value > 10000 ? 'Buen alcance' : 'Considera aumentar presupuesto',
+                    action: value < 10000 ? 'Tip: Aumenta el presupuesto gradualmente o mejora las imágenes para llegar a más personas.' : 'Sigue así, tu alcance está funcionando bien.'
+                },
+                ctr: {
+                    title: '🎯 CTR: Tasa de clics',
+                    explanation: `De cada 100 personas que vieron tu anuncio, ${Math.round(value * 100)} hicieron clic. Es como medir qué tan atractivo es tu escaparate.`,
+                    benchmark: value > 3 ? 'CTR excelente' : value > 1 ? 'CTR normal' : 'CTR bajo, necesita mejoras',
+                    action: value < 1 ? 'Tip: Cambia las imágenes o el texto de tus anuncios. Prueba preguntas o ofertas llamativas.' : 'Tu anuncio es atractivo para la gente.'
+                },
+                roas: {
+                    title: '💰 ROAS: Retorno de inversión publicitaria',
+                    explanation: `Por cada ₡1 que inviertes en publicidad, recuperas ₡${value}. Es el indicador más importante para saber si tu publicidad funciona.`,
+                    benchmark: value > 3 ? 'ROI excelente, muy rentable' : value > 2 ? 'ROI bueno' : 'ROI bajo, necesita optimización',
+                    action: value < 2 ? 'Urgente: Revisa tus anuncios. Algo no está funcionando bien.' : 'Perfecto, tu publicidad es rentable.'
+                }
+            };
+
+            return explanations[metric] || { title: 'Métrica', explanation: 'Información no disponible', benchmark: '', action: '' };
+        }
+
+        // Contextual help system
+        function initializeHelp() {
+            // Add contextual help to all metric cards
+            const metricCards = document.querySelectorAll('.metric-card');
+            metricCards.forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    const metricType = ['reach', 'impressions', 'ctr', 'spend'][index];
+                    const metricValue = this.querySelector('.metric-value').textContent;
+                    showMetricHelp(metricType, metricValue);
+                });
+            });
+        }
+
+        function showMetricHelp(metricType, value) {
+            const helpContent = {
+                reach: {
+                    title: '👥 Alcance Total',
+                    simple: 'Cuántas personas diferentes vieron tu contenido',
+                    detailed: 'Es como contar cuánta gente pasó por la puerta de tu negocio. Si tienes 45K de alcance, significa que 45,000 personas diferentes vieron al menos uno de tus anuncios esta semana.',
+                    good: 'Arriba de 30K es excelente para una PYME',
+                    tip: 'Para aumentar alcance: sube el presupuesto o mejora las imágenes'
+                },
+                ctr: {
+                    title: '🎯 CTR (Tasa de Clics)',
+                    simple: 'De cada 100 personas que ven tu anuncio, cuántas hacen clic',
+                    detailed: 'Un CTR de 2.84% significa que de cada 100 personas que vieron tu anuncio, 3 hicieron clic. Es como medir qué tan atractivo es tu escaparate.',
+                    good: 'Arriba de 2% es bueno, arriba de 4% es excelente',
+                    tip: 'Para mejorar CTR: usa imágenes llamativas, haz preguntas, ofrece descuentos'
+                },
+                spend: {
+                    title: '💳 Inversión Total',
+                    simple: 'Todo el dinero que gastaste en publicidad',
+                    detailed: 'Esta semana invertiste ₡156K en publicidad. Lo importante no es cuánto gastas, sino cuánto recuperas. Si recuperas más de lo que gastas, está funcionando.',
+                    good: 'Lo ideal es recuperar al menos ₡2 por cada ₡1 invertido',
+                    tip: 'Revisa el ROI: si recuperas menos de ₡2 por cada ₡1, hay que optimizar'
+                }
+            };
+
+            const info = helpContent[metricType];
+            if (info) {
+                alert(`${info.title}\n\n${info.simple}\n\n${info.detailed}\n\n✅ ${info.good}\n\n💡 ${info.tip}`);
+            }
+        }
+
+        // Initialize enhanced onboarding system
+        function initializeOnboarding() {
+            // Check if user has connected platforms
+            if (connectedPlatforms.length === 0) {
+                // Show gentle reminder after 30 seconds
+                setTimeout(() => {
+                    if (connectedPlatforms.length === 0) {
+                        const notification = document.getElementById('alertNotification');
+                        notification.querySelector('.alert-title').textContent = '🔗 Conecta tus cuentas';
+                        notification.querySelector('.alert-message').textContent = 'Para ver tus números reales, necesitas conectar al menos Facebook o Google Ads. ¿Te ayudamos?';
+                        notification.classList.add('show');
+                        
+                        notification.onclick = () => {
+                            notification.classList.remove('show');
+                            openConnectionGuide();
+                        };
+                        
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 8000);
+                    }
+                }, 30000);
+            }
+        }
+            <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-13: Torre de Control Digital | Kairux</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Paleta Brand Brief Kairux */
+            --kai-blue: #0D47A1;
+            --kai-emerald: #00C853;
+            --kai-gold: #FFAB00;
+            
+            /* Gradiente Pilar Digital */
+            --digital-gradient: linear-gradient(135deg, #42A5F5 0%, #5C6BC0 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            
+            /* Glass morphism */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover: rgba(255, 255, 255, 0.12);
+            
+            /* Colores funcionales */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: var(--kai-emerald);
+            --warning: var(--kai-gold);
+            --danger: #ff5252;
+            --info: #42a5f5;
+            
+            /* Sombras premium */
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-xl: 0 35px 60px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Remove fixed heights and enable natural flow */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container - AirDev Compatible */
+        .control-tower {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Header - Fixed height but flexible */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            min-height: 80px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Status bar responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                min-height: auto;
+            }
+
+            .status-bar {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .status-item {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Header Kairux */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(66, 165, 245, 0.6), transparent);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--digital-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.4);
+        }
+
+        .brand-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: var(--digital-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tool-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected { background: var(--success); }
+        .status-dot.syncing { background: var(--warning); }
+        .status-dot.disconnected { background: var(--danger); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .plan-badge {
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .last-sync {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content - Fixed for proper scrolling */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+            overflow-y: visible; /* Allow natural scroll */
+        }
+
+        /* Specific grid areas for larger screens */
+        @media (min-width: 1200px) {
+            .main-content {
+                grid-template-areas: 
+                    "connections connections overview overview"
+                    "facebook google analytics performance"
+                    "campaigns campaigns metrics metrics";
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .connections { grid-area: connections; }
+            .overview { grid-area: overview; }
+            .facebook { grid-area: facebook; }
+            .google { grid-area: google; }
+            .analytics { grid-area: analytics; }
+            .performance { grid-area: performance; }
+            .campaigns { grid-area: campaigns; }
+            .metrics { grid-area: metrics; }
+        }
+
+        @media (max-width: 1199px) {
+            .main-content {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        /* Glass panels - Remove fixed heights */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: visible; /* Changed from hidden to visible */
+            transition: all 0.3s ease;
+            min-height: 280px; /* Minimum height instead of fixed */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chart containers - flexible heights */
+        .chart-container {
+            flex: 1; /* Take available space */
+            min-height: 200px; /* Minimum for chart visibility */
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        /* Metrics grid - responsive */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            flex: 1; /* Take available space */
+        }
+
+        /* Platform stats - responsive */
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Connections grid - responsive */
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Campaigns table - scrollable */
+        .campaigns-table-container {
+            flex: 1;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .campaigns-table {
+            width: 100%;
+            min-width: 600px; /* Minimum width to prevent cramping */
+            border-collapse: collapse;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .glass-panel {
+                min-height: auto;
+                padding: 1rem;
+            }
+
+            .connections-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .platform-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .panel-title {
+                font-size: 1rem;
+            }
+
+            .campaigns-table {
+                font-size: 0.75rem;
+            }
+
+            .campaigns-table th,
+            .campaigns-table td {
+                padding: 0.5rem;
+            }
+
+            /* Stack chart containers vertically on mobile */
+            .chart-container {
+                min-height: 180px;
+            }
+
+            /* Improve tooltip positioning on mobile */
+            .tooltip::after {
+                position: fixed;
+                left: 50%;
+                bottom: 20px;
+                transform: translateX(-50%);
+                width: 90vw;
+                max-width: 300px;
+            }
+
+            /* Mobile-friendly modals */
+            .tour-content,
+            .guide-content {
+                width: 95vw;
+                max-width: none;
+                margin: 1rem;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .tour-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* AirDev template compatibility */
+        .main-container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Ensure proper scrolling in all containers */
+        .control-tower {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .control-tower .main-content {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .control-tower .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .control-tower .main-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .control-tower .main-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .control-tower .main-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Fix for help button on mobile */
+        @media (max-width: 768px) {
+            .help-button {
+                bottom: 1rem;
+                left: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Panel Headers */
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .panel-icon {
+            font-size: 1.3rem;
+        }
+
+        .panel-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .panel-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* Connections Panel */
+        .connections {
+            grid-area: connections;
+            background: linear-gradient(135deg, rgba(66, 165, 245, 0.1), rgba(92, 107, 192, 0.05));
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .connection-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .connection-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        .connection-card.connected {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .connection-card.disconnected {
+            border-color: var(--danger);
+            background: rgba(255, 82, 82, 0.1);
+        }
+
+        .connection-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .connection-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .connection-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .connect-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(66, 165, 245, 0.4);
+        }
+
+        /* Overview Panel */
+        .overview {
+            grid-area: overview;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            height: calc(100% - 60px);
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .metric-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            color: var(--kai-gold);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-change {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        .metric-change.positive {
+            color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .metric-change.negative {
+            color: var(--danger);
+            background: rgba(255, 82, 82, 0.1);
+        }
+
+        /* Platform Panels */
+        .facebook { grid-area: facebook; }
+        .google { grid-area: google; }
+        .analytics { grid-area: analytics; }
+        .performance { grid-area: performance; }
+        .campaigns { grid-area: campaigns; }
+        .metrics { grid-area: metrics; }
+
+        .chart-container {
+            height: calc(100% - 60px);
+            position: relative;
+        }
+
+        .platform-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Campaigns Table */
+        .campaigns-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .campaigns-table th {
+            background: rgba(66, 165, 245, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .campaigns-table td {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .campaigns-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .campaign-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0, 200, 83, 0.2);
+            color: var(--success);
+        }
+
+        .status-paused {
+            background: rgba(255, 171, 0, 0.2);
+            color: var(--warning);
+        }
+
+        /* Plan Restrictions */
+        .plan-restricted {
+            position: relative;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .plan-restricted::after {
+            content: 'Requiere Plan CRECIMIENTO';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--digital-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        /* Alert Notifications */
+        .alert-notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            max-width: 300px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .alert-notification.show {
+            transform: translateX(0);
+        }
+
+        .alert-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-message {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Welcome Tour Modal */
+        .tour-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tour-modal.active {
+            display: flex;
+        }
+
+        .tour-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+
+        .tour-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .tour-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .tour-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tour-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .step-number {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--kai-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tour-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .tour-btn {
+            background: var(--digital-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tour-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tour-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            width: 250px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Help Icon */
+        .help-icon {
+            color: var(--info);
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+            cursor: help;
+        }
+
+        /* Connection Guide Modal */
+        .connection-guide {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-guide.active {
+            display: flex;
+        }
+
+        .guide-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 2rem;
+        }
+
+        .guide-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .close-guide {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .guide-steps {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .guide-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .guide-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .guide-step-number {
+            background: var(--digital-gradient);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .guide-step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .guide-step-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .guide-screenshot {
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        /* Explanation Cards */
+        .explanation-card {
+            background: rgba(66, 165, 245, 0.1);
+            border: 1px solid rgba(66, 165, 245, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .explanation-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explanation-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Metric Explanations */
+        .metric-explanation {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        /* Action Recommendations */
+        .recommendation {
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .recommendation-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--success);
+            margin-bottom: 0.25rem;
+        }
+
+        .recommendation-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Warning Cards */
+        .warning-card {
+            background: rgba(255, 171, 0, 0.1);
+            border: 1px solid rgba(255, 171, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .warning-card {
+            background: rgba(255, 171, 0, 0.1);
+            border: 1px solid rgba(255, 171, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .warning-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--warning);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Help Button */
+        .help-button {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--kai-gold);
+            color: #1a1a2e;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 171, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .help-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 171, 0, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .main-content {
+                grid-template-areas: 
+                    "connections connections"
+                    "overview overview"
+                    "facebook google"
+                    "analytics performance"
+                    "campaigns campaigns"
+                    "metrics metrics";
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto auto auto auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-areas: 
+                    "connections"
+                    "overview"
+                    "facebook"
+                    "google"
+                    "analytics"
+                    "performance"
+                    "campaigns"
+                    "metrics";
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .connections-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="control-tower">
+        <!-- Header Kairux -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">📊</div>
+                <div>
+                    <div class="brand-text">KAIRUX</div>
+                    <div class="tool-subtitle">H-13: Torre de Control Digital</div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot connected" id="connectionStatus"></div>
+                    <span id="connectionText">APIs Conectadas</span>
+                </div>
+                <div class="status-item">
+                    📈 <span id="activeConnections">2 Plataformas</span>
+                </div>
+                <div class="status-item">
+                    <span class="last-sync" id="lastSync">Última sync: 2 min ago</span>
+                </div>
+                <div class="plan-badge" id="currentPlan">PLAN CRECIMIENTO</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Connections Panel -->
+            <div class="glass-panel connections">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🔗</span>
+                        <span>Conexiones de Plataformas</span>
+                    </div>
+                    <div class="panel-action" onclick="refreshAllConnections()">Verificar Todas</div>
+                </div>
+                <div class="connections-grid">
+                    <div class="connection-card connected" id="metaConnection">
+                        <span class="connection-icon">📘</span>
+                        <div class="connection-name">Meta Business</div>
+                        <div class="connection-status">Conectado</div>
+                    </div>
+                    <div class="connection-card connected" id="googleConnection">
+                        <span class="connection-icon">📊</span>
+                        <div class="connection-name">Google Analytics</div>
+                        <div class="connection-status">Conectado</div>
+                    </div>
+                    <div class="connection-card disconnected" id="instagramConnection">
+                        <span class="connection-icon">📷</span>
+                        <div class="connection-name">Instagram Ads</div>
+                        <div class="connection-status">Desconectado</div>
+                        <button class="connect-btn" onclick="connectPlatform('instagram')">Conectar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Panel -->
+            <div class="glass-panel overview">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🎯</span>
+                        <span>Métricas Principales
+                            <span class="help-icon tooltip" data-tooltip="Estas son las 4 métricas más importantes para medir el éxito de tu marketing digital">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">Últimos 7 días</div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value tooltip" id="totalReach" data-tooltip="Alcance: Cuántas personas diferentes vieron tu contenido o anuncios">45.2K</div>
+                        <div class="metric-label">Alcance Total</div>
+                        <div class="metric-change positive">+12.4%</div>
+                        <div class="metric-explanation">Personas únicas que vieron tu contenido</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value tooltip" id="totalImpressions" data-tooltip="Impresiones: Cuántas veces se mostraron tus anuncios (una persona puede ver el mismo anuncio varias veces)">128.7K</div>
+                        <div class="metric-label">Impresiones</div>
+                        <div class="metric-change positive">+8.7%</div>
+                        <div class="metric-explanation">Veces que se mostró tu contenido</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value tooltip" id="ctr" data-tooltip="CTR (Click-Through Rate): De cada 100 personas que ven tu anuncio, cuántas hacen clic. Un CTR de 2.84% es bueno">2.84%</div>
+                        <div class="metric-label">CTR Promedio</div>
+                        <div class="metric-change negative">-0.3%</div>
+                        <div class="metric-explanation">De cada 100 personas, 3 hacen clic</div>
+                        <div class="warning-card">
+                            <div class="warning-title">⚠️ Atención</div>
+                            <div class="recommendation-text">Tu CTR bajó. Considera cambiar las imágenes o el texto de tus anuncios.</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value tooltip" id="totalSpend" data-tooltip="Inversión Total: Todo el dinero que gastaste en publicidad esta semana">₡156K</div>
+                        <div class="metric-label">Inversión Total</div>
+                        <div class="metric-change positive">ROI: 3.2x</div>
+                        <div class="metric-explanation">Por cada ₡1 invertido, recuperas ₡3.20</div>
+                        <div class="recommendation">
+                            <div class="recommendation-title">✅ Excelente</div>
+                            <div class="recommendation-text">Un ROI de 3.2x significa que tu publicidad está funcionando muy bien.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facebook/Meta Panel -->
+            <div class="glass-panel facebook">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📘</span>
+                        <span>Facebook e Instagram
+                            <span class="help-icon tooltip" data-tooltip="Datos de tus campañas en Facebook e Instagram. Se actualiza cada 24 horas automáticamente.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action" onclick="refreshPlatform('meta')">Actualizar</div>
+                </div>
+                <div class="platform-stats">
+                    <div class="stat-item tooltip" data-tooltip="Dinero gastado en anuncios de Facebook e Instagram esta semana">
+                        <div class="stat-value">₡89K</div>
+                        <div class="stat-label">Gasto</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="ROAS = Return On Ad Spend. Por cada ₡1 que gastas en Facebook, recuperas ₡3.10. Cualquier cosa arriba de 2x es bueno.">
+                        <div class="stat-value">3.1x</div>
+                        <div class="stat-label">ROAS</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="CTR = Click Through Rate. De cada 100 personas que ven tu anuncio, 2 hacen clic. Entre 1-3% es normal.">
+                        <div class="stat-value">2.1%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="facebookChart" width="300" height="200"></canvas>
+                </div>
+                <div class="explanation-card">
+                    <div class="explanation-title">💡 ¿Qué significa esto?</div>
+                    <div class="explanation-text">Facebook e Instagram están generando ₡3.10 por cada colón invertido. Esto es excelente. El gráfico muestra cuánto gastas cada día - los picos altos pueden ser días con mejor rendimiento.</div>
+                </div>
+            </div>
+
+            <!-- Google Ads Panel -->
+            <div class="glass-panel google">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🔍</span>
+                        <span>Google Ads
+                            <span class="help-icon tooltip" data-tooltip="Datos de tus anuncios en Google Search y YouTube. Incluye búsquedas y anuncios display.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action" onclick="refreshPlatform('google')">Actualizar</div>
+                </div>
+                <div class="platform-stats">
+                    <div class="stat-item tooltip" data-tooltip="Dinero gastado en Google Ads esta semana">
+                        <div class="stat-value">₡67K</div>
+                        <div class="stat-label">Gasto</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="ROAS de Google: Por cada ₡1 invertido recuperas ₡4.20. Google suele tener mejor ROAS que Facebook.">
+                        <div class="stat-value">4.2x</div>
+                        <div class="stat-label">ROAS</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="CTR de Google: 3.8% es muy bueno. Google Search suele tener CTR más alto que Facebook porque la gente ya está buscando.">
+                        <div class="stat-value">3.8%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="googleChart" width="300" height="200"></canvas>
+                </div>
+                <div class="explanation-card">
+                    <div class="explanation-title">💡 ¿Qué significa esto?</div>
+                    <div class="explanation-text">Google está funcionando aún mejor que Facebook con ₡4.20 de retorno por cada colón. El CTR de 3.8% es excelente - significa que tu anuncio es muy relevante para lo que la gente busca.</div>
+                </div>
+                <div class="recommendation">
+                    <div class="recommendation-title">🚀 Recomendación</div>
+                    <div class="recommendation-text">Google te está dando mejor retorno. Considera aumentar el presupuesto de Google Ads gradualmente.</div>
+                </div>
+            </div>
+
+            <!-- Analytics Panel -->
+            <div class="glass-panel analytics">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📊</span>
+                        <span>Sitio Web
+                            <span class="help-icon tooltip" data-tooltip="Datos de tu sitio web: cuántas personas lo visitan, qué páginas ven, cuánto tiempo se quedan.">ℹ️</span>
+                        </span>
+                    </div>
+                    <div class="panel-action">GA4</div>
+                </div>
+                <div class="platform-stats">
+                    <div class="stat-item tooltip" data-tooltip="Visitantes únicos: Personas diferentes que entraron a tu sitio web esta semana">
+                        <div class="stat-value">8.2K</div>
+                        <div class="stat-label">Visitantes</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="Páginas por sesión: En promedio, cada persona ve 2.3 páginas de tu sitio. Entre 2-4 es normal.">
+                        <div class="stat-value">2.3</div>
+                        <div class="stat-label">Páginas/Sesión</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="Bounce Rate: 65% de las personas se van sin ver otra página. Menos de 70% es bueno.">
+                        <div class="stat-value">65%</div>
+                        <div class="stat-label">Bounce Rate</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="analyticsChart" width="300" height="200"></canvas>
+                </div>
+                <div class="explanation-card">
+                    <div class="explanation-title">💡 ¿Qué significa esto?</div>
+                    <div class="explanation-text">8,200 personas visitaron tu sitio web esta semana. Un bounce rate de 65% está bien - significa que la mayoría encuentra lo que busca. El gráfico muestra que los fines de semana tienes más visitas.</div>
+                </div>
+            </div>
+
+            <!-- Performance Panel -->
+            <div class="glass-panel performance">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">⚡</span>
+                        <span>Rendimiento</span>
+                    </div>
+                    <div class="panel-action">Tiempo Real</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Campaigns Panel -->
+            <div class="glass-panel campaigns">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🎯</span>
+                        <span>Campañas Activas</span>
+                    </div>
+                    <div class="panel-action">Ver Todas</div>
+                </div>
+                <div class="campaigns-table-container">
+                    <table class="campaigns-table">
+                        <thead>
+                            <tr>
+                                <th>Campaña</th>
+                                <th>Plataforma</th>
+                                <th>Gasto</th>
+                                <th>ROAS</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Metrics Panel -->
+            <div class="glass-panel metrics">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">📈</span>
+                        <span>Tendencias</span>
+                    </div>
+                    <div class="panel-action">30 días</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="trendsChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Notification -->
+        <div class="alert-notification" id="alertNotification">
+            <div class="alert-title">Alerta Kairux IA</div>
+            <div class="alert-message">Tu CPA en Facebook ha subido 15% esta semana. Considera revisar el targeting.</div>
+        </div>
+    </div>
+
+    <script>
+        // Plan Configuration System
+        const planConfig = {
+            ESENCIAL: {
+                features: ['basic-view'],
+                connections: 0,
+                aiAnalysis: false
+            },
+            CRECIMIENTO: {
+                features: ['connections', 'basic-metrics'],
+                connections: 2,
+                aiAnalysis: false
+            },
+            PREMIUM: {
+                features: ['full-analytics', 'ai-insights'],
+                connections: 5,
+                aiAnalysis: true
+            },
+            ELITE: {
+                features: ['everything'],
+                connections: -1, // unlimited
+                aiAnalysis: true,
+                customDashboard: true
+            }
+        };
+
+        // Current configuration (from Bubble)
+        let currentPlan = 'CRECIMIENTO';
+        let connectedPlatforms = ['meta', 'google'];
+        let lastSyncTime = new Date();
+
+        // Sample data (would come from APIs in real implementation)
+        const platformData = {
+            meta: {
+                spend: 89000,
+                roas: 3.1,
+                ctr: 2.1,
+                reach: 25600,
+                impressions: 78400,
+                dailyData: [12000, 15000, 11000, 18000, 16000, 14000, 19000]
+            },
+            google: {
+                spend: 67000,
+                roas: 4.2,
+                ctr: 3.8,
+                clicks: 1850,
+                impressions: 48700,
+                dailyData: [8000, 12000, 9000, 15000, 11000, 13000, 16000]
+            },
+            analytics: {
+                visitors: 8200,
+                pageViews: 18800,
+                bounceRate: 65,
+                avgSessionDuration: 142,
+                dailyVisitors: [980, 1200, 1100, 1350, 1180, 1420, 1680]
+            }
+        };
+
+        const campaignsData = [
+            { name: 'Campaña Verano 2024', platform: 'Facebook', spend: 45000, roas: 3.2, status: 'active' },
+            { name: 'Google Search - Productos', platform: 'Google', spend: 32000, roas: 4.1, status: 'active' },
+            { name: 'Retargeting Web', platform: 'Facebook', spend: 18000, roas: 2.8, status: 'active' },
+            { name: 'Display Network', platform: 'Google', spend: 15000, roas: 2.1, status: 'paused' },
+            { name: 'Instagram Stories', platform: 'Instagram', spend: 22000, roas: 3.7, status: 'active' }
+        ];
+
+        // Initialize Application
+        function initializeApp() {
+            applyPlanRestrictions();
+            updateConnectionStatus();
+            populateCampaignsTable();
+            createCharts();
+            updateLastSync();
+            startRealTimeUpdates();
+            
+            // Show AI insights if available
+            if (planConfig[currentPlan].aiAnalysis) {
+                setTimeout(showAIInsight, 3000);
+            }
+        }
+
+        function applyPlanRestrictions() {
+            const config = planConfig[currentPlan];
+            document.getElementById('currentPlan').textContent = `PLAN ${currentPlan}`;
+            
+            // Apply restrictions based on plan
+            if (!config.features.includes('connections')) {
+                document.querySelector('.connections').classList.add('plan-restricted');
+            }
+            
+            if (!config.aiAnalysis) {
+                // Hide AI-driven features
+                const aiElements = document.querySelectorAll('.ai-feature');
+                aiElements.forEach(el => el.style.display = 'none');
+            }
+        }
+
+        function updateConnectionStatus() {
+            const connectedCount = connectedPlatforms.length;
+            document.getElementById('activeConnections').textContent = `${connectedCount} Plataformas`;
+            
+            if (connectedCount > 0) {
+                document.getElementById('connectionStatus').className = 'status-dot connected';
+                document.getElementById('connectionText').textContent = 'APIs Conectadas';
+            } else {
+                document.getElementById('connectionStatus').className = 'status-dot disconnected';
+                document.getElementById('connectionText').textContent = 'Sin Conexiones';
+            }
+        }
+
+        function populateCampaignsTable() {
+            const tbody = document.getElementById('campaignsTableBody');
+            tbody.innerHTML = campaignsData.map(campaign => `
+                <tr>
+                    <td><strong>${campaign.name}</strong></td>
+                    <td>${campaign.platform}</td>
+                    <td>₡${(campaign.spend/1000).toFixed(0)}K</td>
+                    <td>${campaign.roas.toFixed(1)}x</td>
+                    <td><span class="campaign-status status-${campaign.status}">${campaign.status === 'active' ? 'Activa' : 'Pausada'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function createCharts() {
+            createFacebookChart();
+            createGoogleChart();
+            createAnalyticsChart();
+            createPerformanceChart();
+            createTrendsChart();
+        }
+
+        function createFacebookChart() {
+            const ctx = document.getElementById('facebookChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Gasto Diario',
+                        data: platformData.meta.dailyData,
+                        borderColor: '#1877F2',
+                        backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + (value/1000) + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createGoogleChart() {
+            const ctx = document.getElementById('googleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Gasto Diario',
+                        data: platformData.google.dailyData,
+                        backgroundColor: 'rgba(66, 165, 245, 0.8)',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + (value/1000) + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAnalyticsChart() {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Visitantes',
+                        data: platformData.analytics.dailyVisitors,
+                        borderColor: '#00C853',
+                        backgroundColor: 'rgba(0, 200, 83, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Facebook', 'Google', 'Instagram', 'Otros'],
+                    datasets: [{
+                        data: [45, 35, 15, 5],
+                        backgroundColor: [
+                            '#1877F2',
+                            '#4285F4',
+                            '#E4405F',
+                            'rgba(255, 255, 255, 0.3)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createTrendsChart() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                    datasets: [{
+                        label: 'CTR',
+                        data: [2.1, 2.4, 2.8, 2.6],
+                        borderColor: '#FFAB00',
+                        backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                        yAxisID: 'y'
+                    }, {
+                        label: 'CPA',
+                        data: [3200, 2800, 2400, 2600],
+                        borderColor: '#42A5F5',
+                        backgroundColor: 'rgba(66, 165, 245, 0.1)',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '₡' + value;
+                                }
+                            },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Platform Connection Functions
+        function connectPlatform(platform) {
+            const config = planConfig[currentPlan];
+            
+            if (config.connections !== -1 && connectedPlatforms.length >= config.connections) {
+                alert(`Tu plan ${currentPlan} permite máximo ${config.connections} conexiones. Upgrade para conectar más plataformas.`);
+                return;
+            }
+
+            const card = document.getElementById(`${platform}Connection`);
+            card.innerHTML = '<span class="connection-icon">⏳</span><div class="connection-name">Conectando...</div><div class="connection-status">Autenticando</div>';
+
+            // Simulate OAuth flow
+            setTimeout(() => {
+                connectedPlatforms.push(platform);
+                card.classList.remove('disconnected');
+                card.classList.add('connected');
+                card.innerHTML = `
+                    <span class="connection-icon">📷</span>
+                    <div class="connection-name">Instagram Ads</div>
+                    <div class="connection-status">Conectado</div>
+                `;
+                updateConnectionStatus();
+                
+                // In real implementation, this would trigger API data fetch
+                console.log(`✅ ${platform} conectado exitosamente`);
+                // bubble_fn_connectPlatform(platform);
+            }, 2500);
+        }
+
+        function refreshPlatform(platform) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Cargando...';
+            btn.style.opacity = '0.7';
+            
+            // Simulate API refresh
+            setTimeout(() => {
+                btn.textContent = 'Actualizado';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.opacity = '1';
+                    updateLastSync();
+                }, 1500);
+            }, 2000);
+
+            console.log(`🔄 Actualizando datos de ${platform}`);
+            // bubble_fn_refreshPlatformData(platform);
+        }
+
+        function refreshAllConnections() {
+            document.getElementById('connectionStatus').className = 'status-dot syncing';
+            document.getElementById('connectionText').textContent = 'Sincronizando...';
+            
+            setTimeout(() => {
+                document.getElementById('connectionStatus').className = 'status-dot connected';
+                document.getElementById('connectionText').textContent = 'APIs Conectadas';
+                updateLastSync();
+            }, 3000);
+        }
+
+        function updateLastSync() {
+            lastSyncTime = new Date();
+            document.getElementById('lastSync').textContent = `Última sync: ${formatTimeAgo(lastSyncTime)}`;
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return 'ahora';
+            if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function startRealTimeUpdates() {
+            // Update last sync time every minute
+            setInterval(() => {
+                document.getElementById('lastSync').textContent = `Última sync: ${formatTimeAgo(lastSyncTime)}`;
+            }, 60000);
+            
+            // Simulate metric updates every 30 seconds
+            setInterval(() => {
+                const reach = document.getElementById('totalReach');
+                const current = parseFloat(reach.textContent.replace('K', ''));
+                const variation = (Math.random() - 0.5) * 2; // ±1K variation
+                reach.textContent = `${(current + variation).toFixed(1)}K`;
+                
+                console.log('📊 Métricas actualizadas en tiempo real');
+            }, 30000);
+        }
+
+        function showAIInsight() {
+            const notification = document.getElementById('alertNotification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 8000);
+        }
+
+        // Export Functions for Kairux Ecosystem
+        function exportKairuxData() {
+            return {
+                pilar: 'Madurez Digital',
+                herramienta: 'H-13: Torre de Control Digital',
+                data: {
+                    connectedPlatforms: connectedPlatforms,
+                    totalSpend: platformData.meta.spend + platformData.google.spend,
+                    averageROAS: ((platformData.meta.roas + platformData.google.roas) / 2).toFixed(1),
+                    totalReach: platformData.meta.reach + platformData.analytics.visitors,
+                    platformPerformance: {
+                        meta: platformData.meta,
+                        google: platformData.google,
+                        analytics: platformData.analytics
+                    },
+                    campaigns: campaignsData,
+                    lastSync: lastSyncTime
+                },
+                integrations: {
+                    h05_financial_data: campaignsData.map(campaign => ({
+                        description: `Gasto en ${campaign.name}`,
+                        type: 'Gasto',
+                        category: 'Marketing Digital',
+                        amount: campaign.spend,
+                        platform: campaign.platform,
+                        source: 'H-13'
+                    })),
+                    h06_roi_data: campaignsData.map(campaign => ({
+                        investment_name: campaign.name,
+                        initial_cost: campaign.spend,
+                        roi_multiplier: campaign.roas,
+                        platform: campaign.platform,
+                        status: campaign.status
+                    }))
+                },
+                timestamp: new Date().toISOString(),
+                plan: currentPlan
+            };
+        }
+
+        // Initialize on page load with enhanced onboarding
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            initializeHelp();
+            initializeOnboarding();
+            
+            console.log('📊 H-13: Torre de Control Digital - Kairux Activado');
+            console.log('🎓 Sistema de onboarding para PYMES activado');
+            console.log('🔗 APIs disponibles: Meta, Google Analytics, Instagram');
+            console.log('📈 Sincronización automática cada 24 horas');
+            console.log('💡 Sistema de ayuda contextual cargado');
+        });
+
+        // Enhanced global functions for Bubble integration
+        window.kairuxH13 = {
+            exportData: exportKairuxData,
+            updatePlan: (newPlan) => {
+                currentPlan = newPlan;
+                applyPlanRestrictions();
+            },
+            connectPlatform: connectPlatform,
+            refreshData: refreshAllConnections,
+            getConnectedPlatforms: () => connectedPlatforms,
+            showOnboarding: openTour,
+            showConnectionGuide: openConnectionGuide,
+            explainMetric: showMetricHelp,
+            sendToFinancialTools: () => {
+                const financialData = exportKairuxData().integrations.h05_financial_data;
+                console.log('💰 Enviando gastos de marketing a H-05:', financialData);
+                // bubble_fn_sendToH05(financialData);
+                return financialData;
+            },
+            sendToROIAnalysis: () => {
+                const roiData = exportKairuxData().integrations.h06_roi_data;
+                console.log('📊 Enviando datos ROI a H-06:', roiData);
+                // bubble_fn_sendToH06(roiData);
+                return roiData;
+            }
+        };
+    </script>
+</body>
+</html>
+    </script>
+</body>
+</html>
