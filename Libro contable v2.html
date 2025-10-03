@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-07: Libro Contable Inteligente | Kairux</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --financial-primary: #00d4aa;
+            --financial-secondary: #26a69a;
+            --financial-gradient: linear-gradient(135deg, var(--financial-primary) 0%, var(--financial-secondary) 100%);
+            
+            --background-dark: #0F172A; /* Azul pizarra oscuro */
+            --glass-bg: rgba(15, 23, 42, 0.6); /* Un vidrio más oscuro y sobrio */
+            --glass-border: rgba(255, 255, 255, 0.1);
+            
+            --text-primary: #E2E8F0; /* Un blanco más suave */
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+
+            --income-color: #00d4aa;
+            --expense-color: #F43F5E;
+            --cashflow-color: #FBBF24;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top left, rgba(0, 212, 170, 0.1), transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .container { display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .logo-section { display: flex; align-items: center; gap: 1rem; }
+        .logo {
+            width: 50px; height: 50px; background: var(--financial-gradient);
+            border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 8px 25px rgba(0, 212, 170, 0.3);
+        }
+        .brand-info h1 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--text-primary); }
+        .tool-subtitle-header { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .main-content { flex: 1; padding: 2rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+        
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            grid-template-areas: "dashboard actions" "transactions actions";
+            gap: 2rem; align-items: flex-start;
+        }
+        .dashboard-section { grid-area: dashboard; }
+        .transactions-section { grid-area: transactions; }
+        .actions-section { grid-area: actions; position: sticky; top: 120px; }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 2rem;
+            border-top: 2px solid var(--financial-primary);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-left: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+        .panel-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .chart-container { min-height: 300px; }
+        
+        .transaction-list { max-height: 400px; overflow-y: auto; }
+        .transaction-list table { width: 100%; border-collapse: collapse; }
+        .transaction-list th, .transaction-list td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .transaction-list th { font-weight: 600; color: var(--text-secondary); }
+        .transaction-list .amount { text-align: right; font-weight: 600; }
+        .transaction-list .income { color: var(--income-color); }
+        .transaction-list .expense { color: var(--expense-color); }
+
+        .form-control { margin-bottom: 1rem; }
+        .form-control label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .form-control input, .form-control select {
+            width: 100%; background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            padding: 0.75rem 1rem; color: var(--text-primary); font-size: 1rem;
+        }
+        .form-control input:focus, .form-control select:focus { outline: none; border-color: var(--financial-primary); }
+
+        .action-btn {
+            background: var(--financial-gradient); border: none; border-radius: 12px;
+            padding: 1rem 1.5rem; color: white; font-family: 'Montserrat', sans-serif;
+            font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease;
+            width: 100%; text-align: center;
+        }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 212, 170, 0.3); }
+        .action-btn.secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); }
+        .action-btn.secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .senda-kairux { margin-top: 2rem; text-align: center; }
+        .senda-kairux p { color: var(--text-secondary); margin-bottom: 1rem; }
+
+        @media (max-width: 1200px) {
+            .layout-grid { grid-template-columns: 1fr; grid-template-areas: "dashboard" "actions" "transactions"; }
+            .actions-section { position: static; }
+        }
+        @media (max-width: 768px) {
+            .main-content { padding: 1rem; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">📊</div>
+                    <div class="brand-info">
+                        <h1>Libro Contable Inteligente</h1>
+                        <div class="tool-subtitle-header">H-07 / Pilar Financiero</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="layout-grid">
+                <section class="dashboard-section glass-panel">
+                    <h2 class="panel-title">El Primer Espejo</h2>
+                    <div class="charts-grid">
+                        <div class="chart-container"><canvas id="incomeExpenseChart"></canvas></div>
+                        <div class="chart-container"><canvas id="cashFlowChart"></canvas></div>
+                    </div>
+                </section>
+
+                <section class="transactions-section glass-panel">
+                    <h2 class="panel-title">Registro de Transacciones</h2>
+                    <div class="transaction-list">
+                        <table id="transactionTable">
+                            <thead>
+                                <tr><th>Fecha</th><th>Descripción</th><th class="amount">Monto</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <aside class="actions-section">
+                    <div class="glass-panel">
+                        <h2 class="panel-title">Nueva Transacción</h2>
+                        <form id="transactionForm">
+                            <div class="form-control">
+                                <label for="date">Fecha</label>
+                                <input type="date" id="date" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="description">Descripción</label>
+                                <input type="text" id="description" placeholder="Ej: Venta de producto A" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="amount">Monto</label>
+                                <input type="number" id="amount" placeholder="50000" required step="any">
+                            </div>
+                            <div class="form-control">
+                                <label for="type">Tipo</label>
+                                <select id="type">
+                                    <option value="income">Ingreso</option>
+                                    <option value="expense">Gasto</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="action-btn">✚ Añadir Transacción</button>
+                        </form>
+                    </div>
+                    <div class="glass-panel">
+                        <h2 class="panel-title">Importar Historial</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Ahorre tiempo subiendo su historial bancario (CSV).</p>
+                        <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                        <button class="action-btn secondary" onclick="document.getElementById('csvFile').click();">📤 Importar CSV</button>
+                    </div>
+                    <div class="senda-kairux glass-panel">
+                        <p>Sus números están en orden. ¿Listo para descubrir qué tan rentables son?</p>
+                        <button class="action-btn">Analizar en H-05 →</button>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const KairuxH07 = {
+            state: { transactions: [], charts: {} },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._loadData();
+                console.log('📊 H-07: Libro Contable - Kairux Activado bajo la Doctrina del Cosmos');
+            },
+
+            _cacheDOM() {
+                this.nodes.form = document.getElementById('transactionForm');
+                this.nodes.tableBody = document.querySelector("#transactionTable tbody");
+                this.nodes.csvFile = document.getElementById('csvFile');
+            },
+
+            _bindEvents() {
+                this.nodes.form.addEventListener('submit', e => { e.preventDefault(); this._addTransaction(); });
+                this.nodes.csvFile.addEventListener('change', e => { this._handleCSV(e.target.files[0]); });
+            },
+
+            _loadData() {
+                const savedData = localStorage.getItem('kairux_h07_data');
+                this.state.transactions = savedData ? JSON.parse(savedData) : [];
+                this._render();
+            },
+
+            _saveData() {
+                localStorage.setItem('kairux_h07_data', JSON.stringify(this.state.transactions));
+            },
+
+            _addTransaction() {
+                const date = this.nodes.form.date.value;
+                const description = this.nodes.form.description.value;
+                const amount = parseFloat(this.nodes.form.amount.value);
+                const type = this.nodes.form.type.value;
+
+                if (!date || !description || isNaN(amount)) return;
+
+                this.state.transactions.push({ id: Date.now(), date, description, amount, type });
+                this.nodes.form.reset();
+                this.nodes.form.date.valueAsDate = new Date();
+                this._render();
+            },
+            
+            _handleCSV(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    const rows = text.split('\n').slice(1);
+                    rows.forEach(rowStr => {
+                        const [date, description, amountStr, type] = rowStr.split(',');
+                        const amount = parseFloat(amountStr);
+                        if (date && description && !isNaN(amount)) {
+                            this.state.transactions.push({
+                                id: Date.now() + Math.random(), date: date.trim(), description: description.trim(), amount,
+                                type: type.trim().toLowerCase().includes('ingreso') ? 'income' : 'expense'
+                            });
+                        }
+                    });
+                    this._render();
+                };
+                reader.readAsText(file);
+            },
+
+            _render() {
+                this.state.transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+                this._renderTable();
+                this._renderCharts();
+                this._saveData();
+            },
+
+            _renderTable() {
+                this.nodes.tableBody.innerHTML = this.state.transactions.slice(-10).reverse().map(t => `
+                    <tr>
+                        <td>${new Date(t.date).toLocaleDateString('es-CR')}</td>
+                        <td>${t.description}</td>
+                        <td class="amount ${t.type}">${t.type === 'income' ? '+' : '-'}₡${t.amount.toLocaleString('es-CR')}</td>
+                    </tr>
+                `).join('');
+            },
+
+            _renderCharts() {
+                Chart.defaults.color = 'rgba(226, 232, 240, 0.8)';
+                this._renderIncomeExpenseChart();
+                this._renderCashFlowChart();
+            },
+
+            _renderIncomeExpenseChart() {
+                const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+                const monthlyData = this.state.transactions.reduce((acc, t) => {
+                    const month = new Date(t.date).toISOString().slice(0, 7);
+                    if (!acc[month]) acc[month] = { income: 0, expense: 0 };
+                    acc[month][t.type] += t.amount;
+                    return acc;
+                }, {});
+
+                const labels = Object.keys(monthlyData).sort();
+                if (this.state.charts.incomeExpense) this.state.charts.incomeExpense.destroy();
+                this.state.charts.incomeExpense = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Ingresos', data: labels.map(m => monthlyData[m].income), backgroundColor: 'rgba(0, 212, 170, 0.7)' },
+                            { label: 'Gastos', data: labels.map(m => monthlyData[m].expense), backgroundColor: 'rgba(244, 63, 94, 0.7)' }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' } }, x: { grid: { color: 'rgba(255,255,255,0.1)' } } } }
+                });
+            },
+
+            _renderCashFlowChart() {
+                const ctx = document.getElementById('cashFlowChart').getContext('2d');
+                let balance = 0;
+                const dataPoints = this.state.transactions.map(t => {
+                    balance += t.type === 'income' ? t.amount : -t.amount;
+                    return { x: new Date(t.date).valueOf(), y: balance };
+                });
+
+                if (this.state.charts.cashFlow) this.state.charts.cashFlow.destroy();
+                this.state.charts.cashFlow = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Flujo de Caja', data: dataPoints, borderColor: var(--cashflow-color),
+                            fill: false, tension: 0.1
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { 
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' } }, 
+                        x: { type: 'time', time: { unit: 'month' }, grid: { color: 'rgba(255,255,255,0.1)' } } 
+                    } }
+                });
+            },
+        };
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH07.init());
+    </script>
+</body>
+</html>
