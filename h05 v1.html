@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-05: Oráculo de la Rentabilidad | Kairux</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --financial-primary: #00d4aa;
+            --financial-secondary: #26a69a;
+            --background-dark: #0F172A;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --hero-color: #00d4aa;
+            --villain-color: #F43F5E;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top left, rgba(0, 212, 170, 0.15), transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container { padding: 2rem; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--financial-primary); }
+        .header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0; }
+        
+        .controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
+        .control-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-secondary); padding: 0.75rem 1.5rem;
+            border-radius: 12px; cursor: pointer; transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .control-btn.active { background: var(--financial-primary); color: #0F172A; border-color: var(--financial-primary); }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border-top: 2px solid var(--financial-primary);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-left: 1px solid var(--glass-border);
+        }
+        .panel-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .list-item {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem; border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+        .list-item.hero { border-color: var(--hero-color); }
+        .list-item.villain { border-color: var(--villain-color); }
+        .item-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .item-name { font-size: 1.1rem; }
+        .item-margin { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; }
+        .item-margin.hero { color: var(--hero-color); }
+        .item-margin.villain { color: var(--villain-color); }
+        .item-details { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        @media (max-width: 900px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Oráculo de la Rentabilidad</h1>
+            <p>Descubre qué partes de tu negocio son Héroes que te hacen ganar dinero y cuáles son Villanos que te lo quitan.</p>
+        </header>
+
+        <div class="controls">
+            <button class="control-btn active" data-lens="project">Ver por Proyecto</button>
+            <button class="control-btn" data-lens="client">Ver por Cliente</button>
+            <button class="control-btn" data-lens="category">Ver por Categoría</button>
+        </div>
+
+        <div class="results-grid">
+            <div class="glass-panel">
+                <h2 class="panel-title">🏆 Héroes de la Rentabilidad</h2>
+                <div id="heroesList"></div>
+            </div>
+            <div class="glass-panel">
+                <h2 class="panel-title">💔 Villanos de la Rentabilidad</h2>
+                <div id="villainsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const KairuxH05 = {
+            state: {
+                transactions: [],
+                activeLens: 'project'
+            },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._requestDataFromBubble();
+            },
+
+            _cacheDOM() {
+                this.nodes.heroesList = document.getElementById('heroesList');
+                this.nodes.villainsList = document.getElementById('villainsList');
+                this.nodes.controls = document.querySelector('.controls');
+            },
+
+            _bindEvents() {
+                this.nodes.controls.addEventListener('click', e => {
+                    if (e.target.matches('[data-lens]')) {
+                        this.state.activeLens = e.target.dataset.lens;
+                        this._render();
+                    }
+                });
+            },
+
+            _requestDataFromBubble() {
+                console.log("H-05: Pidiendo datos al KFL...");
+                if (typeof bubble_fn_getKFLData === 'function') {
+                    bubble_fn_getKFLData("all");
+                } else {
+                    console.warn("Modo de desarrollo: Usando datos de prueba.");
+                    this._receiveDataFromBubble([
+                        { amount: 1000, type: 'income', project: 'Proyecto Alpha', client: 'Cliente A', category: 'Ventas' },
+                        { amount: 300, type: 'expense', project: 'Proyecto Alpha', client: 'Cliente A', category: 'Materia Prima' },
+                        { amount: 1500, type: 'income', project: 'Proyecto Beta', client: 'Cliente B', category: 'Ventas' },
+                        { amount: 1200, type: 'expense', project: 'Proyecto Beta', client: 'Cliente B', category: 'Publicidad' },
+                        { amount: 800, type: 'income', project: 'Proyecto Gamma', client: 'Cliente A', category: 'Servicios' },
+                        { amount: 600, type: 'expense', project: 'Proyecto Gamma', client: 'Cliente A', category: 'Software' }
+                    ]);
+                }
+            },
+
+            _receiveDataFromBubble(kflData) {
+                console.log("H-05: Datos recibidos del KFL.", kflData);
+                this.state.transactions = kflData;
+                this._render();
+            },
+
+            _render() {
+                this._updateControlButtons();
+                const analysis = this._analyzeData();
+                this._renderList(this.nodes.heroesList, analysis.heroes, 'hero');
+                this._renderList(this.nodes.villainsList, analysis.villains, 'villain');
+            },
+
+            _updateControlButtons() {
+                this.nodes.controls.querySelectorAll('.control-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lens === this.state.activeLens);
+                });
+            },
+
+            _analyzeData() {
+                const lens = this.state.activeLens;
+                const groups = this.state.transactions.reduce((acc, t) => {
+                    const key = t[lens] || 'Sin Asignar';
+                    if (!acc[key]) acc[key] = { income: 0, expense: 0 };
+                    acc[key][t.type] += t.amount;
+                    return acc;
+                }, {});
+
+                const results = Object.entries(groups).map(([name, data]) => {
+                    const margin = data.income > 0 ? ((data.income - data.expense) / data.income) * 100 : -100;
+                    return { name, ...data, margin };
+                });
+
+                results.sort((a, b) => b.margin - a.margin);
+                
+                return {
+                    heroes: results.filter(r => r.margin >= 0).slice(0, 5),
+                    villains: results.filter(r => r.margin < 0).slice(0, 5)
+                };
+            },
+
+            _renderList(container, items, type) {
+                if (items.length === 0) {
+                    container.innerHTML = `<p style="color: var(--text-muted);">No hay ${type === 'hero' ? 'héroes' : 'villanos'} que mostrar para esta vista.</p>`;
+                    return;
+                }
+                container.innerHTML = items.map(item => `
+                    <div class="list-item ${type}">
+                        <div class="item-header">
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-margin ${type}">${item.margin.toFixed(1)}% Margen</span>
+                        </div>
+                        <div class="item-details">
+                            Ingresos: ₡${item.income.toLocaleString('es-CR')} / Gastos: ₡${item.expense.toLocaleString('es-CR')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        };
+
+        // --- API para Bubble ---
+        function receiveKFLData(data) {
+            try {
+                const parsedData = JSON.parse(data);
+                KairuxH05._receiveDataFromBubble(parsedData);
+            } catch (e) {
+                console.error("H-05: Error al parsear datos del KFL", e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH05.init());
+    </script>
+</body>
+</html>

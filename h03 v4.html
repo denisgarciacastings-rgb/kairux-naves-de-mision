@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-03: Simulador de Vuelo Estratégico | Kairux</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strategic-primary: #667eea;
+            --strategic-secondary: #764ba2;
+            --background-dark: #0F172A;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --success-color: #00d4aa;
+            --warning-color: #FBBF24;
+            --danger-color: #F43F5E;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top right, rgba(102, 126, 234, 0.15), transparent 50%);
+            color: var(--text-primary);
+        }
+        .container { padding: 2rem; max-width: 1600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--strategic-primary); }
+        .header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto 0; }
+        
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border-top: 2px solid var(--strategic-primary);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-left: 1px solid var(--glass-border);
+        }
+        .panel-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+        .controls-panel .form-control { margin-bottom: 1.5rem; }
+        .controls-panel label { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.75rem; display: block; }
+        .controls-panel input {
+            width: 100%; background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            padding: 0.75rem 1rem; color: var(--text-primary); font-size: 1rem;
+        }
+        .action-btn {
+            background: linear-gradient(135deg, var(--strategic-primary) 0%, var(--strategic-secondary) 100%);
+            border: none; border-radius: 12px; padding: 1rem 1.5rem; color: white;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem;
+            cursor: pointer; width: 100%; text-align: center; transition: all 0.3s ease;
+        }
+
+        .results-panel .chart-container { height: 300px; margin-bottom: 2rem; }
+        .verdict-panel { background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 15px; }
+        .verdict-title { font-size: 1.2rem; font-weight: 600; color: var(--strategic-primary); margin-bottom: 1rem; }
+        .verdict-kpi { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--glass-border); }
+        .verdict-kpi:last-child { border-bottom: none; }
+        .verdict-kpi-label { color: var(--text-secondary); }
+        .verdict-kpi-value.positive { color: var(--success-color); }
+        .verdict-kpi-value.warning { color: var(--warning-color); }
+
+        @media (max-width: 1200px) { .layout-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Simulador de Vuelo Estratégico</h1>
+            <p>Viaja a futuros paralelos. Modifica las variables clave y añade eventos estratégicos para encontrar el camino más robusto hacia el éxito.</p>
+        </header>
+
+        <div class="layout-grid">
+            <aside class="controls-panel glass-panel">
+                <h2 class="panel-title">Controles de la Realidad</h2>
+                <div class="form-control">
+                    <label for="salesIncrease">Aumento de Ventas (%)</label>
+                    <input type="number" id="salesIncrease" value="0">
+                </div>
+                <div class="form-control">
+                    <label for="costReduction">Reducción de Costos (%)</label>
+                    <input type="number" id="costReduction" value="0">
+                </div>
+                <div class="form-control">
+                    <label for="newHires">Nuevas Contrataciones (Costo Mensual)</label>
+                    <input type="number" id="newHires" value="0">
+                </div>
+                <hr style="border-color: var(--glass-border); margin: 2rem 0;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Eventos Estratégicos</h3>
+                <div id="events-list" style="margin-bottom: 1.5rem;"></div>
+                <button class="action-btn" id="addEventBtn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);">+ Añadir Evento en Línea de Tiempo</button>
+            </aside>
+            <main class="results-panel glass-panel">
+                <h2 class="panel-title">Visor de Futuros Paralelos</h2>
+                <div class="chart-container">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+                <div class="verdict-panel">
+                    <h3 class="verdict-title">Veredicto del Oráculo (Análisis Monte Carlo)</h3>
+                    <div id="verdict-kpis"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const KairuxH03 = {
+            state: {
+                baseData: { monthlyIncome: 5000000, monthlyCosts: 4000000, initialCash: 2000000 },
+                events: [],
+                chart: null
+            },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._runSimulation();
+            },
+
+            _cacheDOM() {
+                this.nodes.salesInput = document.getElementById('salesIncrease');
+                this.nodes.costsInput = document.getElementById('costReduction');
+                this.nodes.hiresInput = document.getElementById('newHires');
+                this.nodes.addEventBtn = document.getElementById('addEventBtn');
+                this.nodes.eventsList = document.getElementById('events-list');
+                this.nodes.verdictContainer = document.getElementById('verdict-kpis');
+                this.nodes.chartCtx = document.getElementById('cashFlowChart').getContext('2d');
+            },
+
+            _bindEvents() {
+                this.nodes.addEventBtn.addEventListener('click', () => this._addEvent());
+                // Re-simular en cada cambio de los inputs principales
+                [this.nodes.salesInput, this.nodes.costsInput, this.nodes.hiresInput].forEach(input => {
+                    input.addEventListener('input', () => this._runSimulation());
+                });
+            },
+
+            _addEvent() {
+                const eventType = prompt("Tipo de Evento: 'crecimiento', 'eficiencia' o 'inversion'");
+                if (!eventType) return;
+                
+                const newEvent = {
+                    id: Date.now(),
+                    type: eventType,
+                    impact: parseFloat(prompt("Impacto (Ej: 20 para 20%, o 500000 para costo)")) || 0,
+                    startMonth: parseInt(prompt("Mes de Inicio (1-6)")) || 1
+                };
+                this.state.events.push(newEvent);
+                this._renderEvents();
+                this._runSimulation();
+            },
+
+            _runSimulation() {
+                const results = this._runMonteCarlo(1000);
+                this._renderChart(results.avgTimeline);
+                this._renderVerdict(results.verdict);
+            },
+            
+            _runMonteCarlo(simulations) {
+                const allTimelines = [];
+                for (let i = 0; i < simulations; i++) {
+                    allTimelines.push(this._calculateProjection(true));
+                }
+
+                const avgTimeline = allTimelines[0].map((_, colIndex) => 
+                    allTimelines.reduce((sum, row) => sum + row[colIndex], 0) / simulations
+                );
+                
+                const finalCashValues = allTimelines.map(timeline => timeline[timeline.length - 1]);
+                const successCount = finalCashValues.filter(val => val > this.state.baseData.initialCash).length;
+
+                const verdict = {
+                    successProbability: (successCount / simulations) * 100,
+                    avgNetGain: avgTimeline[avgTimeline.length - 1] - this.state.baseData.initialCash,
+                    bestCase: Math.max(...finalCashValues) - this.state.baseData.initialCash,
+                    worstCase: Math.min(...finalCashValues) - this.state.baseData.initialCash
+                };
+
+                return { avgTimeline, verdict };
+            },
+
+            _calculateProjection(isMonteCarlo = false) {
+                const { monthlyIncome, monthlyCosts, initialCash } = this.state.baseData;
+                let cash = initialCash;
+                const cashFlowTimeline = [initialCash];
+                
+                const salesIncrease = parseFloat(this.nodes.salesInput.value) / 100;
+                const costReduction = parseFloat(this.nodes.costsInput.value) / 100;
+                const newHiresCost = parseFloat(this.nodes.hiresInput.value);
+
+                for (let i = 1; i <= 6; i++) {
+                    let periodIncome = monthlyIncome * (1 + salesIncrease);
+                    let periodCosts = (monthlyCosts * (1 - costReduction)) + newHiresCost;
+
+                    this.state.events.forEach(event => {
+                        if (i >= event.startMonth) {
+                            let impact = event.impact;
+                            if (isMonteCarlo) {
+                                const variation = (Math.random() - 0.5) * 0.2; // ±10% variation
+                                impact *= (1 + variation);
+                            }
+                            if (event.type === 'crecimiento') periodIncome *= (1 + impact / 100);
+                            if (event.type === 'eficiencia') periodCosts *= (1 - impact / 100);
+                            if (event.type === 'inversion') periodCosts += impact;
+                        }
+                    });
+                    
+                    const netFlow = periodIncome - periodCosts;
+                    cash += netFlow;
+                    cashFlowTimeline.push(cash);
+                }
+                return cashFlowTimeline;
+            },
+
+            _renderEvents() {
+                this.nodes.eventsList.innerHTML = this.state.events.map(e => `
+                    <div style="font-size:0.9rem; margin-bottom: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 8px;">
+                        <strong>${e.type.charAt(0).toUpperCase() + e.type.slice(1)}:</strong> ${e.impact} (Mes ${e.startMonth})
+                    </div>
+                `).join('');
+            },
+
+            _renderChart(data) {
+                if (this.state.chart) this.state.chart.destroy();
+                this.state.chart = new Chart(this.nodes.chartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ahora', 'Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6'],
+                        datasets: [{
+                            label: 'Flujo de Caja Proyectado (Promedio)',
+                            data: data,
+                            borderColor: var(--strategic-primary),
+                            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                            fill: true, tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' } } } }
+                });
+            },
+
+            _renderVerdict(verdict) {
+                const formatCurrency = (num) => `₡${num.toLocaleString('es-CR', { maximumFractionDigits: 0 })}`;
+                
+                this.nodes.verdictContainer.innerHTML = `
+                    <div class="verdict-kpi">
+                        <span class="verdict-kpi-label">Probabilidad de Éxito</span>
+                        <span class="verdict-kpi-value ${verdict.successProbability > 75 ? 'positive' : 'warning'}">${verdict.successProbability.toFixed(1)}%</span>
+                    </div>
+                    <div class="verdict-kpi">
+                        <span class="verdict-kpi-label">Ganancia Neta (Promedio)</span>
+                        <span class="verdict-kpi-value positive">${formatCurrency(verdict.avgNetGain)}</span>
+                    </div>
+                    <div class="verdict-kpi">
+                        <span class="verdict-kpi-label">Mejor Escenario</span>
+                        <span class="verdict-kpi-value">${formatCurrency(verdict.bestCase)}</span>
+                    </div>
+                    <div class="verdict-kpi">
+                        <span class="verdict-kpi-label">Peor Escenario</span>
+                        <span class="verdict-kpi-value ${verdict.worstCase < 0 ? 'warning' : ''}">${formatCurrency(verdict.worstCase)}</span>
+                    </div>
+                `;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH03.init());
+    </script>
+</body>
+</html>

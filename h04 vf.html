@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-04: Centro de Mando de OKRs | Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strategic-primary: #667eea;
+            --strategic-secondary: #764ba2;
+            --background-dark: #0F172A;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --success-color: #00d4aa;
+            --warning-color: #FBBF24;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top right, rgba(102, 126, 234, 0.15), transparent 50%);
+            color: var(--text-primary);
+        }
+        .container { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--strategic-primary); }
+        .header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto 0; }
+        
+        .checkin-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+        }
+        .checkin-text h3 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+        .checkin-text p { color: var(--text-secondary); }
+        .checkin-btn {
+            background: linear-gradient(135deg, var(--strategic-primary) 0%, var(--strategic-secondary) 100%);
+            border: none; border-radius: 12px; padding: 0.75rem 1.5rem; color: white;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer;
+        }
+
+        .okr-tree { /* ... */ }
+        .objective-card { background: rgba(0,0,0,0.2); border-radius: 15px; margin-bottom: 1.5rem; border-left: 4px solid var(--strategic-primary); }
+        .objective-header { padding: 1.5rem; cursor: pointer; display: flex; align-items: center; gap: 1rem; }
+        .objective-title { font-weight: 600; font-size: 1.2rem; flex: 1; }
+        .objective-progress-container { width: 200px; background: rgba(0,0,0,0.3); border-radius: 8px; height: 12px; }
+        .objective-progress-bar { height: 100%; background: var(--success-color); border-radius: 8px; transition: width 0.5s ease; }
+        .objective-progress-text { font-size: 1rem; font-weight: 600; width: 50px; text-align: right; }
+        
+        .key-results-container { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+        .key-results-container.open { max-height: 1000px; }
+        .key-result { padding: 1.25rem 1.5rem 1.25rem 3.5rem; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 0.75rem; transition: background-color 0.3s; }
+        .key-result:hover { background: rgba(255,255,255,0.05); }
+        .kr-main { display: flex; align-items: center; gap: 1rem; }
+        .kr-title { flex: 1; color: var(--text-secondary); }
+        .kr-progress-text { font-size: 0.9rem; color: var(--text-muted); }
+        .kr-actions { opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .key-result:hover .kr-actions { opacity: 1; visibility: visible; }
+        .kr-actions button { background: none; border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+        .kr-actions button:hover { background: var(--glass-bg); }
+        .kil-whisper { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .kil-whisper.good { color: var(--success-color); }
+        .kil-whisper.warning { color: var(--warning-color); }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Centro de Mando de OKRs</h1>
+            <p>Traduce la estrategia en resultados medibles y alinea a toda tu tripulación en una sola dirección. El progreso ya no se reporta, se gestiona.</p>
+        </header>
+
+        <div class="checkin-panel" id="checkinPanel">
+            <!-- Contenido del Check-in Panel generado dinámicamente -->
+        </div>
+
+        <div class="okr-tree" id="okrTree">
+            <!-- Los OKRs se generan dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        const KairuxH04 = {
+            state: {
+                okrs: [],
+                lastCheckin: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // Simula hace 5 días
+            },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._loadData();
+            },
+
+            _cacheDOM() {
+                this.nodes.treeContainer = document.getElementById('okrTree');
+                this.nodes.checkinPanel = document.getElementById('checkinPanel');
+            },
+
+            _bindEvents() {
+                this.nodes.treeContainer.addEventListener('click', e => {
+                    const header = e.target.closest('.objective-header');
+                    if (header) {
+                        header.nextElementSibling.classList.toggle('open');
+                        return;
+                    }
+                    
+                    const updateBtn = e.target.closest('[data-action="update-kr"]');
+                    if (updateBtn) {
+                        const krId = parseInt(updateBtn.dataset.id);
+                        this._updateKrManually(krId);
+                    }
+                });
+            },
+
+            _loadData() {
+                this.state.okrs = [
+                    {
+                        id: 1, title: 'Lanzar la Colección Plata al Estrellato (Q4 2025)',
+                        keyResults: [
+                            { id: 101, title: 'Alcanzar un ROI de campaña de 5x', current: 4.5, target: 5, isLinked: true, lastUpdate: new Date() },
+                            { id: 102, title: 'Vender 1,000 unidades de la nueva colección', current: 850, target: 1000, isLinked: true, lastUpdate: new Date() },
+                            { id: 103, title: 'Obtener 5 apariciones en medios', current: 2, target: 5, isLinked: false, lastUpdate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) }
+                        ]
+                    },
+                    {
+                        id: 2, title: 'Convertir la Operación en una Máquina de Eficiencia',
+                        keyResults: [
+                            { id: 201, title: 'Reducir el costo por envío en un 15%', current: 10, target: 15, isLinked: true, lastUpdate: new Date() },
+                            { id: 202, title: 'Automatizar el 100% del proceso de facturación', current: 30, target: 100, isLinked: false, lastUpdate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) }
+                        ]
+                    }
+                ];
+                this._calculateProgress();
+                this._render();
+            },
+            
+            _calculateProgress() {
+                this.state.okrs.forEach(okr => {
+                    let totalProgress = 0;
+                    okr.keyResults.forEach(kr => {
+                        kr.progress = (kr.current / kr.target) * 100;
+                        totalProgress += kr.progress;
+                    });
+                    okr.progress = totalProgress / okr.keyResults.length;
+                });
+            },
+            
+            _updateKrManually(krId) {
+                let krToUpdate;
+                this.state.okrs.forEach(okr => {
+                    const found = okr.keyResults.find(kr => kr.id === krId);
+                    if (found) krToUpdate = found;
+                });
+
+                if (!krToUpdate) return;
+
+                const newValue = prompt(`Actualizar: "${krToUpdate.title}"\nValor Actual: ${krToUpdate.current}\nValor Objetivo: ${krToUpdate.target}\n\nIntroduce el nuevo valor actual:`);
+                
+                if (newValue !== null && !isNaN(parseFloat(newValue))) {
+                    krToUpdate.current = parseFloat(newValue);
+                    krToUpdate.lastUpdate = new Date();
+                    this._calculateProgress();
+                    this._render();
+                }
+            },
+
+            _render() {
+                this._renderCheckinPanel();
+                this.nodes.treeContainer.innerHTML = this.state.okrs.map(okr => this._createOkrHTML(okr)).join('');
+            },
+
+            _renderCheckinPanel() {
+                const now = new Date();
+                const daysSinceCheckin = Math.floor((now - this.state.lastCheckin) / (1000 * 60 * 60 * 24));
+                const krsToUpdate = this.state.okrs.flatMap(o => o.keyResults).filter(kr => !kr.isLinked && (now - kr.lastUpdate) / (1000 * 60 * 60 * 24) > 7).length;
+
+                let title = "Ritual de Check-in Semanal";
+                let message = `Han pasado ${daysSinceCheckin} días desde tu último check-in. Hay ${krsToUpdate} Resultados Clave que necesitan tu atención.`;
+                if (krsToUpdate === 0) {
+                    message = "¡Excelente! Todos tus OKRs están al día. Sigue así.";
+                }
+
+                this.nodes.checkinPanel.innerHTML = `
+                    <div class="checkin-text">
+                        <h3>${title}</h3>
+                        <p>${message}</p>
+                    </div>
+                    ${krsToUpdate > 0 ? '<button class="checkin-btn">Revisar OKRs</button>' : ''}
+                `;
+            },
+
+            _createOkrHTML(okr) {
+                const krHTML = okr.keyResults.map(kr => {
+                    const daysSinceUpdate = Math.floor((new Date() - kr.lastUpdate) / (1000 * 60 * 60 * 24));
+                    let whisper = '';
+                    if (kr.isLinked) {
+                        whisper = `<div class="kil-whisper">🔗 El KFL reporta un progreso de ${kr.progress.toFixed(0)}%.</div>`;
+                    } else if (daysSinceUpdate > 14) {
+                        whisper = `<div class="kil-whisper warning">💡 Ojo, Estratega. Este KR no se ha actualizado en ${daysSinceUpdate} días. ¿Hay algún bloqueo?</div>`;
+                    } else if (kr.progress >= 80) {
+                        whisper = `<div class="kil-whisper good">🎉 ¡Casi logrado! Sigue empujando para llegar al 100%.</div>`;
+                    }
+
+                    return `
+                        <div class="key-result">
+                            <div class="kr-main">
+                                <div class="kr-title">${kr.title}</div>
+                                <div class="objective-progress-container" style="width: 150px;">
+                                    <div class="objective-progress-bar" style="width: ${kr.progress.toFixed(0)}%;"></div>
+                                </div>
+                                <div class="kr-progress-text">${kr.progress.toFixed(0)}%</div>
+                                <div class="kr-actions">
+                                    ${!kr.isLinked ? `<button data-action="update-kr" data-id="${kr.id}">Actualizar</button>` : ''}
+                                </div>
+                            </div>
+                            ${whisper}
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="objective-card">
+                        <div class="objective-header">
+                            <div class="objective-title">${okr.title}</div>
+                            <div class="objective-progress-container">
+                                <div class="objective-progress-bar" style="width: ${okr.progress.toFixed(0)}%;"></div>
+                            </div>
+                            <div class="objective-progress-text">${okr.progress.toFixed(0)}%</div>
+                        </div>
+                        <div class="key-results-container open">
+                            ${krHTML}
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH04.init());
+    </script>
+</body>
+</html>

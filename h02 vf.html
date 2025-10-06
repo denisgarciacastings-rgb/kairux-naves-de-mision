@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-02: Navegador Estratégico | Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strategic-primary: #667eea;
+            --strategic-secondary: #764ba2;
+            --background-dark: #0F172A;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top right, rgba(102, 126, 234, 0.15), transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container { padding: 2rem; max-width: 1600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--strategic-primary); }
+        .header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto 0; }
+        
+        .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; align-items: flex-start; }
+        .kanban-column { background: var(--glass-bg); backdrop-filter: blur(20px); border-radius: 20px; padding: 1.5rem; border-top: 2px solid var(--strategic-primary); border-right: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); border-left: 1px solid var(--glass-border); }
+        .column-title { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 700; padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+        .kanban-cards { min-height: 400px; }
+        .kanban-card { background: rgba(0,0,0,0.25); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; border-left: 4px solid var(--strategic-primary); cursor: pointer; transition: all 0.3s ease; }
+        .kanban-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .kanban-card.dragging { opacity: 0.5; cursor: grabbing; }
+        .card-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .card-metric { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem; }
+        .card-metric-label { color: var(--text-muted); }
+        .card-kpi { font-weight: 600; color: var(--strategic-primary); }
+
+        .add-initiative-btn { background: none; border: 1px dashed var(--glass-border); color: var(--text-secondary); width: 100%; padding: 1rem; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; font-size: 1rem; font-weight: 500; margin-top: 0.5rem; }
+        .add-initiative-btn:hover { background: var(--glass-bg); color: var(--text-primary); }
+        .propose-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); }
+
+        /* --- Modal de Edición --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--background-dark); border: 1px solid var(--glass-border); border-radius: 20px; width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; }
+        .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 2rem; cursor: pointer; }
+        .modal-body { padding: 2rem; overflow-y: auto; flex: 1; }
+        .form-section { margin-bottom: 2rem; }
+        .form-section h3 { font-size: 1.1rem; font-weight: 600; color: var(--strategic-primary); margin-bottom: 1rem; }
+        .form-control { margin-bottom: 1.5rem; }
+        .form-control label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .form-control input, .form-control textarea, .form-control select { width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-size: 1rem; }
+        .form-control textarea { min-height: 120px; resize: vertical; }
+        .modal-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--glass-border); display: flex; justify-content: flex-end; }
+        .action-btn { background: linear-gradient(135deg, var(--strategic-primary) 0%, var(--strategic-secondary) 100%); border: none; border-radius: 12px; padding: 0.75rem 2rem; color: white; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; }
+
+        @media (max-width: 1200px) { .kanban-board { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .kanban-board { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Navegador Estratégico</h1>
+            <p>Tu centro de mando para transformar la estrategia en acción. Arrastra y suelta tus iniciativas para dar forma al futuro de tu empresa.</p>
+        </header>
+
+        <div class="kanban-board" id="kanbanBoard">
+            <!-- Las columnas se generan dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Iniciativa -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <button class="modal-close" data-action="closeModal">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <!-- El contenido del formulario se genera dinámicamente -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" data-action="saveAndClose">✓ Guardar y Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const KairuxH02 = {
+            state: {
+                initiatives: [],
+                oracleData: { topHero: { name: 'Colección Plata', margin: 70 }, availableBudget: { engine: 'growth', amount: 200000 } },
+                draggedItem: null,
+                isEditing: false,
+                autoSaveTimer: null
+            },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._loadData();
+            },
+
+            _cacheDOM() {
+                this.nodes.board = document.getElementById('kanbanBoard');
+                this.nodes.modal = document.getElementById('editModal');
+                this.nodes.editForm = document.getElementById('editForm');
+                this.nodes.modalTitle = document.getElementById('modalTitle');
+            },
+
+            _bindEvents() {
+                this.nodes.board.addEventListener('click', e => {
+                    const action = e.target.dataset.action;
+                    if (action === 'propose') this._proposeInitiative();
+                    if (action === 'addManual') this._addInitiativeManually();
+                    
+                    const card = e.target.closest('.kanban-card');
+                    if (card && !e.target.closest('button')) {
+                        const initiativeId = parseInt(card.dataset.id);
+                        this._openEditModal(initiativeId);
+                    }
+                });
+
+                this.nodes.modal.querySelector('[data-action="closeModal"]').addEventListener('click', () => this._closeEditModal());
+                this.nodes.modal.querySelector('[data-action="saveAndClose"]').addEventListener('click', () => this._saveAndClose());
+                
+                this.nodes.editForm.addEventListener('input', () => this._triggerAutoSave());
+
+                // Drag and Drop Events
+                this.nodes.board.addEventListener('dragstart', e => {
+                    if (e.target.classList.contains('kanban-card')) {
+                        this.state.draggedItem = e.target;
+                        setTimeout(() => e.target.classList.add('dragging'), 0);
+                    }
+                });
+
+                this.nodes.board.addEventListener('dragend', e => {
+                    if (this.state.draggedItem) {
+                        this.state.draggedItem.classList.remove('dragging');
+                        this.state.draggedItem = null;
+                    }
+                });
+
+                this.nodes.board.addEventListener('dragover', e => {
+                    e.preventDefault();
+                });
+
+                this.nodes.board.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const targetColumn = e.target.closest('.kanban-column');
+                    if (this.state.draggedItem && targetColumn) {
+                        const newStatus = targetColumn.dataset.status;
+                        const initiativeId = parseInt(this.state.draggedItem.dataset.id);
+                        this._updateInitiativeStatus(initiativeId, newStatus);
+                    }
+                });
+            },
+
+            _loadData() {
+                this.state.initiatives = [
+                    { id: 1, title: 'Campaña de Marketing para Colección Plata', objective: 'Aumentar margen bruto en 5%', budget: 150000, kpi: 'ROI de campaña', status: 'mission', plan: 'Paso 1: Definir audiencia...' },
+                    { id: 2, title: 'Optimizar Proceso de Empaque', objective: 'Reducir costos operativos en 10%', budget: 50000, kpi: 'Costo por envío', status: 'execution', plan: '' },
+                    { id: 3, title: 'Lanzar Nuevo Producto (Aretes Sol)', objective: 'Validar mercado', budget: 250000, kpi: 'Unidades vendidas', status: 'exploration', plan: '' },
+                    { id: 4, title: 'Campaña Q3 Finalizada', objective: 'Aumentar ventas 20%', budget: 300000, kpi: 'Ventas totales', status: 'review', plan: '' }
+                ];
+                this._render();
+            },
+
+            _openEditModal(id = null, isProposal = false) {
+                this.state.isEditing = true;
+                let initiative = { id: id || Date.now(), title: '', objective: '', budget: 0, kpi: '', status: 'exploration', plan: '' };
+                let modalTitle = "Crear Nueva Iniciativa";
+
+                if (id) {
+                    initiative = this.state.initiatives.find(i => i.id === id) || initiative;
+                    modalTitle = "Editar Iniciativa";
+                }
+                
+                if (isProposal) {
+                    const { topHero, availableBudget } = this.state.oracleData;
+                    initiative.title = `Expandir ${topHero.name}`;
+                    initiative.objective = `Aumentar rentabilidad del producto Héroe`;
+                    initiative.budget = availableBudget.amount;
+                    initiative.kpi = 'ROI de campaña';
+                    modalTitle = "Iniciativa Propuesta por IA";
+                }
+
+                this.nodes.modalTitle.textContent = modalTitle;
+                this.nodes.editForm.innerHTML = this._createFormHTML(initiative);
+                this.nodes.modal.classList.add('active');
+            },
+
+            _closeEditModal() {
+                this.nodes.modal.classList.remove('active');
+                this.state.isEditing = false;
+            },
+            
+            _saveAndClose() {
+                this._autoSave(true);
+                this._closeEditModal();
+                
+                const id = parseInt(this.nodes.editForm.elements.initiativeId.value);
+                const initiative = this.state.initiatives.find(i => i.id === id);
+
+                if (initiative && typeof bubble_fn_actualizarPresupuesto === 'function') {
+                    console.log(`Enviando actualización de presupuesto a H-06 para '${initiative.title}'...`);
+                    bubble_fn_actualizarPresupuesto({ proyecto: initiative.title, monto: initiative.budget });
+                }
+            },
+
+            _triggerAutoSave() {
+                clearTimeout(this.state.autoSaveTimer);
+                this.state.autoSaveTimer = setTimeout(() => this._autoSave(), 1000);
+            },
+
+            _autoSave(force = false) {
+                if (!this.state.isEditing && !force) return;
+                
+                const form = this.nodes.editForm.elements;
+                const id = parseInt(form.initiativeId.value);
+                let initiative = this.state.initiatives.find(i => i.id === id);
+
+                const data = {
+                    title: form.title.value,
+                    objective: form.objective.value,
+                    budget: parseFloat(form.budget.value) || 0,
+                    kpi: form.kpi.value,
+                    plan: form.plan.value
+                };
+
+                if (initiative) {
+                    Object.assign(initiative, data);
+                } else {
+                    initiative = { id, status: 'exploration', ...data };
+                    this.state.initiatives.push(initiative);
+                }
+                
+                console.log('Auto-guardado:', initiative);
+                this._render();
+            },
+
+            _proposeInitiative() { this._openEditModal(null, true); },
+            _addInitiativeManually() { this._openEditModal(); },
+            
+            _updateInitiativeStatus(id, newStatus) {
+                const initiative = this.state.initiatives.find(i => i.id === id);
+                if (initiative && initiative.status !== newStatus) {
+                    initiative.status = newStatus;
+                    this._render();
+                }
+            },
+
+            _render() {
+                this.nodes.board.innerHTML = ['exploration', 'mission', 'execution', 'review'].map(status => {
+                    const cards = this.state.initiatives.filter(i => i.status === status);
+                    return `
+                        <div class="kanban-column" data-status="${status}">
+                            <h2 class="column-title">${this._getStatusTitle(status)}</h2>
+                            <div class="kanban-cards">
+                                ${cards.map(c => this._createCardHTML(c)).join('')}
+                            </div>
+                            ${status === 'exploration' ? `
+                                <button class="add-initiative-btn propose-btn" data-action="propose">💡 Proponer con IA</button>
+                                <button class="add-initiative-btn" data-action="addManual">+ Crear Iniciativa Manual</button>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            },
+            
+            _getStatusTitle(status) {
+                const titles = { exploration: '💡 En Exploración', mission: '📈 Misión Crítica', execution: '⏳ En Ejecución', review: '📊 En Revisión' };
+                return titles[status];
+            },
+
+            _createCardHTML(initiative) {
+                return `
+                    <div class="kanban-card" data-id="${initiative.id}" draggable="true">
+                        <div class="card-title">${initiative.title}</div>
+                        <div class="card-metric">
+                            <span class="card-metric-label">Presupuesto:</span>
+                            <span>₡${initiative.budget.toLocaleString('es-CR')}</span>
+                        </div>
+                        <div class="card-metric">
+                            <span class="card-metric-label">KPI Principal:</span>
+                            <span class="card-kpi">${initiative.kpi}</span>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            _createFormHTML(initiative) {
+                return `
+                    <input type="hidden" id="initiativeId" value="${initiative.id}">
+                    <div class="form-section">
+                        <h3>Fundamentos</h3>
+                        <div class="form-control">
+                            <label for="title">Nombre de la Iniciativa</label>
+                            <input type="text" id="title" value="${initiative.title || ''}" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="objective">Objetivo Estratégico</label>
+                            <input type="text" id="objective" value="${initiative.objective || ''}">
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3>Recursos</h3>
+                        <div class="form-control">
+                            <label for="budget">Presupuesto Asignado (₡)</label>
+                            <input type="number" id="budget" value="${initiative.budget || 0}">
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3>Métricas</h3>
+                        <div class="form-control">
+                            <label for="kpi">KPI Principal de Éxito</label>
+                            <input type="text" id="kpi" value="${initiative.kpi || ''}">
+                        </div>
+                    </div>
+                     <div class="form-section">
+                        <h3>Plan de Acción</h3>
+                        <div class="form-control">
+                            <label for="plan">Notas, Pasos Clave, Riesgos</label>
+                            <textarea id="plan">${initiative.plan || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH02.init());
+    </script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-06: Presupuestador Inteligente | Kairux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --financial-primary: #00d4aa;
+            --financial-secondary: #26a69a;
+            --background-dark: #0F172A;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --warning-color: #FBBF24;
+            --danger-color: #F43F5E;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            background-image: radial-gradient(ellipse at top left, rgba(0, 212, 170, 0.15), transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--financial-primary); }
+        .header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0; }
+        
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border-top: 2px solid var(--financial-primary);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-left: 1px solid var(--glass-border);
+        }
+        .panel-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+        .engine-section { margin-bottom: 2.5rem; }
+        .engine-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .budget-category { margin-bottom: 1.5rem; }
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .category-name { font-weight: 600; font-size: 1.1rem; }
+        .category-summary { font-size: 0.9rem; color: var(--text-secondary); }
+        .progress-bar-container { background: rgba(0,0,0,0.2); border-radius: 8px; height: 16px; overflow: hidden; }
+        .progress-bar {
+            height: 100%;
+            background: var(--financial-primary);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+        .progress-bar.warning { background: var(--warning-color); }
+        .progress-bar.danger { background: var(--danger-color); }
+
+        .form-control { margin-bottom: 1rem; }
+        .form-control label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .form-control input, .form-control select {
+            width: 100%; background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            padding: 0.75rem 1rem; color: var(--text-primary); font-size: 1rem;
+        }
+        .action-btn {
+            background: linear-gradient(135deg, var(--financial-primary) 0%, var(--financial-secondary) 100%);
+            border: none; border-radius: 12px; padding: 1rem 1.5rem; color: white;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem;
+            cursor: pointer; width: 100%; text-align: center; transition: all 0.3s ease;
+        }
+        .action-btn:hover { transform: translateY(-3px); }
+        
+        .oracle-insight {
+            background: rgba(0, 212, 170, 0.05);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .oracle-insight strong { color: var(--financial-primary); }
+
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Motor de Crecimiento</h1>
+            <p>Tu presupuesto ya no es una lista de gastos. Es un mapa de inversión. Asigna tus recursos a los motores que impulsan tu negocio.</p>
+        </header>
+
+        <div class="layout-grid">
+            <main class="glass-panel">
+                <h2 class="panel-title">Mapa de Inversión Mensual</h2>
+                <div id="budget-engines-container">
+                    <div class="engine-section">
+                        <h3 class="engine-title">🚀 Motor de Crecimiento (Adquisición)</h3>
+                        <div id="engine-growth"></div>
+                    </div>
+                    <div class="engine-section">
+                        <h3 class="engine-title">⚙️ Motor de Operaciones (Entrega)</h3>
+                        <div id="engine-operations"></div>
+                    </div>
+                    <div class="engine-section">
+                        <h3 class="engine-title">🏛️ Motor de Administración (Soporte)</h3>
+                        <div id="engine-admin"></div>
+                    </div>
+                </div>
+            </main>
+            <aside>
+                <div class="glass-panel">
+                    <h2 class="panel-title">Planificar Inversión</h2>
+                    <form id="addCategoryForm">
+                        <div class="form-control">
+                            <label for="categoryName">Nombre de la Inversión</label>
+                            <input type="text" id="categoryName" placeholder="Ej: Publicidad en Instagram" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="budgetAmount">Monto Presupuestado</label>
+                            <input type="number" id="budgetAmount" placeholder="100000" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="engineType">Motor de la Empresa</label>
+                            <select id="engineType" required>
+                                <option value="growth">Crecimiento</option>
+                                <option value="operations">Operaciones</option>
+                                <option value="admin">Administración</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="action-btn">✚ Asignar Presupuesto</button>
+                    </form>
+                    <div class="oracle-insight" id="oracleInsight">
+                        <strong>💡 Insight del Oráculo:</strong> Tu producto "Collar de Plata" es un Héroe de la rentabilidad. Considera crear un presupuesto de marketing específico para potenciarlo.
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        const KairuxH06 = {
+            state: {
+                budget: {}, // { categoryName: { budgeted: 100000, spent: 0, engine: 'growth' } }
+                transactions: []
+            },
+            nodes: {},
+
+            init() {
+                this._cacheDOM();
+                this._bindEvents();
+                this._requestDataFromBubble();
+            },
+
+            _cacheDOM() {
+                this.nodes.engines = {
+                    growth: document.getElementById('engine-growth'),
+                    operations: document.getElementById('engine-operations'),
+                    admin: document.getElementById('engine-admin')
+                };
+                this.nodes.form = document.getElementById('addCategoryForm');
+            },
+
+            _bindEvents() {
+                this.nodes.form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    this._addBudgetCategory();
+                });
+            },
+
+            _requestDataFromBubble() {
+                console.log("H-06: Pidiendo datos al KFL...");
+                // Simulación de datos
+                const mockTransactions = [
+                    { amount: 80000, type: 'expense', category: 'Publicidad en Instagram' },
+                    { amount: 200000, type: 'expense', category: 'Materia Prima' },
+                    { amount: 90000, type: 'expense', category: 'Software' }
+                ];
+                const mockBudget = {
+                    "Publicidad en Instagram": { budgeted: 100000, engine: 'growth' },
+                    "Materia Prima": { budgeted: 300000, engine: 'operations' },
+                    "Software": { budgeted: 150000, engine: 'admin' }
+                };
+                this.setData(mockTransactions, mockBudget);
+            },
+
+            setData(transactions, budget) {
+                this.state.transactions = transactions;
+                this.state.budget = budget || {};
+                this._processData();
+            },
+
+            _addBudgetCategory() {
+                const name = this.nodes.form.categoryName.value;
+                const amount = parseFloat(this.nodes.form.budgetAmount.value);
+                const engine = this.nodes.form.engineType.value;
+
+                if (!name || isNaN(amount)) return;
+
+                this.state.budget[name] = { budgeted: amount, spent: 0, engine };
+                this.nodes.form.reset();
+                this._processData();
+            },
+
+            _processData() {
+                Object.values(this.state.budget).forEach(cat => cat.spent = 0);
+
+                this.state.transactions.forEach(t => {
+                    if (t.type === 'expense' && this.state.budget[t.category]) {
+                        this.state.budget[t.category].spent += t.amount;
+                    }
+                });
+                this._render();
+            },
+
+            _render() {
+                Object.values(this.nodes.engines).forEach(engine => engine.innerHTML = '');
+
+                if (Object.keys(this.state.budget).length === 0) {
+                    this.nodes.engines.growth.innerHTML = `<p style="color: var(--text-muted);">Asigna recursos a tus motores de negocio.</p>`;
+                    return;
+                }
+
+                for (const categoryName in this.state.budget) {
+                    const categoryData = this.state.budget[categoryName];
+                    const engineContainer = this.nodes.engines[categoryData.engine];
+                    if (engineContainer) {
+                        const percentage = (categoryData.spent / categoryData.budgeted) * 100;
+                        
+                        let progressBarClass = 'progress-bar';
+                        if (percentage > 100) progressBarClass += ' danger';
+                        else if (percentage > 80) progressBarClass += ' warning';
+
+                        const categoryHTML = `
+                            <div class="budget-category">
+                                <div class="category-header">
+                                    <span class="category-name">${categoryName}</span>
+                                    <span class="category-summary">
+                                        ₡${categoryData.spent.toLocaleString('es-CR')} / ₡${categoryData.budgeted.toLocaleString('es-CR')}
+                                    </span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="${progressBarClass}" style="width: ${Math.min(percentage, 100)}%;"></div>
+                                </div>
+                            </div>
+                        `;
+                        engineContainer.innerHTML += categoryHTML;
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => KairuxH06.init());
+    </script>
+</body>
+</html>
